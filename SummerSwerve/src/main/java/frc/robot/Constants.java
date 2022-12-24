@@ -29,4 +29,6 @@ public final class Constants {
     public final static double MAX_ROT_PER_SEC = MAX_TRANS_PER_SEC / (Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2));
 
     public final static double MAX_PERSONAL_ROT_PER_SEC = 6380 / 60;
+
+    public final static double pRot = 1/180;
 }

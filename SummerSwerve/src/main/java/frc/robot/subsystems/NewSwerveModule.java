@@ -24,7 +24,6 @@ public class NewSwerveModule extends SubsystemBase {
   CANCoder rotationEncoder;
 
   PIDController rotPID;
-  PIDController rotPIDTester;
 
   SwerveModuleState moduleState;
   double previousAngle;
@@ -35,7 +34,7 @@ public class NewSwerveModule extends SubsystemBase {
     translation.setNeutralMode(NeutralMode.Brake);
     rotation.setNeutralMode(NeutralMode.Brake);
     rotationEncoder = new CANCoder(rotEnc);
-    rotPID = new PIDController(2, 0, 0);
+    rotPID = new PIDController(Constants.pRot, 0, 0);
     rotPID.enableContinuousInput(-180, 180);
     rotPID.setTolerance(1);
   }
@@ -68,7 +67,7 @@ public class NewSwerveModule extends SubsystemBase {
      wantedAngle = previousAngle;
    }
 
-    rotation.set(ControlMode.PercentOutput, (rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle))/180);
+    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 1));
     previousAngle = wantedAngle;
   }
   

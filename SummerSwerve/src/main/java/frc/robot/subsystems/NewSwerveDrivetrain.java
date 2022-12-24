@@ -43,7 +43,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     setDefaultCommand(new SwerveCommand(controller, this));
   }
 
-  public void init() {
+  public void initialize() {
     lfModule.initialize();
     lbModule.initialize();
     rfModule.initialize();
@@ -70,15 +70,15 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     rbModule.set(moduleStates[3], angle, stalled);
   }
 
+  public void ZeroGyro() {
+    gyro.setYaw(0);
+  }
+
   public double getAngle() {
     return ExtraMath.mod(gyro.getYaw(), 360);
   }
 
   // Value Prints
-
-  public void ZeroGyro() {
-    gyro.setYaw(0);
-  }
 
   public String getModulePositionErrors() {
     return lfModule.getPositionError() + " " + lbModule.getPositionError() + " " + rfModule.getPositionError() + " " + rbModule.getPositionError();
