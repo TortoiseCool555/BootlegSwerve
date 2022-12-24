@@ -26,5 +26,7 @@ public final class Constants {
     private final static double GEAR_RATIO = 12.8;
 
     public final static double MAX_TRANS_PER_SEC = 6380 / 60 *  WHEEL_DIAM * GEAR_RATIO * Math.PI; 
-    public final static double MAX_ROT_PER_SEC = MAX_TRANS_PER_SEC / (10 * Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2));
+    public final static double MAX_ROT_PER_SEC = MAX_TRANS_PER_SEC / (Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2));
+
+    public final static double MAX_PERSONAL_ROT_PER_SEC = 6380 / 60;
 }

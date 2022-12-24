@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.ExtraMath;
 import frc.robot.commands.SwerveCommand;
 
 public class NewSwerveDrivetrain extends SubsystemBase {
@@ -27,8 +28,10 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
   private Pigeon2 gyro = new Pigeon2(13);
 
-  SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(-Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), 
-  new Translation2d(-Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2));
+  boolean stalled = false;
+
+  SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), 
+  new Translation2d(-Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(-Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2));
 
   public NewSwerveDrivetrain(XboxController controller) {
     this.controller = controller;
@@ -49,40 +52,46 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
   public void setChassisSpeeds(double velocityX, double velocityY, double angularVelocity) {
     double angle = getAngle();
+
     ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX, velocityY, angularVelocity, Rotation2d.fromDegrees(angle));
 
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
+    
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_PER_SEC);
-    lfModule.set(moduleStates[0], angle);
-    rfModule.set(moduleStates[1], angle);
-    lbModule.set(moduleStates[2], angle);
-    rbModule.set(moduleStates[3], angle);
+
+    if(velocityX == 0 && velocityY == 0 && angularVelocity == 0) {
+      stalled = true;
+    } else {
+      stalled = false;
+    }
+    lfModule.set(moduleStates[0], angle, stalled);
+    rfModule.set(moduleStates[1], angle, stalled);
+    lbModule.set(moduleStates[2], angle, stalled);
+    rbModule.set(moduleStates[3], angle, stalled);
   }
 
   public double getAngle() {
-    return gyro.getYaw();
+    return ExtraMath.mod(gyro.getYaw(), 360);
   }
 
   // Value Prints
 
+  public void ZeroGyro() {
+    gyro.setYaw(0);
+  }
+
   public String getModulePositionErrors() {
     return lfModule.getPositionError() + " " + lbModule.getPositionError() + " " + rfModule.getPositionError() + " " + rbModule.getPositionError();
   }
+  
+  public String getModulePositionPowers(double velocityX, double velocityY, double angularVelocity) {
+    double angle = getAngle();
+    ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX, velocityY, angularVelocity, Rotation2d.fromDegrees(angle));
 
-  // public String getTheoreticalModulePoistionErrors(double velocityX, double velocityY, double angularVelocity) {
-  //   ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX, velocityY, angularVelocity, Rotation2d.fromDegrees(getAngle()));
-
-  //   SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
-  //   return lfModule.getAngleErrorExperimental(moduleStates[0]) + " " + lbModule.getAngleErrorExperimental(moduleStates[0]) + " " + rfModule.getAngleErrorExperimental() + " " + rbModule.getAngleErrorExperimental();
-  // }
-
-  // public String getModulePositionPower() {
-  //   return lfModule.getAngleErrorExperimental() + " " + lbModule.getAngleErrorExperimental() + " " + rfModule.getAngleErrorExperimental() + " " + rbModule.getAngleErrorExperimental();
-  // }
-
-  // public String getTheoreticalModulePositionPowers() {
-  //   return lfModule.getAnglePowerExperimental() + " " + lbModule.getAngleErrorExperimental() + " " + rfModule.getAngleErrorExperimental() + " " + rbModule.getAngleErrorExperimental();
-  // }
+    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_PER_SEC);
+    return lfModule.getAnglePowerExperimental(moduleStates[0]) + " " + lbModule.getAnglePowerExperimental(moduleStates[2]) + " " + rfModule.getAnglePowerExperimental(moduleStates[1]) + " " + rbModule.getAnglePowerExperimental(moduleStates[3]);
+  }
 
   // Other
   public String getModuleVelocities() {

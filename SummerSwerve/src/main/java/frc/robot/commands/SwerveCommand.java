@@ -34,6 +34,12 @@ public class SwerveCommand extends CommandBase {
     double y = -controller.getLeftY();
     double rot = controller.getRightX();
 
+    if(Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rot) < 0.1) {
+      x = 0;
+      y = 0;
+      rot = 0;
+    }
+
     drivetrain.setChassisSpeeds(x * Constants.MAX_TRANS_PER_SEC, 
     y * Constants.MAX_TRANS_PER_SEC, 
     rot * Constants.MAX_ROT_PER_SEC);
@@ -42,6 +48,7 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
     SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
     SmartDashboard.putString("Module Translation Velocities", drivetrain.getModuleVelocities());
+    SmartDashboard.putString("Module Angular Power: ", drivetrain.getModulePositionPowers(x,y,rot));
   }
 
   // Called once the command ends or is interrupted.
