@@ -17,18 +17,21 @@ public final class Constants {
     public final static double translationMin = 0.1;
     public final static double rotationalPVal = 0.01;
 
-    public final static double TICKS_PER_REVOLUTION = 1024; //4096
+    public final static double TICKS_PER_REVOLUTION = 2048; //4096
 
     public final static double TRACKWIDTH = 0.5715;
     public final static double WHEELBASE = 0.5842;
 
     private final static double WHEEL_DIAM = .1016;
     private final static double GEAR_RATIO = 12.8;
+    private final static double ROTATIONS_PER_MINUTE = 6380;
 
-    public final static double MAX_TRANS_PER_SEC = 6380 / 60 *  WHEEL_DIAM * GEAR_RATIO * Math.PI; 
+    public final static double MAX_TRANS_PER_SEC = ROTATIONS_PER_MINUTE / 60 *  WHEEL_DIAM * GEAR_RATIO * Math.PI; 
     public final static double MAX_ROT_PER_SEC = MAX_TRANS_PER_SEC / (Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2));
+
+    public final static double TRANS_SCALER = (WHEEL_DIAM * Math.PI) / (TICKS_PER_REVOLUTION * GEAR_RATIO);
 
     public final static double MAX_PERSONAL_ROT_PER_SEC = 6380 / 60;
 
-    public final static double pRot = 1/180;
+    public final static double pRot = 1.0/180.0;
 }

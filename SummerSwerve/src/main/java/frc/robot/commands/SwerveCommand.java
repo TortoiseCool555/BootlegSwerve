@@ -48,6 +48,7 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
     SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
     SmartDashboard.putString("Module Translation Velocities", drivetrain.getModuleVelocities());
+    SmartDashboard.putString("Wanted Translation Velocities", drivetrain.getModuleWantedTranslationVelocity(x,y,rot));
     SmartDashboard.putString("Module Angular Power: ", drivetrain.getModulePositionPowers(x,y,rot));
   }
 

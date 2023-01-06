@@ -24,19 +24,26 @@ public class NewSwerveModule extends SubsystemBase {
   CANCoder rotationEncoder;
 
   PIDController rotPID;
+  PIDController transPID;
 
   SwerveModuleState moduleState;
   double previousAngle;
 
-  public NewSwerveModule(int trans, int rot, int rotEnc) {
-    translation = new TalonFX(trans);
-    rotation = new TalonFX(rot);
+  public NewSwerveModule(int trans, int rot, int rotEnc, double offset) {
+    translation = new TalonFX(trans, "CANivoreA");
+    rotation = new TalonFX(rot, "CANivoreA");
     translation.setNeutralMode(NeutralMode.Brake);
     rotation.setNeutralMode(NeutralMode.Brake);
-    rotationEncoder = new CANCoder(rotEnc);
-    rotPID = new PIDController(Constants.pRot, 0, 0);
+    rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
+
+    rotPID = new PIDController(Constants.pRot, 0.027, 0);
     rotPID.enableContinuousInput(-180, 180);
-    rotPID.setTolerance(1);
+    rotPID.setTolerance(0.2);
+    rotPID.setIntegratorRange(-0.2, 0.2);
+
+    transPID = new PIDController(0, 0, 0);
+    transPID.enableContinuousInput(-Constants.MAX_TRANS_PER_SEC, Constants.MAX_TRANS_PER_SEC);
+    transPID.setTolerance(10);
   }
 
   @Override
@@ -52,32 +59,32 @@ public class NewSwerveModule extends SubsystemBase {
   public SwerveModuleState getModuleState(double angle) {
     return new SwerveModuleState(translation.getSelectedSensorVelocity(), Rotation2d.fromDegrees(rotationEncoder.getPosition()));
   }
-  /////////////////////////////////////////////////////////////////////////////////
   
   public void set(SwerveModuleState wanted, double angle, boolean isStalled) {
-    //wanted = SwerveModuleState.optimize(wanted, Rotation2d.fromDegrees(angle));
-
-    translation.set(ControlMode.PercentOutput, wanted.speedMetersPerSecond / Constants.MAX_TRANS_PER_SEC);
-    
-    // rotPID.setIntegratorRange(-.5, .5);
-   // double pow = rotPID.calculate(rotationEncoder.getAbsolutePosition(), wanted.angle.getDegrees());
+    double additional = ExtraMath.clip(transPID.calculate(translation.getSelectedSensorVelocity(), wanted.speedMetersPerSecond), .2);
+    translation.set(ControlMode.PercentOutput, additional + (wanted.speedMetersPerSecond / Constants.MAX_TRANS_PER_SEC));
 
    double wantedAngle = wanted.angle.getDegrees();
    if(isStalled) {
-     wantedAngle = previousAngle;
+     //wantedAngle = previousAngle;
    }
 
-    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 1));
+   if(Math.abs(rotPID.getPositionError()) < 30) {
+     rotPID.setI(.027);
+   } else {
+     rotPID.setI(0);
+   }
+
+    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 1.0));
     previousAngle = wantedAngle;
   }
   
-  ////////////////////////////////////////////////////////////////////////////////
   public double getWantedAngle(SwerveModuleState wanted, double angle) {
     return SwerveModuleState.optimize(wanted, Rotation2d.fromDegrees(angle)).angle.getDegrees();
   }
 
   public double getVelocity() {
-    return translation.getSelectedSensorVelocity();
+    return translation.getSelectedSensorVelocity() * Constants.TRANS_SCALER;
   }
 
   public double getTransPosition() {
@@ -89,12 +96,12 @@ public class NewSwerveModule extends SubsystemBase {
   }
 
   public  double getAngleErrorExperimental(SwerveModuleState wanted) {
-    return ExtraMath.simpleAngleError(rotationEncoder.getPosition(), wanted.angle.getDegrees());
+    return wanted.speedMetersPerSecond;
   }
 
   public double getAnglePowerExperimental(SwerveModuleState wanted) {
     // double rotationDiff = rotPID.
     // return rotation.getSelectedSensorVelocity()/Constants.MAX_ROT_PER_SEC;
-    return wanted.angle.getDegrees();
+    return ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wanted.angle.getDegrees()), 1);
   }
 }
