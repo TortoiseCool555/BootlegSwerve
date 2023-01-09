@@ -63,7 +63,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
     
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_PER_SEC);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_METERS_PER_SEC);
 
     if(velocityX == 0 && velocityY == 0 && angularVelocity == 0) {
       stalled = true;
@@ -97,16 +97,16 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX, velocityY, angularVelocity, Rotation2d.fromDegrees(angle));
 
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_PER_SEC);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_METERS_PER_SEC);
     return lfModule.getAnglePowerExperimental(moduleStates[0]) + " " + lbModule.getAnglePowerExperimental(moduleStates[2]) + " " + rfModule.getAnglePowerExperimental(moduleStates[1]) + " " + rbModule.getAnglePowerExperimental(moduleStates[3]);
   }
 
   public String getModuleWantedTranslationVelocity(double velocityX, double velocityY, double angularVelocity) {
     double angle = getAngle();
-    ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX * Constants.MAX_TRANS_PER_SEC, velocityY * Constants.MAX_TRANS_PER_SEC, angularVelocity * Constants.MAX_ROT_PER_SEC, Rotation2d.fromDegrees(angle));
+    ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX * Constants.MAX_TRANS_METERS_PER_SEC, velocityY * Constants.MAX_TRANS_METERS_PER_SEC, angularVelocity * Constants.MAX_ANG_RAD_PER_SEC, Rotation2d.fromDegrees(angle));
 
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_PER_SEC);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_METERS_PER_SEC);
     return moduleStates[0].speedMetersPerSecond + " " + moduleStates[2].speedMetersPerSecond + " " + moduleStates[1].speedMetersPerSecond + " " + moduleStates[3].speedMetersPerSecond;
   }
 

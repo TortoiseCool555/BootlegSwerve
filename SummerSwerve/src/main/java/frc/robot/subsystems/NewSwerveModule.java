@@ -38,11 +38,11 @@ public class NewSwerveModule extends SubsystemBase {
 
     rotPID = new PIDController(Constants.pRot, 0.027, 0);
     rotPID.enableContinuousInput(-180, 180);
-    rotPID.setTolerance(0.2);
+    rotPID.setTolerance(0.3);
     rotPID.setIntegratorRange(-0.2, 0.2);
 
     transPID = new PIDController(0, 0, 0);
-    transPID.enableContinuousInput(-Constants.MAX_TRANS_PER_SEC, Constants.MAX_TRANS_PER_SEC);
+    transPID.enableContinuousInput(-Constants.MAX_TRANS_METERS_PER_SEC, Constants.MAX_TRANS_METERS_PER_SEC);
     transPID.setTolerance(10);
   }
 
@@ -62,7 +62,7 @@ public class NewSwerveModule extends SubsystemBase {
   
   public void set(SwerveModuleState wanted, double angle, boolean isStalled) {
     double additional = ExtraMath.clip(transPID.calculate(translation.getSelectedSensorVelocity(), wanted.speedMetersPerSecond), .2);
-    translation.set(ControlMode.PercentOutput, additional + (wanted.speedMetersPerSecond / Constants.MAX_TRANS_PER_SEC));
+    translation.set(ControlMode.PercentOutput, additional + (wanted.speedMetersPerSecond / Constants.MAX_TRANS_METERS_PER_SEC));
 
    double wantedAngle = wanted.angle.getDegrees();
    if(isStalled) {
@@ -84,7 +84,7 @@ public class NewSwerveModule extends SubsystemBase {
   }
 
   public double getVelocity() {
-    return translation.getSelectedSensorVelocity() * Constants.TRANS_SCALER;
+    return (translation.getSelectedSensorVelocity())/60 * Constants.WHEEL_DIAM * Constants.DRIVING_GEAR_RATIO;
   }
 
   public double getTransPosition() {

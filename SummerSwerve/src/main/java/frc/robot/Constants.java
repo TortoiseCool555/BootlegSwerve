@@ -22,14 +22,14 @@ public final class Constants {
     public final static double TRACKWIDTH = 0.5715;
     public final static double WHEELBASE = 0.5842;
 
-    private final static double WHEEL_DIAM = .1016;
-    private final static double GEAR_RATIO = 12.8;
-    private final static double ROTATIONS_PER_MINUTE = 6380;
+    public final static double WHEEL_DIAM = .10033;
+    public final static double DRIVING_GEAR_RATIO = (14.0/50.0)*(25.0/19.0)*(15.0/45.0);
+    public final static double STEERING_GEAR_RATIO = (15.0/32.0)*(10.0/16.0);
+    public final static double ROTATIONS_PER_MINUTE = 6380;
+    public final static double MAX_TRANS_METERS_PER_SEC = ROTATIONS_PER_MINUTE / 60 *  WHEEL_DIAM * DRIVING_GEAR_RATIO * Math.PI; 
+    public final static double MAX_ANG_RAD_PER_SEC = MAX_TRANS_METERS_PER_SEC / (Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2));
 
-    public final static double MAX_TRANS_PER_SEC = ROTATIONS_PER_MINUTE / 60 *  WHEEL_DIAM * GEAR_RATIO * Math.PI; 
-    public final static double MAX_ROT_PER_SEC = MAX_TRANS_PER_SEC / (Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2));
-
-    public final static double TRANS_SCALER = (WHEEL_DIAM * Math.PI) / (TICKS_PER_REVOLUTION * GEAR_RATIO);
+    public final static double TRANS_SCALER = (WHEEL_DIAM * Math.PI) / (TICKS_PER_REVOLUTION * DRIVING_GEAR_RATIO);
 
     public final static double MAX_PERSONAL_ROT_PER_SEC = 6380 / 60;
 

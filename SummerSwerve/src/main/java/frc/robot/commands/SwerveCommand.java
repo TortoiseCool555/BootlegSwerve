@@ -40,9 +40,9 @@ public class SwerveCommand extends CommandBase {
       rot = 0;
     }
 
-    drivetrain.setChassisSpeeds(x * Constants.MAX_TRANS_PER_SEC, 
-    y * Constants.MAX_TRANS_PER_SEC, 
-    rot * Constants.MAX_ROT_PER_SEC);
+    drivetrain.setChassisSpeeds(x * Constants.MAX_TRANS_METERS_PER_SEC, 
+    y * Constants.MAX_TRANS_METERS_PER_SEC, 
+    rot * Constants.MAX_ANG_RAD_PER_SEC);
 
     SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
     SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
