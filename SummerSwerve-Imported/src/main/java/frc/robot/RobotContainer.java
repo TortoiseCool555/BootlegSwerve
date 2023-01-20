@@ -10,6 +10,7 @@ import frc.robot.commands.CameraStream;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.commands.TestCommand;
 import frc.robot.commands.ZeroGyro;
+import frc.robot.commands.AutoCommands.AprilTagCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 import frc.robot.subsystems.TestSubsystem;
@@ -26,9 +27,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final XboxController controller = new XboxController(0);
   private final NewSwerveDrivetrain swerve = new NewSwerveDrivetrain(controller);
-  private final SwerveCommand m_autoCommand = new SwerveCommand(controller, swerve);
+  private final SwerveCommand swerveCommand = new SwerveCommand(controller, swerve);
   private final CameraSubsystem cam = new CameraSubsystem();
   private final CameraStream camStream = new CameraStream(cam);
+  private final AprilTagCommand autoCommand = new AprilTagCommand(swerve);
 
   //private final TestSubsystem test = new TestSubsystem(controller);
   //private final TestCommand tCom = new TestCommand(controller, test);
@@ -56,6 +58,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return autoCommand;
   }
 }
