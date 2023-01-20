@@ -6,9 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.CameraStream;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.commands.TestCommand;
 import frc.robot.commands.ZeroGyro;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 import frc.robot.subsystems.TestSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,8 +27,11 @@ public class RobotContainer {
   private final XboxController controller = new XboxController(0);
   private final NewSwerveDrivetrain swerve = new NewSwerveDrivetrain(controller);
   private final SwerveCommand m_autoCommand = new SwerveCommand(controller, swerve);
-  private final TestSubsystem test = new TestSubsystem(controller);
-  private final TestCommand tCom = new TestCommand(controller, test);
+  private final CameraSubsystem cam = new CameraSubsystem();
+  private final CameraStream camStream = new CameraStream(cam);
+
+  //private final TestSubsystem test = new TestSubsystem(controller);
+  //private final TestCommand tCom = new TestCommand(controller, test);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

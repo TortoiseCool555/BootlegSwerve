@@ -111,7 +111,7 @@ public class NewSwerveModule extends SubsystemBase {
     return ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wanted.angle.getDegrees()), 1);
   }
   public SwerveModulePosition getModulePosition(){
-    SwerveModulePosition var = new SwerveModulePosition((translation.getSelectedSensorPosition() * Constants.DRIVING_GEAR_RATIO) / (Constants.WHEEL_DIAM * Math.PI), Rotation2d.fromDegrees(previousAngle));
+    SwerveModulePosition var = new SwerveModulePosition((translation.getSelectedSensorPosition() * Constants.DRIVING_GEAR_RATIO) / (Constants.WHEEL_DIAM * Math.PI), Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()));
     return var;
   }
 }

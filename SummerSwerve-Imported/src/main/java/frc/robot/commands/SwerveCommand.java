@@ -30,9 +30,9 @@ public class SwerveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double x = -controller.getLeftX() * 0.2;
-    double y = controller.getLeftY() * 0.2;
-    double rot = controller.getRightX() * 0.2;
+    double x = -controller.getLeftX();
+    double y = controller.getLeftY();
+    double rot = controller.getRightX();
 
     if(Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rot) < 0.1) {
       x = 0;
