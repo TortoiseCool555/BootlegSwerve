@@ -7,12 +7,17 @@ package frc.robot.commands.AutoCommands;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 
 public class AprilTagCommand extends CommandBase {
   /** Creates a new AprilTagCommand. */
   NewSwerveDrivetrain drive;
+  double xDiff;
+  double yDiff;
+  double rotDiff;
+  double x, y, rot;
   public AprilTagCommand(NewSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -21,28 +26,28 @@ public class AprilTagCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    drive.initialize();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    double tz = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tz").getDouble(0);
-    double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-    double id = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(0);
-    SmartDashboard.putNumber("tx", tx);
-    SmartDashboard.putNumber("ty", ty);
-    SmartDashboard.putNumber("ta", ta);
-    SmartDashboard.putNumber("tid", id);
-    double x = ExtraMath.clip(tx, 0.1);
-    double y = ExtraMath.clip(ty, 0.1);
-    double rot = ExtraMath.clip(ta, 0.1);
+    xDiff = 4.0 - drive.getXPose();
+    yDiff = 0 - drive.getYPose();
+    rotDiff = (0 - drive.getHeadingPose());
+    x = ExtraMath.clip(xDiff, Constants.MAX_TRANS_METERS_PER_SEC);
+    y = ExtraMath.clip(yDiff, Constants.MAX_TRANS_METERS_PER_SEC);
+    rot = ExtraMath.clip(Math.toRadians(rotDiff), Constants.MAX_ANG_RAD_PER_SEC);
+    SmartDashboard.putNumber("X Pose", drive.getXPose());
+    SmartDashboard.putNumber("Y Pose", drive.getYPose());
+    SmartDashboard.putNumber("Z Pose", drive.getHeadingPose());
     SmartDashboard.putNumber("X Input", x);
     SmartDashboard.putNumber("Y Input", y);
     SmartDashboard.putNumber("Rot Input", rot);
 
-    drive.setChassisSpeeds(x, y, rot);
+    drive.setChassisSpeeds(-x, -y, rot);
+    drive.updateOdometry();
   }
 
   // Called once the command ends or is interrupted.

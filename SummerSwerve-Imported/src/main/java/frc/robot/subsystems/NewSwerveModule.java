@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.fasterxml.jackson.databind.deser.std.ContainerDeserializerBase;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,12 +41,12 @@ public class NewSwerveModule extends SubsystemBase {
     rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
-    rotPID = new PIDController(Constants.pRot, 0.027, 0.00001);
+    rotPID = new PIDController(Constants.pRot, 0.02, 0.00001);
     rotPID.enableContinuousInput(-180, 180);
     rotPID.setTolerance(0);
     rotPID.setIntegratorRange(-0.2, 0.2);
 
-    transPID = new PIDController(0.0125, 0.0001, 0.00001);
+    transPID = new PIDController(0.001, 0, 0.00001);
     transPID.enableContinuousInput(-Constants.MAX_TRANS_METERS_PER_SEC, Constants.MAX_TRANS_METERS_PER_SEC);
     transPID.setTolerance(0.001);
     this.offset = offset;
@@ -111,7 +112,7 @@ public class NewSwerveModule extends SubsystemBase {
     return ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wanted.angle.getDegrees()), 1);
   }
   public SwerveModulePosition getModulePosition(){
-    SwerveModulePosition var = new SwerveModulePosition((translation.getSelectedSensorPosition() * Constants.DRIVING_GEAR_RATIO) / (Constants.WHEEL_DIAM * Math.PI), Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()));
+    SwerveModulePosition var = new SwerveModulePosition(translation.getSelectedSensorPosition() * Constants.DRIVING_GEAR_RATIO / Constants.TICKS_PER_REVOLUTION * Constants.WHEEL_CIRCUM, Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()));
     return var;
   }
 }

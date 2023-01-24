@@ -30,9 +30,9 @@ public class SwerveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double x = -controller.getLeftX();
-    double y = controller.getLeftY();
-    double rot = controller.getRightX();
+    double x = -controller.getLeftX() * 0.15;
+    double y = controller.getLeftY() * 0.15;
+    double rot = controller.getRightX() * 0.15;
 
     if(Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rot) < 0.1) {
       x = 0;
@@ -53,6 +53,10 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putString("Module Angular Power: ", drivetrain.getModulePositionPowers(x,y,rot));
     SmartDashboard.putString("Module Position Distance", drivetrain.displayModulePositionDist());
     SmartDashboard.putString("Module Position Angle", drivetrain.displayModulePositionAng());
+    SmartDashboard.putString("X", drivetrain.x());
+    SmartDashboard.putString("Y", drivetrain.y());
+    SmartDashboard.putString("Z", drivetrain.z());
+
     drivetrain.updateOdometry();
   }
 

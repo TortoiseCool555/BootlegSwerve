@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.commands.SwerveCommand;
+import frc.robot.commands.AutoCommands.AprilTagCommand;
 
 public class NewSwerveDrivetrain extends SubsystemBase {
   /** Creates a new NewSwerveDrivetrain. */
@@ -50,6 +52,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     lbModule.initialize();
     rfModule.initialize();
     rbModule.initialize();
+    odometry.resetPosition(Rotation2d.fromDegrees(0),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(0)));
   }
 
   /**
@@ -136,5 +139,26 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     Rotation2d lbAng = lbModule.getModulePosition().angle;
     Rotation2d rbAng = rbModule.getModulePosition().angle;
     return Double.toString(lfAng.getDegrees()) + " " + Double.toString(rfAng.getDegrees()) + " " + Double.toString(lbAng.getDegrees()) + " " + Double.toString(rbAng.getDegrees());
+  }
+  public double getXPose(){
+    return odometry.getPoseMeters().getX();
+  }
+  public double getYPose(){
+    return odometry.getPoseMeters().getY();
+  }
+  public double getHeadingPose(){
+    return odometry.getPoseMeters().getRotation().getDegrees();
+  }
+  public String x(){
+    String X = Double.toString(odometry.getPoseMeters().getX());
+    return X;
+  }
+  public String y(){
+    String Y = Double.toString(odometry.getPoseMeters().getY());
+    return Y;
+  }
+  public String z(){
+    String Z = Double.toString(odometry.getPoseMeters().getRotation().getDegrees());
+    return Z;
   }
 }

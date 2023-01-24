@@ -53,10 +53,11 @@ public class ExtraMath {
         return x;
     }
 
-    public static final double clipLowBound(double x, double a) {
-        if(Math.abs(x) < a) {
+    public static final double clipLowBound(double x, double low) {
+        if(Math.abs(x) < low) {
             return 0;
         }
         return x;
     }
+    
 }
