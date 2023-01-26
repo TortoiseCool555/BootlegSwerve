@@ -41,14 +41,14 @@ public class NewSwerveModule extends SubsystemBase {
     rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
-    rotPID = new PIDController(Constants.pRot, 0.02, 0.00001);
+    rotPID = new PIDController(Constants.pRot, 0, 0);
     rotPID.enableContinuousInput(-180, 180);
-    rotPID.setTolerance(0);
-    rotPID.setIntegratorRange(-0.2, 0.2);
+    rotPID.setTolerance(0.005);
+    //rotPID.setIntegratorRange(-0.2, 0.2);
 
-    transPID = new PIDController(0.001, 0, 0.00001);
+    transPID = new PIDController(0, 0, 0);
     transPID.enableContinuousInput(-Constants.MAX_TRANS_METERS_PER_SEC, Constants.MAX_TRANS_METERS_PER_SEC);
-    transPID.setTolerance(0.001);
+    transPID.setTolerance(0.005);
     this.offset = offset;
   }
 
@@ -76,14 +76,14 @@ public class NewSwerveModule extends SubsystemBase {
      //wantedAngle = previousAngle;
    }
 
-   if(Math.abs(rotPID.getPositionError()) < 40) {
-     rotPID.setI(1);
-   } else {
-     rotPID.setI(0);
-   }
+  //  if(Math.abs(rotPID.getPositionError()) < 40) {
+  //    rotPID.setI(1);
+  //  } else {
+  //    rotPID.setI(0);
+  //  }
 
-    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 1.0));
-    // previousAngle = wantedAngle;
+    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle - offset), 1.0));
+    previousAngle = wantedAngle;
   }
   
   public double getWantedAngle(SwerveModuleState wanted, double angle) {
@@ -114,5 +114,8 @@ public class NewSwerveModule extends SubsystemBase {
   public SwerveModulePosition getModulePosition(){
     SwerveModulePosition var = new SwerveModulePosition(translation.getSelectedSensorPosition() * Constants.DRIVING_GEAR_RATIO / Constants.TICKS_PER_REVOLUTION * Constants.WHEEL_CIRCUM, Rotation2d.fromDegrees(rotationEncoder.getAbsolutePosition()));
     return var;
+  }
+  public void resetCanCoder(){
+    rotationEncoder.setPosition(0);
   }
 }

@@ -33,12 +33,12 @@ public class AprilTagCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    xDiff = 4.0 - drive.getXPose();
-    yDiff = 0 - drive.getYPose();
-    rotDiff = (0 - drive.getHeadingPose());
-    x = ExtraMath.clip(xDiff, Constants.MAX_TRANS_METERS_PER_SEC);
-    y = ExtraMath.clip(yDiff, Constants.MAX_TRANS_METERS_PER_SEC);
-    rot = ExtraMath.clip(Math.toRadians(rotDiff), Constants.MAX_ANG_RAD_PER_SEC);
+    xDiff = 3.5 - drive.getXPose();
+    yDiff = -1.5 - drive.getYPose();
+    rotDiff = (90 - drive.getHeadingPose());
+    x = ExtraMath.clip(xDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
+    y = ExtraMath.clip(yDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
+    rot = ExtraMath.clip(Math.toRadians(rotDiff) * 3.5, Constants.MAX_ANG_RAD_PER_SEC);
     SmartDashboard.putNumber("X Pose", drive.getXPose());
     SmartDashboard.putNumber("Y Pose", drive.getYPose());
     SmartDashboard.putNumber("Z Pose", drive.getHeadingPose());
@@ -46,7 +46,7 @@ public class AprilTagCommand extends CommandBase {
     SmartDashboard.putNumber("Y Input", y);
     SmartDashboard.putNumber("Rot Input", rot);
 
-    drive.setChassisSpeeds(-x, -y, rot);
+    drive.setChassisSpeeds(x, y, rot);
     drive.updateOdometry();
   }
 

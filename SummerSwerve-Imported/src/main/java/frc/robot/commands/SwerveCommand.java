@@ -31,8 +31,8 @@ public class SwerveCommand extends CommandBase {
   @Override
   public void execute() {
     double x = -controller.getLeftX() * 0.15;
-    double y = controller.getLeftY() * 0.15;
-    double rot = controller.getRightX() * 0.15;
+    double y = -controller.getLeftY() * 0.15;
+    double rot = -controller.getRightX() * 0.15;
 
     if(Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rot) < 0.1) {
       x = 0;
@@ -41,8 +41,8 @@ public class SwerveCommand extends CommandBase {
     }
 
 
-    drivetrain.setChassisSpeeds(x * Constants.MAX_TRANS_METERS_PER_SEC, 
-    y * Constants.MAX_TRANS_METERS_PER_SEC, 
+    drivetrain.setChassisSpeeds(y * Constants.MAX_TRANS_METERS_PER_SEC, 
+    x * Constants.MAX_TRANS_METERS_PER_SEC, 
     rot * Constants.MAX_ANG_RAD_PER_SEC);
 
     SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
@@ -53,6 +53,9 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putString("Module Angular Power: ", drivetrain.getModulePositionPowers(x,y,rot));
     SmartDashboard.putString("Module Position Distance", drivetrain.displayModulePositionDist());
     SmartDashboard.putString("Module Position Angle", drivetrain.displayModulePositionAng());
+    SmartDashboard.putString("X Stick", Double.toString(x));
+    SmartDashboard.putString("Y Stick", Double.toString(y));
+    SmartDashboard.putString("Rot Stick", Double.toString(rot));
     SmartDashboard.putString("X", drivetrain.x());
     SmartDashboard.putString("Y", drivetrain.y());
     SmartDashboard.putString("Z", drivetrain.z());

@@ -19,22 +19,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.commands.SwerveCommand;
-import frc.robot.commands.AutoCommands.AprilTagCommand;
-
 public class NewSwerveDrivetrain extends SubsystemBase {
   /** Creates a new NewSwerveDrivetrain. */
   XboxController controller;
 
-  NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 90);
-  NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7, 90);
-  NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,90);
-  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, 90);
+  NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 0);
+  NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7,0);
+  NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,0);
+  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, 0);
 
   private Pigeon2 gyro = new Pigeon2(13, "CANivoreA");
 
   boolean stalled = false;
-  SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(-Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), 
-  new Translation2d(-Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2));
+  SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), 
+  new Translation2d(-Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(-Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2));
   SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()});
   public NewSwerveDrivetrain(XboxController controller) {
     this.controller = controller;
