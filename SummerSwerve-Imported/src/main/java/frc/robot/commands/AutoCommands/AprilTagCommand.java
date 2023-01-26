@@ -4,10 +4,17 @@
 
 package frc.robot.commands.AutoCommands;
 
+import java.util.Arrays;
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.subsystems.NewSwerveDrivetrain;
@@ -15,10 +22,12 @@ import frc.robot.subsystems.NewSwerveDrivetrain;
 public class AprilTagCommand extends CommandBase {
   /** Creates a new AprilTagCommand. */
   NewSwerveDrivetrain drive;
+  SwerveControllerCommand test;
   double xDiff;
   double yDiff;
   double rotDiff;
   double x, y, rot;
+  
   public AprilTagCommand(NewSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -29,6 +38,11 @@ public class AprilTagCommand extends CommandBase {
   @Override
   public void initialize() {
     drive.initialize();
+    State fState = new State(2, 2, 2, new Pose2d(1.5, -1.5, Rotation2d.fromDegrees(0)), 1);
+    State sState = new State(2, 2, 2, new Pose2d(2, 0, Rotation2d.fromDegrees(0)), 3);
+    State tState = new State(2, 2, 2, new Pose2d(0, -2, Rotation2d.fromDegrees(90)), 1);
+    List<State> states = Arrays.asList(fState, sState,tState);
+    Trajectory traj = new Trajectory(states);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

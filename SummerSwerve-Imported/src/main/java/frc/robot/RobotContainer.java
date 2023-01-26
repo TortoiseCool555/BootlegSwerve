@@ -4,17 +4,24 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+import java.util.List;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.CameraStream;
 import frc.robot.commands.SwerveCommand;
-import frc.robot.commands.TestCommand;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.AutoCommands.AprilTagCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.NewSwerveDrivetrain;
-import frc.robot.subsystems.TestSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**

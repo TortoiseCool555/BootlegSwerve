@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.fasterxml.jackson.databind.deser.std.ContainerDeserializerBase;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -70,10 +69,9 @@ public class NewSwerveModule extends SubsystemBase {
     return new SwerveModuleState(translation.getSelectedSensorVelocity(), Rotation2d.fromDegrees(rotationEncoder.getPosition()));
   }
   
-  public void set(SwerveModuleState wanted, double angle, boolean isStalled) {
+  public void set(SwerveModuleState wanted, boolean isStalled) {
     double additional = ExtraMath.clip(transPID.calculate(translation.getSelectedSensorVelocity(), wanted.speedMetersPerSecond), .2);
     translation.set(ControlMode.PercentOutput, additional + (wanted.speedMetersPerSecond / Constants.MAX_TRANS_METERS_PER_SEC));
-
    double wantedAngle = ExtraMath.mod(wanted.angle.getDegrees() + 180 + offset, 360) - 180;
    if(isStalled) {
      //wantedAngle = previousAngle;

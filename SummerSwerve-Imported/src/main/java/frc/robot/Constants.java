@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,7 +19,6 @@ public final class Constants {
     public final static double ticksInRotation = 3;
     public final static double translationMin = 0.1;
     public final static double rotationalPVal = 0.01;
-
     public final static double TICKS_PER_REVOLUTION = 2048; //4096
 
     public final static double TRACKWIDTH = 0.535;

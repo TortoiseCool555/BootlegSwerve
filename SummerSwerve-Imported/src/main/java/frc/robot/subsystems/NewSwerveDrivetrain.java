@@ -50,7 +50,6 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     lbModule.initialize();
     rfModule.initialize();
     rbModule.initialize();
-    odometry.resetPosition(Rotation2d.fromDegrees(0),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(0)));
   }
 
   /**
@@ -73,10 +72,18 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     } else {
       stalled = false;
     }
-    lfModule.set(moduleStates[0], angle, stalled);
-    rfModule.set(moduleStates[1], angle, stalled);
-    lbModule.set(moduleStates[2], angle, stalled);
-    rbModule.set(moduleStates[3], angle, stalled);
+    lfModule.set(moduleStates[0], stalled);
+    rfModule.set(moduleStates[1], stalled);
+    lbModule.set(moduleStates[2], stalled);
+    rbModule.set(moduleStates[3], stalled);
+  }
+  public void setStates(SwerveModuleState[] desiredStates){
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.MAX_TRANS_METERS_PER_SEC);
+    lfModule.set(desiredStates[0], false);
+    rfModule.set(desiredStates[1], false);
+    lbModule.set(desiredStates[2], false);
+    rbModule.set(desiredStates[3], false);
+
   }
 
   /**
@@ -147,6 +154,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   public double getHeadingPose(){
     return odometry.getPoseMeters().getRotation().getDegrees();
   }
+  public Pose2d getPose(){
+    return odometry.getPoseMeters();
+  }
   public String x(){
     String X = Double.toString(odometry.getPoseMeters().getX());
     return X;
@@ -158,5 +168,11 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   public String z(){
     String Z = Double.toString(odometry.getPoseMeters().getRotation().getDegrees());
     return Z;
+  }
+  public SwerveDriveKinematics gKinematics(){
+    return kinematics;
+  }
+  public void resetOdometry(Pose2d var){
+    odometry.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , var);
   }
 }
