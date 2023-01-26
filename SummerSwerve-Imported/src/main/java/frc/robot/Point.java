@@ -21,7 +21,7 @@ public class Point {
     public void setY(double y) {
         this.y = y;
     }
-    public void setAngle(double angle) {
+    public void setAngleRad(double angle) {
         this.angle = angle;
     }
 
@@ -31,7 +31,7 @@ public class Point {
     public double getY() {
         return y;
     }
-    public double getAngle() {
+    public double getAngleRad() {
         return angle;
     }
 }
