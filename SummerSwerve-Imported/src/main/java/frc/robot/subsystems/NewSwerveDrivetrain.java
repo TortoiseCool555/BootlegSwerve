@@ -34,6 +34,8 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), 
   new Translation2d(-Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(-Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2));
   SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()});
+  ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(0, 0, 0), Rotation2d.fromDegrees(gyro.getYaw()));
+  SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
   public NewSwerveDrivetrain(XboxController controller) {
     this.controller = controller;
   }
@@ -63,7 +65,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
     ChassisSpeeds chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(velocityX, velocityY, angularVelocity, Rotation2d.fromDegrees(angle));
 
-    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
+    moduleStates = kinematics.toSwerveModuleStates(chassisSpeed);
     
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_METERS_PER_SEC);
 
@@ -174,5 +176,12 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   }
   public void resetOdometry(Pose2d var){
     odometry.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , var);
+  }
+  public void setModuleStates(SwerveModuleState[]desiredStates){
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.MAX_TRANS_METERS_PER_SEC);
+    lfModule.set(desiredStates[0], false);
+    rfModule.set(desiredStates[1], false);
+    lbModule.set(desiredStates[2], false);
+    rbModule.set(desiredStates[3], false);
   }
 }

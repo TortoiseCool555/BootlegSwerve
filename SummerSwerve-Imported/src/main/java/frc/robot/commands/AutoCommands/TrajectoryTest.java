@@ -6,6 +6,7 @@ package frc.robot.commands.AutoCommands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,7 +24,6 @@ import frc.robot.subsystems.NewSwerveDrivetrain;
 public class TrajectoryTest extends InstantCommand {
   NewSwerveDrivetrain drive;
   SwerveControllerCommand follower;
-  SwerveModuleState[] desiredStates;
   public TrajectoryTest(NewSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
