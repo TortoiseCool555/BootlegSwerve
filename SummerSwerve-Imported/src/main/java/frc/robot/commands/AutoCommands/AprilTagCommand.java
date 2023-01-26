@@ -4,11 +4,17 @@
 
 package frc.robot.commands.AutoCommands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
+import frc.robot.Path;
+import frc.robot.Point;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 
 public class AprilTagCommand extends CommandBase {
@@ -18,6 +24,9 @@ public class AprilTagCommand extends CommandBase {
   double yDiff;
   double rotDiff;
   double x, y, rot;
+  List<Point> points = Arrays.asList(new Point(0, 0, 0), new Point(2, 0, 0));
+  Path path = new Path(new ArrayList<>(points));
+
   public AprilTagCommand(NewSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -33,9 +42,15 @@ public class AprilTagCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    xDiff = 3.5 - drive.getXPose();
-    yDiff = -1.5 - drive.getYPose();
-    rotDiff = (90 - drive.getHeadingPose());
+    Point robotPoint = new Point(drive.getXPose(), drive.getYPose(), drive.getHeadingPose());
+    Point target = path.getNextPoint(robotPoint, 1, 1);
+    // xDiff = 3.5 - drive.getXPose();
+    // yDiff = -1.5 - drive.getYPose();
+    rotDiff = (0 - drive.getHeadingPose());
+    double[] velocities = path.getVelocities(robotPoint, 1, 1);
+    xDiff = velocities[0];
+    yDiff = velocities[1];
+    // rotDiff = velocities[2];
     x = ExtraMath.clip(xDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
     y = ExtraMath.clip(yDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
     rot = ExtraMath.clip(Math.toRadians(rotDiff) * 3.5, Constants.MAX_ANG_RAD_PER_SEC);
@@ -45,6 +60,9 @@ public class AprilTagCommand extends CommandBase {
     SmartDashboard.putNumber("X Input", x);
     SmartDashboard.putNumber("Y Input", y);
     SmartDashboard.putNumber("Rot Input", rot);
+
+    SmartDashboard.putNumber("X Point to Travel", target.getX());
+    SmartDashboard.putNumber("Y Point to Travel", target.getY());
 
     drive.setChassisSpeeds(x, y, rot);
     drive.updateOdometry();

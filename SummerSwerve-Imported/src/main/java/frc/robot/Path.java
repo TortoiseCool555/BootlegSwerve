@@ -11,7 +11,7 @@ public class Path {
     private ArrayList<Point> points;
 
     public Path(ArrayList<Point> points) {
-        
+        this.points = points;   
     }
 
     /**
@@ -20,7 +20,7 @@ public class Path {
      * @return
      */
     public ArrayList<Point> getSegment(int num) {
-        ArrayList<Point> segPoints= new ArrayList<>();
+        ArrayList<Point> segPoints= new ArrayList<>(); 
         if(num > points.size()) {
             return segPoints;
         }
@@ -57,26 +57,67 @@ public class Path {
         double c = Math.pow(yint, 2) - Math.pow(radius, 2);
 
         double[] solutions = ExtraMath.solveQuadratic(a, b, c);
+        for(int i = 0; i <solutions.length; i++) {
+            solutions[i] += intersectX;
+        }
+
+        yint = segPoints.get(1).getY() - (segPoints.get(1).getX() * slope);
 
         Point lookAheadMax = new Point(145, 145, 0);
         Point lookAheadPoint = new Point(0, 0, 0);
         for(int i=0; i < solutions.length; i++) {
             if(segPoints.get(1).getX() > segPoints.get(0).getX()) {
-                if(points.get(i).getX() > lookAheadPoint.getX()) {
-                    lookAheadPoint.setX(points.get(i).getX());
-                    lookAheadPoint.setY(points.get(i).getY());
+                if(solutions[i] > lookAheadPoint.getX()) {
+                    lookAheadPoint.setX(solutions[i]);
+                    lookAheadPoint.setY((solutions[i] * slope) + yint);
                     lookAheadPoint.setAngleRad(points.get(i).getAngleRad());
                 }
             } else {
                 lookAheadPoint = lookAheadMax;
-                if(points.get(i).getX() < lookAheadPoint.getX()) {
-                    lookAheadPoint.setX(points.get(i).getX());
-                    lookAheadPoint.setY(points.get(i).getY());
+                if(solutions[i] < lookAheadPoint.getX()) {
+                    lookAheadPoint.setX(solutions[i]);
+                    lookAheadPoint.setY((solutions[i] * slope) + yint);
                     lookAheadPoint.setAngleRad(points.get(i).getAngleRad());
                 }
             }
         }
 
-        return new Point(segNum, segNum, segNum);
+        if(segPoints.get(1).getX() > segPoints.get(0).getX()) {
+            if(lookAheadPoint.getX() > segPoints.get(1).getX()) {
+                lookAheadPoint = segPoints.get(1);
+            }
+        } else {
+            if(lookAheadPoint.getX() < segPoints.get(1).getX()) {
+                lookAheadPoint = segPoints.get(1);
+            }
+        }
+
+        return new Point(lookAheadPoint.getX(), lookAheadPoint.getY(), lookAheadPoint.getAngleRad());
+    }
+
+    /**
+     * 
+     * @param robotPoint Current location of the robot
+     * @param segNum Current segment of the line being travelled
+     * @param radius Distance from the robot that we select a point
+     * @return Returns the velocities in the x, y, and rotational format. Retrieve values in that order
+     */
+    public double[] getVelocities(Point robotPoint, int segNum, double radius) {
+        Point wanted = getNextPoint(robotPoint, segNum, radius);
+        double dx = wanted.getX() - robotPoint.getX();
+        double dy = wanted.getY() - robotPoint.getY();
+
+        Point last = getSegment(segNum).get(1);
+        double odx = last.getX() - robotPoint.getX();
+        double ody = last.getY() - robotPoint.getY();
+
+        double lastVeloc = Math.hypot(odx, ody);
+        double prescaleVeloc = Math.hypot(dx, dy);
+
+        dx = dx / prescaleVeloc * lastVeloc;
+        dy = dy / prescaleVeloc * lastVeloc;
+
+        double[] solutions = {dx,dy,0};
+        return solutions;
     }
 }

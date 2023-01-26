@@ -59,5 +59,11 @@ public class ExtraMath {
         }
         return x;
     }
+
+    public static final double[] solveQuadratic(double a, double b, double c) {
+        double determinant = Math.pow(b, 2) - (4*a*c);
+        double[] solutions = {(-b + Math.sqrt(determinant)) / (2*a), (-b - Math.sqrt(determinant)) / (2*a)};
+        return solutions;
+    }
     
 }
