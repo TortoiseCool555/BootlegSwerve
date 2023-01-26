@@ -13,9 +13,11 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.fasterxml.jackson.databind.deser.std.ContainerDeserializerBase;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
@@ -29,6 +31,7 @@ public class NewSwerveModule extends SubsystemBase {
   PIDController rotPID;
   PIDController transPID;
 
+  ProfiledPIDController rotaryPID = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(Constants.MAX_ANG_RAD_PER_SEC, 2 * Math.PI));
   SwerveModuleState moduleState;
   double previousAngle;
   double offset;
