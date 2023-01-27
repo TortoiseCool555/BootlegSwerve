@@ -24,8 +24,9 @@ public class AprilTagCommand extends CommandBase {
   double yDiff;
   double rotDiff;
   double x, y, rot;
-  List<Point> points = Arrays.asList(new Point(0, 0, 0), new Point(2, 0, 0));
+  List<Point> points = Arrays.asList(new Point(0, 0, 0), new Point(2, 0, 0), new Point(2.5, 2, 0), new Point(0, 0, 0));
   Path path = new Path(new ArrayList<>(points));
+  int segNum = 1;
 
   public AprilTagCommand(NewSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,22 +38,24 @@ public class AprilTagCommand extends CommandBase {
   @Override
   public void initialize() {
     drive.initialize();
+    segNum = 1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Point robotPoint = new Point(drive.getXPose(), drive.getYPose(), drive.getHeadingPose());
-    Point target = path.getNextPoint(robotPoint, 1, 1);
+    Point target = path.getNextPoint(robotPoint, segNum, 1);
+    Point endPoint = path.getSegment(segNum).get(1);
     // xDiff = 3.5 - drive.getXPose();
     // yDiff = -1.5 - drive.getYPose();
     rotDiff = (0 - drive.getHeadingPose());
-    double[] velocities = path.getVelocities(robotPoint, 1, 1);
+    double[] velocities = path.getVelocities(robotPoint, segNum, 1);
     xDiff = velocities[0];
     yDiff = velocities[1];
     // rotDiff = velocities[2];
-    x = ExtraMath.clip(xDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
-    y = ExtraMath.clip(yDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
+    x = ExtraMath.clip(xDiff * 1.7, Constants.MAX_TRANS_METERS_PER_SEC);
+    y = ExtraMath.clip(yDiff * 1.7, Constants.MAX_TRANS_METERS_PER_SEC);
     rot = ExtraMath.clip(Math.toRadians(rotDiff) * 3.5, Constants.MAX_ANG_RAD_PER_SEC);
     SmartDashboard.putNumber("X Pose", drive.getXPose());
     SmartDashboard.putNumber("Y Pose", drive.getYPose());
@@ -64,6 +67,10 @@ public class AprilTagCommand extends CommandBase {
     SmartDashboard.putNumber("X Point to Travel", target.getX());
     SmartDashboard.putNumber("Y Point to Travel", target.getY());
 
+    double mag = Math.hypot(robotPoint.getX() - endPoint.getX(), robotPoint.getY() - endPoint.getY());
+    if(mag < 0.2 && segNum < points.size() - 1) {
+      segNum ++;
+    }
     drive.setChassisSpeeds(x, y, rot);
     drive.updateOdometry();
   }

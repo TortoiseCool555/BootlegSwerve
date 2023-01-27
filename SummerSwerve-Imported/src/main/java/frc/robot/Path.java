@@ -114,6 +114,10 @@ public class Path {
         double lastVeloc = Math.hypot(odx, ody);
         double prescaleVeloc = Math.hypot(dx, dy);
 
+        if(segNum != points.size() - 1) {
+            lastVeloc = Constants.MAX_TRANS_METERS_PER_SEC - 2.5;
+        }
+
         dx = dx / prescaleVeloc * lastVeloc;
         dy = dy / prescaleVeloc * lastVeloc;
 
