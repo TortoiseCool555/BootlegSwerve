@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -24,8 +26,13 @@ public class AprilTagCommand extends CommandBase {
   double yDiff;
   double rotDiff;
   double x, y, rot;
-  List<Point> points = Arrays.asList(new Point(0, 0, 0), new Point(2, 0, 0));
+  List<Point> points = Arrays.asList(new Point(0, 0, 0), new Point(6, 0, 0), new Point(-6, 4, 0), new Point(0, 2, 0));
   Path path = new Path(new ArrayList<>(points));
+  int segNum = 1;
+  final double startingRad = 0.05;
+  double currentRad = startingRad;
+  final double maxRad = 1;
+  Field2d field = new Field2d();
 
   public AprilTagCommand(NewSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,23 +44,39 @@ public class AprilTagCommand extends CommandBase {
   @Override
   public void initialize() {
     drive.initialize();
+    segNum = 1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Point robotPoint = new Point(drive.getXPose(), drive.getYPose(), drive.getHeadingPose());
-    Point target = path.getNextPoint(robotPoint, 1, 1);
+    Point robotPoint = new Point(drive.getXPose(), drive.getYPose(), Math.toRadians(drive.getHeadingPose()));
+    double mag = Math.hypot(robotPoint.getX() - points.get(segNum).getX(), robotPoint.getY() - points.get(segNum).getY());
+    if(mag < 1 && segNum < points.size() - 1) {
+      segNum++;
+      currentRad = startingRad;
+    }
+    currentRad = ExtraMath.clip(currentRad + 1, maxRad);
+
+    Point target = path.getNextPoint(robotPoint, segNum, currentRad);
     // xDiff = 3.5 - drive.getXPose();
     // yDiff = -1.5 - drive.getYPose();
-    rotDiff = (0 - drive.getHeadingPose());
-    double[] velocities = path.getVelocities(robotPoint, 1, 1);
+    double[] velocities = path.getVelocities(robotPoint, segNum, currentRad);
     xDiff = velocities[0];
     yDiff = velocities[1];
+    rotDiff = velocities[2];
     // rotDiff = velocities[2];
-    x = ExtraMath.clip(xDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
-    y = ExtraMath.clip(yDiff * 1.55, Constants.MAX_TRANS_METERS_PER_SEC);
-    rot = ExtraMath.clip(Math.toRadians(rotDiff) * 3.5, Constants.MAX_ANG_RAD_PER_SEC);
+    x = xDiff;
+    y = yDiff;
+    double overallVeloc = Math.hypot(x, y);
+    if(overallVeloc > 3.5) {
+      x = x * 3.5 / overallVeloc;
+      y = y * 3.5 / overallVeloc;
+    }
+    rot = ExtraMath.clip(rotDiff, 9);
+    
+    field.setRobotPose(robotPoint.getX(), robotPoint.getY(), Rotation2d.fromRadians(robotPoint.getAngleRad()));
+    SmartDashboard.putData("Field", field);
     SmartDashboard.putNumber("X Pose", drive.getXPose());
     SmartDashboard.putNumber("Y Pose", drive.getYPose());
     SmartDashboard.putNumber("Z Pose", drive.getHeadingPose());
@@ -63,6 +86,7 @@ public class AprilTagCommand extends CommandBase {
 
     SmartDashboard.putNumber("X Point to Travel", target.getX());
     SmartDashboard.putNumber("Y Point to Travel", target.getY());
+    SmartDashboard.putNumber("Current Scanning Radius", currentRad);
 
     drive.setChassisSpeeds(x, y, rot);
     drive.updateOdometry();

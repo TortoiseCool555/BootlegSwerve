@@ -16,8 +16,8 @@ public class ExtraMath {
 
     public static final double angleError(double startingAngle, double travelledAngle) {
         double error = startingAngle - travelledAngle;
-        if(Math.abs(error) > 180) {
-            return error - Math.copySign(360, error);
+        if(Math.abs(error) > Math.PI) {
+            return error - Math.copySign(2*Math.PI, error);
         }
         return error;
     }

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 /** Add your docs here. */
 public class Path {
     private ArrayList<Point> points;
+    double currentAngle = 0;
+    double previousAngle = 0;
+    double previousWanted = 0;
 
     public Path(ArrayList<Point> points) {
         this.points = points;   
@@ -70,14 +73,14 @@ public class Path {
                 if(solutions[i] > lookAheadPoint.getX()) {
                     lookAheadPoint.setX(solutions[i]);
                     lookAheadPoint.setY((solutions[i] * slope) + yint);
-                    lookAheadPoint.setAngleRad(points.get(i).getAngleRad());
+                    lookAheadPoint.setAngleRad(segPoints.get(1).getAngleRad());
                 }
             } else {
                 lookAheadPoint = lookAheadMax;
                 if(solutions[i] < lookAheadPoint.getX()) {
                     lookAheadPoint.setX(solutions[i]);
                     lookAheadPoint.setY((solutions[i] * slope) + yint);
-                    lookAheadPoint.setAngleRad(points.get(i).getAngleRad());
+                    lookAheadPoint.setAngleRad(segPoints.get(1).getAngleRad());
                 }
             }
         }
@@ -103,7 +106,7 @@ public class Path {
      * @return Returns the velocities in the x, y, and rotational format. Retrieve values in that order
      */
     public double[] getVelocities(Point robotPoint, int segNum, double radius) {
-        Point wanted = getNextPoint(robotPoint, segNum, radius);
+       Point wanted = getNextPoint(robotPoint, segNum, radius);
         double dx = wanted.getX() - robotPoint.getX();
         double dy = wanted.getY() - robotPoint.getY();
 
@@ -114,10 +117,21 @@ public class Path {
         double lastVeloc = Math.hypot(odx, ody);
         double prescaleVeloc = Math.hypot(dx, dy);
 
-        dx = dx / prescaleVeloc * lastVeloc;
-        dy = dy / prescaleVeloc * lastVeloc;
+        double currentAngle = previousWanted;
+        double wantedAngle = ExtraMath.atanNew(dx, dy);
+        double added = ExtraMath.angleError(currentAngle, wantedAngle);
+        previousWanted = currentAngle - (added / 19);
 
-        double[] solutions = {dx,dy,0};
+        if(segNum < points.size() - 1) {
+            lastVeloc = 3.5;
+        }
+
+        dx = Math.cos(previousWanted) * lastVeloc;
+        dy = Math.sin(previousWanted) * lastVeloc;
+
+        double angleVeloc = (wanted.getAngleRad() - robotPoint.getAngleRad()) * 7;
+
+        double[] solutions = {dx,dy,angleVeloc};
         return solutions;
     }
 }
