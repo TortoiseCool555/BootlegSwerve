@@ -115,7 +115,6 @@ public class Path {
         double ody = last.getY() - robotPoint.getY();
 
         double lastVeloc = Math.hypot(odx, ody);
-        double prescaleVeloc = Math.hypot(dx, dy);
 
         double currentAngle = previousWanted;
         double wantedAngle = ExtraMath.atanNew(dx, dy);
