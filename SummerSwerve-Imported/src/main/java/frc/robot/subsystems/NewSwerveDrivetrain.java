@@ -50,7 +50,6 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     lbModule.initialize();
     rfModule.initialize();
     rbModule.initialize();
-    odometry.resetPosition(Rotation2d.fromDegrees(0),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(0)));
   }
 
   /**
@@ -59,6 +58,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    * @param velocityY - Y velocity in m/s
    * @param angularVelocity - Angular velocity in rad/s
    */
+  public void resetOdo(){
+    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 2),new Rotation2d(0)));
+  }
   public void setChassisSpeeds(double velocityX, double velocityY, double angularVelocity) {
     double angle = getAngle();
 

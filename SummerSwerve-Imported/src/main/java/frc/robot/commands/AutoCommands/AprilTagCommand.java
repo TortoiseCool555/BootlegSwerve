@@ -24,7 +24,7 @@ public class AprilTagCommand extends CommandBase {
   double yDiff;
   double rotDiff;
   double x, y, rot;
-  List<Point> points = Arrays.asList(new Point(0, 0, 0), new Point(6, 0, 0), new Point(-6, 4, 0), new Point(0, 2, 0));
+  List<Point> points = Arrays.asList(new Point(0, 2, 0), new Point(0, 4, 0), new Point(5, 4, 0), new Point(5,2,0), new Point(0, 2, 0));
   Path path = new Path(new ArrayList<>(points));
   int segNum = 1;
   final double startingRad = 0.05;
@@ -42,6 +42,7 @@ public class AprilTagCommand extends CommandBase {
   @Override
   public void initialize() {
     drive.initialize();
+    drive.resetOdo();
     segNum = 1;
   }
 
@@ -50,9 +51,12 @@ public class AprilTagCommand extends CommandBase {
   public void execute() {
     Point robotPoint = new Point(drive.getXPose(), drive.getYPose(), Math.toRadians(drive.getHeadingPose()));
     double mag = Math.hypot(robotPoint.getX() - points.get(segNum).getX(), robotPoint.getY() - points.get(segNum).getY());
-    if(mag < 1 && segNum < points.size() - 1) {
+    if(mag < 0.5 && segNum < points.size() - 1) {
       segNum++;
       currentRad = startingRad;
+    }
+    else if(mag < 0.325 && segNum == points.size() - 1){
+      cancel();
     }
     currentRad = ExtraMath.clip(currentRad + 1, maxRad);
 
