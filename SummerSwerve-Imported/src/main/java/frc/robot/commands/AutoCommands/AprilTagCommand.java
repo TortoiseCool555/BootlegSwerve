@@ -61,13 +61,10 @@ public class AprilTagCommand extends CommandBase {
     currentRad = ExtraMath.clip(currentRad + 1, maxRad);
 
     Point target = path.getNextPoint(robotPoint, segNum, currentRad);
-    // xDiff = 3.5 - drive.getXPose();
-    // yDiff = -1.5 - drive.getYPose();
     double[] velocities = path.getVelocities(robotPoint, segNum, currentRad);
     xDiff = velocities[0];
     yDiff = velocities[1];
     rotDiff = velocities[2];
-    // rotDiff = velocities[2];
     x = xDiff;
     y = yDiff;
     double overallVeloc = Math.hypot(x, y);

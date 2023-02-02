@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.Vector;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -45,6 +47,14 @@ public class SwerveCommand extends CommandBase {
     x * Constants.MAX_TRANS_METERS_PER_SEC, 
     rot * Constants.MAX_ANG_RAD_PER_SEC);
 
+    double xRoll = Math.toRadians(drivetrain.getPitch());
+    double yRoll = Math.toRadians(drivetrain.getRoll());
+    double vecX = Math.cos((yRoll));
+    double vecY = Math.cos((xRoll));
+    double vecZ = Math.sin(xRoll) + Math.sin(yRoll);
+
+    double angle = Math.acos(Math.hypot(vecX, vecY) / Math.sqrt((vecX*vecX) + (vecY*vecY) + (vecZ*vecZ)));
+
     SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
     SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
     SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
@@ -59,6 +69,10 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putString("X", drivetrain.x());
     SmartDashboard.putString("Y", drivetrain.y());
     SmartDashboard.putString("Z", drivetrain.z());
+    SmartDashboard.putNumber("Roll: ", drivetrain.getRoll());
+    SmartDashboard.putNumber("Pitch", drivetrain.getPitch());
+    SmartDashboard.putNumber("VecX", vecX);
+    SmartDashboard.putNumber("Overall", Math.toDegrees(angle));
 
     drivetrain.updateOdometry();
   }

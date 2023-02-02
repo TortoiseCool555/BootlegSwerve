@@ -161,4 +161,13 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     String Z = Double.toString(odometry.getPoseMeters().getRotation().getDegrees());
     return Z;
   }
+  public double getRoll(){
+    return gyro.getRoll();
+  }
+  public double getPitch(){
+    return gyro.getPitch();
+  }
+  public double getBalanceInput (){
+    return 0;
+  }
 }
