@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.text.DecimalFormat;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,10 +25,10 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   /** Creates a new NewSwerveDrivetrain. */
   XboxController controller;
 
-  NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 0);
-  NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7,0);
-  NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,0);
-  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, 0);
+  NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 4);
+  NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7,2);
+  NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,4);
+  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, 2);
 
   private Pigeon2 gyro = new Pigeon2(13, "CANivoreA");
 
@@ -117,7 +119,8 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
   // Other
   public String getModuleVelocities() {
-    return lfModule.getVelocity() + " " + lbModule.getVelocity() + " " + rfModule.getVelocity() + " " + rbModule.getVelocity();
+    DecimalFormat df = new DecimalFormat("0.00");
+    return df.format(lfModule.getVelocity()) + " " + df.format(lbModule.getVelocity()) + " " + df.format(rfModule.getVelocity()) + " " + df.format(rbModule.getVelocity());
   }
 
   public String getModuleTranslationPositions() {

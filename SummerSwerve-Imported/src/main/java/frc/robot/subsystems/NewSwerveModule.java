@@ -34,20 +34,21 @@ public class NewSwerveModule extends SubsystemBase {
 
   public NewSwerveModule(int trans, int rot, int rotEnc, double offset) {
     translation = new TalonFX(trans, "CANivoreA");
+    translation.configNeutralDeadband(0.001);
     rotation = new TalonFX(rot, "CANivoreA");
+    rotation.configNeutralDeadband(0.001);
+
     translation.setNeutralMode(NeutralMode.Brake);
     rotation.setNeutralMode(NeutralMode.Brake);
     rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
-    rotPID = new PIDController(Constants.pRot, 0, 0);
+    rotPID = new PIDController(0.007, 0, 0.000000011);
     rotPID.enableContinuousInput(-180, 180);
-    rotPID.setTolerance(0.005);
-    //rotPID.setIntegratorRange(-0.2, 0.2);
+    rotPID.setTolerance(Math.toRadians(0.1));
 
-    transPID = new PIDController(0, 0, 0);
+    transPID = new PIDController(0.00, 0, 0);
     transPID.enableContinuousInput(-Constants.MAX_TRANS_METERS_PER_SEC, Constants.MAX_TRANS_METERS_PER_SEC);
-    transPID.setTolerance(0.005);
     this.offset = offset;
   }
 
@@ -70,18 +71,9 @@ public class NewSwerveModule extends SubsystemBase {
     double additional = ExtraMath.clip(transPID.calculate(translation.getSelectedSensorVelocity(), wanted.speedMetersPerSecond), .2);
     translation.set(ControlMode.PercentOutput, additional + (wanted.speedMetersPerSecond / Constants.MAX_TRANS_METERS_PER_SEC));
 
-   double wantedAngle = ExtraMath.mod(wanted.angle.getDegrees() + 180 + offset, 360) - 180;
-   if(isStalled) {
-     //wantedAngle = previousAngle;
-   }
+   double wantedAngle = ExtraMath.mod(wanted.angle.getDegrees() + 180.0 + offset, 360.0) - 180.0;
 
-  //  if(Math.abs(rotPID.getPositionError()) < 40) {
-  //    rotPID.setI(1);
-  //  } else {
-  //    rotPID.setI(0);
-  //  }
-
-    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle - offset), 1.0));
+    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 0.4));
     previousAngle = wantedAngle;
   }
   

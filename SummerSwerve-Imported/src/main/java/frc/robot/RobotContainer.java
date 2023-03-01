@@ -4,13 +4,17 @@
 
 package frc.robot;
 
+import javax.lang.model.element.Element;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.CameraStream;
+import frc.robot.commands.ElevatorDrive;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.AutoCommands.AprilTagCommand;
 import frc.robot.subsystems.CameraSubsystem;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,11 +28,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final XboxController controller = new XboxController(0);
+  private final XboxController controller2 = new XboxController(1);
   private final NewSwerveDrivetrain swerve = new NewSwerveDrivetrain(controller);
   private final SwerveCommand swerveCommand = new SwerveCommand(controller, swerve);
   private final CameraSubsystem cam = new CameraSubsystem();
   private final CameraStream camStream = new CameraStream(cam);
   private final AprilTagCommand autoCommand = new AprilTagCommand(swerve);
+  private final Elevator elevator = new Elevator(controller2);
+  private final ElevatorDrive elCommand = new ElevatorDrive(elevator, controller2);
 
   //private final TestSubsystem test = new TestSubsystem(controller);
   //private final TestCommand tCom = new TestCommand(controller, test);
