@@ -28,7 +28,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 4);
   NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7,2);
   NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,4);
-  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, 2);
+  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, -2);
 
   private Pigeon2 gyro = new Pigeon2(13, "CANivoreA");
 
@@ -88,6 +88,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    */
   public void ZeroGyro() {
     gyro.setYaw(0);
+  }
+  public double getYaw(){
+    return gyro.getYaw();
   }
 
   public double getAngle() {
@@ -172,5 +175,8 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   }
   public double getBalanceInput (){
     return 0;
+  }
+  public String getModuleAngles(){
+    return "FL: " + lfModule.getAngleRot() + " FR: " + rfModule.getAngleRot() + " BL: " + lbModule.getAngleRot() + " BR: " + rbModule.getAngleRot();
   }
 }

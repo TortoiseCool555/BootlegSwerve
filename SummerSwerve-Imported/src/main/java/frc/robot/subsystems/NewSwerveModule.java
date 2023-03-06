@@ -73,12 +73,15 @@ public class NewSwerveModule extends SubsystemBase {
 
    double wantedAngle = ExtraMath.mod(wanted.angle.getDegrees() + 180.0 + offset, 360.0) - 180.0;
 
-    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 0.4));
+    rotation.set(ControlMode.PercentOutput, ExtraMath.clip(rotPID.calculate(rotationEncoder.getAbsolutePosition(), wantedAngle), 1));
     previousAngle = wantedAngle;
   }
   
   public double getWantedAngle(SwerveModuleState wanted, double angle) {
     return SwerveModuleState.optimize(wanted, Rotation2d.fromDegrees(angle)).angle.getDegrees();
+  }
+  public double getAngleRot(){
+     return rotationEncoder.getAbsolutePosition();
   }
 
   public double getVelocity() {
