@@ -16,8 +16,8 @@ public class ExtraMath {
 
     public static final double angleError(double startingAngle, double travelledAngle) {
         double error = startingAngle - travelledAngle;
-        if(Math.abs(error) > 180) {
-            return error - Math.copySign(360, error);
+        if(Math.abs(error) > Math.PI) {
+            return error - Math.copySign(2*Math.PI, error);
         }
         return error;
     }
@@ -58,6 +58,12 @@ public class ExtraMath {
             return 0;
         }
         return x;
+    }
+
+    public static final double[] solveQuadratic(double a, double b, double c) {
+        double determinant = Math.pow(b, 2) - (4*a*c);
+        double[] solutions = {(-b + Math.sqrt(determinant)) / (2*a), (-b - Math.sqrt(determinant)) / (2*a)};
+        return solutions;
     }
     
 }

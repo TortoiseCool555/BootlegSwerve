@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.text.DecimalFormat;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,10 +25,10 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   /** Creates a new NewSwerveDrivetrain. */
   XboxController controller;
 
-  NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 0);
-  NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7,0);
-  NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,0);
-  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, 0);
+  NewSwerveModule lfModule = new NewSwerveModule(6, 5, 4, 4);
+  NewSwerveModule lbModule = new NewSwerveModule(9, 8, 7,2);
+  NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,4);
+  NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, -2);
 
   private Pigeon2 gyro = new Pigeon2(13, "CANivoreA");
 
@@ -50,7 +52,6 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     lbModule.initialize();
     rfModule.initialize();
     rbModule.initialize();
-    odometry.resetPosition(Rotation2d.fromDegrees(0),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(0)));
   }
 
   /**
@@ -59,6 +60,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    * @param velocityY - Y velocity in m/s
    * @param angularVelocity - Angular velocity in rad/s
    */
+  public void resetOdo(){
+    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 2),new Rotation2d(0)));
+  }
   public void setChassisSpeeds(double velocityX, double velocityY, double angularVelocity) {
     double angle = getAngle();
 
@@ -84,6 +88,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    */
   public void ZeroGyro() {
     gyro.setYaw(0);
+  }
+  public double getYaw(){
+    return gyro.getYaw();
   }
 
   public double getAngle() {
@@ -115,7 +122,8 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
   // Other
   public String getModuleVelocities() {
-    return lfModule.getVelocity() + " " + lbModule.getVelocity() + " " + rfModule.getVelocity() + " " + rbModule.getVelocity();
+    DecimalFormat df = new DecimalFormat("0.00");
+    return df.format(lfModule.getVelocity()) + " " + df.format(lbModule.getVelocity()) + " " + df.format(rfModule.getVelocity()) + " " + df.format(rbModule.getVelocity());
   }
 
   public String getModuleTranslationPositions() {
@@ -158,5 +166,17 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   public String z(){
     String Z = Double.toString(odometry.getPoseMeters().getRotation().getDegrees());
     return Z;
+  }
+  public double getRoll(){
+    return gyro.getRoll();
+  }
+  public double getPitch(){
+    return gyro.getPitch();
+  }
+  public double getBalanceInput (){
+    return 0;
+  }
+  public String getModuleAngles(){
+    return "FL: " + lfModule.getAngleRot() + " FR: " + rfModule.getAngleRot() + " BL: " + lbModule.getAngleRot() + " BR: " + rbModule.getAngleRot();
   }
 }

@@ -19,6 +19,7 @@ public final class Constants {
 
     public final static double TICKS_PER_REVOLUTION = 2048; //4096
 
+    public final static double through_bore_TPR = 8192.0;
     public final static double TRACKWIDTH = 0.535;
     public final static double WHEELBASE = 0.59;
 
