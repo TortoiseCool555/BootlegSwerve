@@ -101,10 +101,18 @@ public class Elevator extends SubsystemBase {
     ex.set(val);
   }
   public double setArm(double angle){
-    return (angle - armAng())/180;
+    double pow = (angle - armAng())*0.05;
+    pow = Math.abs(pow) > 0.4 ? Math.copySign(0.4,pow) : pow;
+    return pow;
+  }
+  public void setArmPower(double angle) {
+    double pow = setArm(angle);
+    // pow = Math.abs(pow) > 0.8 ? Math.copySign(0.8,pow) : pow;
+    arm1.set(-pow);
+    arm2.set(pow);
   }
   public double armAng(){
-    double ticksFixed = armEnc.getRaw() / 2 % Constants.through_bore_TPR;
+    double ticksFixed = ((armEnc.getRaw() / 2 ) + (Math.toRadians(15) * Constants.through_bore_TPR / Math.PI)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getExtDist(){

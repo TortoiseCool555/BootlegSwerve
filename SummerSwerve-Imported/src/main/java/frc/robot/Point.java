@@ -8,11 +8,11 @@ package frc.robot;
 public class Point {
     double x;
     double y;
-    double angle;
-    public Point(double x, double y, double angle) {
+    double a;
+    public Point(double x, double y, double a) {
         this.x = x;
         this.y = y;
-        this.angle = angle;
+        this.a = a;
     }
 
     public void setX(double x) {
@@ -22,7 +22,7 @@ public class Point {
         this.y = y;
     }
     public void setAngleRad(double angle) {
-        this.angle = angle;
+        this.a = angle;
     }
 
     public double getX() {
@@ -32,6 +32,6 @@ public class Point {
         return y;
     }
     public double getAngleRad() {
-        return angle;
+        return a;
     }
 }
