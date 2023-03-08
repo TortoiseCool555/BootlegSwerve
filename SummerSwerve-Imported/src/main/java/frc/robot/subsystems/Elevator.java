@@ -101,8 +101,8 @@ public class Elevator extends SubsystemBase {
     ex.set(val);
   }
   public double setArm(double angle){
-    double pow = (angle - armAng())*0.05;
-    pow = Math.abs(pow) > 0.4 ? Math.copySign(0.4,pow) : pow;
+    double pow = (angle - armAng())*0.005;
+    pow = Math.abs(pow) > 0.6 ? Math.copySign(0.6,pow) : pow;
     return pow;
   }
   public void setArmPower(double angle) {
@@ -112,7 +112,7 @@ public class Elevator extends SubsystemBase {
     arm2.set(pow);
   }
   public double armAng(){
-    double ticksFixed = ((armEnc.getRaw() / 2 ) + (Math.toRadians(15) * Constants.through_bore_TPR / Math.PI)) % Constants.through_bore_TPR;
+    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (50 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getExtDist(){

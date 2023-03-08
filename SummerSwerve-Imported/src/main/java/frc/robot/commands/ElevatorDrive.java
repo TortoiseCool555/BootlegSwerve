@@ -20,7 +20,7 @@ public class ElevatorDrive extends CommandBase {
   XboxController controller;
   double pos = 0;
   double groundVal;
-  double angle =30;
+  double angle =50;
   double distExt = 0;
   boolean var = false;
   DecimalFormat df = new DecimalFormat("0.00");
@@ -79,14 +79,16 @@ public class ElevatorDrive extends CommandBase {
     elevator.setPower(pos);
     elevator.setExtend(distExt);
     elevator.setArmPower(angle);
-    if(controller.getAButton()) {
+    elevator.switchStates(var);
+    if(controller.getXButton()) {
       elevator.setIntake(1);
-    } else if(controller.getLeftTriggerAxis() > 0.1) {
+      SmartDashboard.putString("A", "Pushed");
+    } else if(controller.getBButton()) {
       elevator.setIntake(-1);
     } else {
       elevator.setIntake(0);
+      SmartDashboard.putString("A", "not");
     }
-    //elevator.setExt(power);
     SmartDashboard.putString("Elevator", elevator.positionString());
     SmartDashboard.putNumber("Left Pos: ", elevator.getLeftPos());
     SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
