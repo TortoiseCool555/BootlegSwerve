@@ -44,9 +44,9 @@ public class ElevatorDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    groundVal = Math.abs(controller.getRightY()) < 0.1 ? 0 : -controller.getRightY();
+    groundVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
     double power = Math.abs(controller.getLeftY()) < 0.1? 0: controller.getLeftY() * 0.2;
-    angle += Math.abs(controller.getRightX()) < 0.1 ? 0 : controller.getRightX();
+    angle += Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.5;
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
     pos += groundVal * 200;
     if(pos < 0){
@@ -64,10 +64,12 @@ public class ElevatorDrive extends CommandBase {
     else if(angle < 0){
       angle = 0;
     }
-    if(controller.getAButtonPressed()){
+    if(controller.getLeftBumper()){
+      SmartDashboard.putString("A", "Pushed");
       var = false;
     }
-    else if(controller.getYButtonPressed()){
+    else if(controller.getRightBumper()){
+      SmartDashboard.putString("A", "not");
       var = true;
     }
     if(distExt > 17.6){
@@ -80,16 +82,15 @@ public class ElevatorDrive extends CommandBase {
     elevator.setExtend(distExt);
     elevator.setArmPower(angle);
     elevator.switchStates(var);
-    if(controller.getXButton()) {
-      elevator.setIntake(1);
-      SmartDashboard.putString("A", "Pushed");
-    } else if(controller.getBButton()) {
-      elevator.setIntake(-1);
+    if(controller.getLeftTriggerAxis() > 0.1) {
+      elevator.setIntake(0.5);
+    } else if(controller.getRightTriggerAxis()  > 0.1) {
+      elevator.setIntake(-0.5);
     } else {
       elevator.setIntake(0);
-      SmartDashboard.putString("A", "not");
     }
     SmartDashboard.putString("Elevator", elevator.positionString());
+    SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
     SmartDashboard.putNumber("Left Pos: ", elevator.getLeftPos());
     SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
     SmartDashboard.putString("Desired Position: ", df.format(pos));

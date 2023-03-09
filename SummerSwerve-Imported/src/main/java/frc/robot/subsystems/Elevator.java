@@ -26,7 +26,7 @@ import frc.robot.commands.ElevatorDrive;
 
 public class Elevator extends SubsystemBase {
   private Compressor compressor = new Compressor(24, PneumaticsModuleType.REVPH);
-  private Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
+  private Solenoid solenoid = new Solenoid(24, PneumaticsModuleType.REVPH, 9);
 
   private CANSparkMax LS = new CANSparkMax(16, MotorType.kBrushless);
   private CANSparkMax RS = new CANSparkMax(15,MotorType.kBrushless);
@@ -97,12 +97,9 @@ public class Elevator extends SubsystemBase {
   public double getRightPos(){
     return RSEnc.getPosition();
   }
-  public void setExt(double val){
-    ex.set(val);
-  }
   public double setArm(double angle){
-    double pow = (angle - armAng())*0.005;
-    pow = Math.abs(pow) > 0.6 ? Math.copySign(0.6,pow) : pow;
+    double pow = (angle - armAng())*0.007;
+    pow = Math.abs(pow) > 0.8 ? Math.copySign(0.8,pow) : pow;
     return pow;
   }
   public void setArmPower(double angle) {
@@ -119,7 +116,7 @@ public class Elevator extends SubsystemBase {
     return EXEnc.getPosition();
   }
   public double setExtend(double pos){
-    double power = (pos - getExtDist())/17.6;
+    double power = ExtraMath.clip((pos - getExtDist()) * 0.06, 1);
     ex.set(power);
     return power;
   }
@@ -135,5 +132,11 @@ public class Elevator extends SubsystemBase {
   }
   public void switchStates(boolean var){
     solenoid.set(var);
+    // solenoid.set(true);
+  }
+
+  public boolean getSolenoidState() {
+    return solenoid.get();
+    // return solenoid.isDisabled();
   }
 }
