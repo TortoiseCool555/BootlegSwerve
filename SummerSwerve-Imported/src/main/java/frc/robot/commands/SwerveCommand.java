@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import java.util.Vector;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -19,6 +17,7 @@ public class SwerveCommand extends CommandBase {
   XboxController controller;
   double pitchInit = 0;
   double rollInit = 0;
+  String mode = "SCORE";
   public SwerveCommand(XboxController controller, NewSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
@@ -30,8 +29,10 @@ public class SwerveCommand extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.initialize();
-    pitchInit = Math.toRadians(drivetrain.getPitch());
-    rollInit = Math.toRadians(drivetrain.getRoll());
+    // pitchInit = Math.toRadians(drivetrain.getPitch());
+    // rollInit = Math.toRadians(drivetrain.getRoll());
+    pitchInit = 0;
+    rollInit = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,13 +48,20 @@ public class SwerveCommand extends CommandBase {
       rot = 0;
     }
 
-    double pitch = Math.toRadians(drivetrain.getPitch()) - pitchInit;
-    double roll = Math.toRadians(drivetrain.getRoll()) - rollInit;
+    if(controller.getLeftBumper()) {
+      mode = "SCORE";
+    } else if(controller.getRightBumper()) {
+      mode = "GRAB";
+    }
+
+
     // pitch = pitch < 0 ? pitch + (2*Math.PI) : pitch;
     // roll = roll < 0 ?  roll + (2 * Math.PI) : roll;
-    double vecX = Math.abs(Math.cos(roll) + Math.sin(roll) - 1) < 0.01 ? 0 : Math.cos(roll) + Math.sin(roll) - 1;
-    double vecY = Math.abs(Math.cos(pitch) + Math.sin(pitch) - 1) < 0.01 ? 0 : Math.cos(pitch) + Math.sin(pitch) - 1;
+    // double vecX = Math.abs(Math.cos(roll) + Math.sin(roll) - 1) < 0.01 ? 0 : Math.cos(roll) + Math.sin(roll) - 1;
+    // double vecY = Math.abs(Math.cos(pitch) + Math.sin(pitch) - 1) < 0.01 ? 0 : Math.cos(pitch) + Math.sin(pitch) - 1;
 
+    double pitch = Math.toRadians(drivetrain.getPitch()) - pitchInit;
+    double roll = Math.toRadians(drivetrain.getRoll()) - rollInit;
     double px = Math.cos(pitch) * Math.sin(roll);
     double py = Math.sin(pitch) * Math.cos(roll);
     double pz = -1 * Math.cos(pitch) * Math.cos(roll);
@@ -61,16 +69,16 @@ public class SwerveCommand extends CommandBase {
     double mag2 = Math.sqrt(Math.pow(px,2) + Math.pow(py,2) + Math.pow(pz,2));
     double angleOffground = Math.abs(Math.toRadians(90) - Math.acos(mag1/mag2)) < 0.005 ? 0 : Math.toRadians(90) - Math.acos(mag1/mag2);
     double angleAround = ExtraMath.atanNew(px, py);
-    double kConst = 30.0/45.0;
+    double kConst = 2;
     double xSpd =Math.abs(Math.cos(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.cos(angleAround)*(angleOffground * kConst), 0.25);
     double ySpd =Math.abs(Math.sin(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.sin(angleAround)*(angleOffground * kConst), 0.25);
     
-
-    vecY *= 1.5;
     //double vecZ = Math.sin(xRoll) + Math.sin(yRoll);
 
    // double angle = Math.acos(Math.hypot(vecX, vecY) / Math.sqrt((vecX*vecX) + (vecY*vecY) + (vecZ*vecZ)));
 
+
+    SmartDashboard.putString("Mode", mode);
     SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
     SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
     SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
@@ -100,8 +108,8 @@ public class SwerveCommand extends CommandBase {
     // drivetrain.setChassisSpeeds(0 * Constants.MAX_TRANS_METERS_PER_SEC, 
     // 0 * Constants.MAX_TRANS_METERS_PER_SEC, 
     // 0 * Constants.MAX_ANG_RAD_PER_SEC);
-    drivetrain.setChassisSpeeds(x * Constants.MAX_TRANS_METERS_PER_SEC, 
-    y * Constants.MAX_TRANS_METERS_PER_SEC, 
+    drivetrain.setChassisSpeeds(y * Constants.MAX_TRANS_METERS_PER_SEC, 
+    -x * Constants.MAX_TRANS_METERS_PER_SEC, 
     rot * Constants.MAX_ANG_RAD_PER_SEC);
     drivetrain.updateOdometry();
   }

@@ -6,13 +6,10 @@ package frc.robot.commands;
 
 import java.text.DecimalFormat;
 
-import com.revrobotics.ControlType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.ExtraMath;
 import frc.robot.subsystems.Elevator;
 
 public class ElevatorDrive extends CommandBase {
@@ -20,7 +17,7 @@ public class ElevatorDrive extends CommandBase {
   XboxController controller;
   double pos = 0;
   double groundVal;
-  double angle =50;
+  double angle =62;
   double distExt = 0;
   boolean var = false;
   DecimalFormat df = new DecimalFormat("0.00");
@@ -45,7 +42,6 @@ public class ElevatorDrive extends CommandBase {
   @Override
   public void execute() {
     groundVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
-    double power = Math.abs(controller.getLeftY()) < 0.1? 0: controller.getLeftY() * 0.2;
     angle += Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.5;
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
     pos += groundVal * 200;
@@ -61,8 +57,8 @@ public class ElevatorDrive extends CommandBase {
     if(angle > 270){
       angle = 270;
     }
-    else if(angle < 0){
-      angle = 0;
+    else if(angle < 62){
+      angle = 62;
     }
     if(controller.getLeftBumper()){
       SmartDashboard.putString("A", "Pushed");
@@ -78,7 +74,7 @@ public class ElevatorDrive extends CommandBase {
     else if(distExt < 0){
       distExt = 0;
     }
-    elevator.setPower(pos);
+    // elevator.setPower(pos);
     elevator.setExtend(distExt);
     elevator.setArmPower(angle);
     elevator.switchStates(var);

@@ -4,21 +4,17 @@
 
 package frc.robot.subsystems;
 
-import java.text.DecimalFormat;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
@@ -41,7 +37,7 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
-  private DecimalFormat df = new DecimalFormat("0.00");
+  //private DecimalFormat df = new DecimalFormat("0.00");
 
   XboxController controller;
 
@@ -56,8 +52,8 @@ public class Elevator extends SubsystemBase {
     setDefaultCommand(new ElevatorDrive(this, controller));
   }
   public void setPower(double pos){
-    double Lpower = ExtraMath.clip((-pos - getPosition())/4500.0, 0.5);
-    double Rpower = ExtraMath.clip((-pos - getPosition())/4500.0, 0.5);
+    double Lpower = ExtraMath.clip((-pos - getPosition())/3500.0, 0.5);
+    double Rpower = ExtraMath.clip((-pos - getPosition())/3500.0, 0.5);
     LS.set(Lpower);
     RS.set(Rpower);
   }
@@ -98,8 +94,8 @@ public class Elevator extends SubsystemBase {
     return RSEnc.getPosition();
   }
   public double setArm(double angle){
-    double pow = (angle - armAng())*0.007;
-    pow = Math.abs(pow) > 0.8 ? Math.copySign(0.8,pow) : pow;
+    double pow = (angle - armAng())*0.009;
+    pow = Math.abs(pow) > 0.7 ? Math.copySign(0.7,pow) : pow;
     return pow;
   }
   public void setArmPower(double angle) {
@@ -109,7 +105,7 @@ public class Elevator extends SubsystemBase {
     arm2.set(pow);
   }
   public double armAng(){
-    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (50 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
+    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (62 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getExtDist(){

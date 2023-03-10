@@ -38,7 +38,7 @@ public class NewSwerveModule extends SubsystemBase {
     rotation = new TalonFX(rot, "CANivoreA");
     rotation.configNeutralDeadband(0.001);
 
-    translation.setNeutralMode(NeutralMode.Coast);
+    translation.setNeutralMode(NeutralMode.Brake);
     rotation.setNeutralMode(NeutralMode.Brake);
     rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);

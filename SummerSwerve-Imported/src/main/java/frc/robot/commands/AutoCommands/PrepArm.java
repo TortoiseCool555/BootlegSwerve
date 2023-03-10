@@ -7,33 +7,34 @@ package frc.robot.commands.AutoCommands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 
-public class PrepElevator extends CommandBase {
+public class PrepArm extends CommandBase {
   /** Creates a new PrepArm. */
   Elevator elevator;
-  int pos;
   double angle;
+  double height;
   double extend;
-  public PrepElevator(Elevator elevator, int pos, double extend) {
+  public PrepArm(Elevator elevator, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(elevator);
     this.elevator = elevator;
-    this.pos = pos;
-    this.extend = extend;
+    this.angle = angle;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    angle = elevator.armAng();
+    height = elevator.getPosition();
+    extend = elevator.getExtDist();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    elevator.setPower(pos);
-    elevator.setArm(angle);
-    elevator.setExtend(extend); 
-    elevator.setIntake(0);
+    elevator.setArmPower(angle);
+    elevator.setPower(height);
+    elevator.setExtend(extend);
+
   }
 
   // Called once the command ends or is interrupted.
@@ -43,7 +44,6 @@ public class PrepElevator extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return Math.abs(pos - elevator.getPosition()) < 40;
-    return false;
+    return Math.abs(angle - elevator.armAng()) < 4;
   }
 }

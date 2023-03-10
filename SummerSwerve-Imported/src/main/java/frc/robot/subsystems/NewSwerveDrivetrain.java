@@ -30,7 +30,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,4);
   NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, -2);
 
-  private Pigeon2 gyro = new Pigeon2(13, "CANivoreA");
+  private Pigeon2 gyro = new Pigeon2(13, "rio");
 
   boolean stalled = false;
   SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), 

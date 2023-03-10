@@ -6,21 +6,18 @@ package frc.robot.commands.AutoCommands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.NewSwerveDrivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PreloadWExtra extends SequentialCommandGroup {
-  /** Creates a new PreloadWExtra. */
-  NewSwerveDrivetrain drivetrain;
-  Elevator elevator;
-  public PreloadWExtra(NewSwerveDrivetrain drivetrain, Elevator elevator) {
-    this.drivetrain = drivetrain;
-    this.elevator = elevator;
-
+public class Preload extends SequentialCommandGroup {
+  /** Creates a new Preload. */
+  public Preload(Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    // addCommands(new FollowPath(drivetrain, Constants.DrivePreload), new PrepElevator(elevator, 0));
+    addCommands(new PrepSolenoid(elevator, false), new AutoControl(elevator, 0, 0, 95, true),
+    new AutoControl(elevator, 11600, 17.6, 95, true),
+    new AutoControl(elevator,11600,17.6,135,false, 0.5)
+    );
   }
 }
