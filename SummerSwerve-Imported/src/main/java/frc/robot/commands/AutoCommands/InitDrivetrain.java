@@ -5,36 +5,33 @@
 package frc.robot.commands.AutoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.NewSwerveDrivetrain;
 
-public class PrepArm extends CommandBase {
-  /** Creates a new PrepArm. */
-  Elevator elevator;
-  double angle;
-  double height;
-  double extend;
-  public PrepArm(Elevator elevator, double angle) {
+public class InitDrivetrain extends CommandBase {
+  /** Creates a new InitDrivetrain. */
+  NewSwerveDrivetrain drivetrain;
+  double x;
+  double y;
+  double angleRad;
+  public InitDrivetrain(NewSwerveDrivetrain drivetrain, double x, double y, double angleRad) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(elevator);
-    this.elevator = elevator;
-    this.angle = angle;
+    addRequirements(drivetrain);
+    this.x = x;
+    this.y = y;
+    this.angleRad = angleRad;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    height = elevator.getPosition();
-    extend = elevator.getExtDist();
+    drivetrain.initialize();
+    drivetrain.setX(x, y, angleRad);
+    drivetrain.resetOdo();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    elevator.setArmPower(angle);
-    elevator.setPower(height);
-    elevator.setExtend(extend);
-
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +41,6 @@ public class PrepArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(angle - elevator.armAng()) < 4;
+    return true;
   }
 }

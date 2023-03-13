@@ -12,9 +12,11 @@ import frc.robot.commands.CameraStream;
 import frc.robot.commands.ElevatorDrive;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.commands.ZeroGyro;
+import frc.robot.commands.Auto.Preload;
 import frc.robot.commands.AutoCommands.AprilTagCommand;
 import frc.robot.commands.AutoCommands.Balance;
-import frc.robot.commands.AutoCommands.Preload;
+import frc.robot.commands.AutoCommands.DriveTime;
+import frc.robot.commands.AutoCommands.FollowPath;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NewSwerveDrivetrain;
@@ -38,8 +40,10 @@ public class RobotContainer {
   private final Elevator elevator = new Elevator(controller2);
   private final ElevatorDrive elCommand = new ElevatorDrive(elevator, controller2);
   // private final AprilTagCommand autoCommand = new AprilTagCommand(swerve);
-  private final Preload autoCommand = new Preload(elevator);
+  private final Preload autoCommand = new Preload(swerve, elevator);
   private final Balance balance = new Balance(swerve);
+  private final FollowPath path = new FollowPath(swerve, Paths.SmC);
+  private final DriveTime time = new DriveTime(swerve, -.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 300);
 
   //private final TestSubsystem test = new TestSubsystem(controller);
   //private final TestCommand tCom = new TestCommand(controller, test);
@@ -68,6 +72,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     // return autoCommand;
-    return balance;
+    return autoCommand;
   }
 }

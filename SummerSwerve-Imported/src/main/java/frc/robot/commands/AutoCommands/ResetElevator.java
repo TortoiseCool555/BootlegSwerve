@@ -5,14 +5,12 @@
 package frc.robot.commands.AutoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
 
-public class PrepExtend extends CommandBase {
-  /** Creates a new PrepExtend. */
-  Elevator elevator;
-  public PrepExtend(Elevator elevator) {
+public class ResetElevator extends CommandBase {
+  /** Creates a new ResetElevator. */
+  
+  public ResetElevator() {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
   }
 
   // Called when the command is initially scheduled.
@@ -21,9 +19,7 @@ public class PrepExtend extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    //elevator.setPower(previousPos);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

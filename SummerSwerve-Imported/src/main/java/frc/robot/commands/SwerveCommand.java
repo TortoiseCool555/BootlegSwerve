@@ -17,7 +17,8 @@ public class SwerveCommand extends CommandBase {
   XboxController controller;
   double pitchInit = 0;
   double rollInit = 0;
-  String mode = "SCORE";
+  double prevX = 0;
+  double prevY = 0;
   public SwerveCommand(XboxController controller, NewSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
@@ -38,30 +39,32 @@ public class SwerveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double x = controller.getLeftX() * 0.37;
-    double y = -controller.getLeftY() * 0.37;
+    double scale = 0.37;
+    if(controller.getRightTriggerAxis() > 0.1) {
+      scale = 0.1;
+    }
+    double x = controller.getLeftX() * scale;
+    double y = -controller.getLeftY() * scale;
     double rot = -controller.getRightX() * 0.25;
 
     if(Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rot) < 0.1) {
+      // x = prevX / 4;
+      // y = prevY / 4;
       x = 0;
       y = 0;
       rot = 0;
     }
 
     if(controller.getLeftBumper()) {
-      mode = "SCORE";
+      Constants.scoringMode = false;
     } else if(controller.getRightBumper()) {
-      mode = "GRAB";
+      Constants.scoringMode = true;
     }
-
-
-    // pitch = pitch < 0 ? pitch + (2*Math.PI) : pitch;
-    // roll = roll < 0 ?  roll + (2 * Math.PI) : roll;
-    // double vecX = Math.abs(Math.cos(roll) + Math.sin(roll) - 1) < 0.01 ? 0 : Math.cos(roll) + Math.sin(roll) - 1;
-    // double vecY = Math.abs(Math.cos(pitch) + Math.sin(pitch) - 1) < 0.01 ? 0 : Math.cos(pitch) + Math.sin(pitch) - 1;
 
     double pitch = Math.toRadians(drivetrain.getPitch()) - pitchInit;
     double roll = Math.toRadians(drivetrain.getRoll()) - rollInit;
+    pitch = pitch < 0 ? pitch + (2*Math.PI) : pitch;
+    roll = roll < 0 ?  roll + (2 * Math.PI) : roll;
     double px = Math.cos(pitch) * Math.sin(roll);
     double py = Math.sin(pitch) * Math.cos(roll);
     double pz = -1 * Math.cos(pitch) * Math.cos(roll);
@@ -72,13 +75,9 @@ public class SwerveCommand extends CommandBase {
     double kConst = 2;
     double xSpd =Math.abs(Math.cos(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.cos(angleAround)*(angleOffground * kConst), 0.25);
     double ySpd =Math.abs(Math.sin(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.sin(angleAround)*(angleOffground * kConst), 0.25);
-    
-    //double vecZ = Math.sin(xRoll) + Math.sin(yRoll);
-
-   // double angle = Math.acos(Math.hypot(vecX, vecY) / Math.sqrt((vecX*vecX) + (vecY*vecY) + (vecZ*vecZ)));
 
 
-    SmartDashboard.putString("Mode", mode);
+    SmartDashboard.putBoolean("Mode", Constants.scoringMode);
     SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
     SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
     SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
@@ -102,7 +101,6 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putNumber("y speed", ySpd);
     SmartDashboard.putNumber("Angle, Off", Math.toDegrees(angleOffground));
     SmartDashboard.putNumber("Angle, Around", Math.toDegrees(angleAround));
-    //SmartDashboard.putNumber("VecZ", vecZ);
     //SmartDashboard.putNumber("Overall", Math.toDegrees(angle));
     SmartDashboard.putString("Module Angles", drivetrain.getModuleAngles());
     // drivetrain.setChassisSpeeds(0 * Constants.MAX_TRANS_METERS_PER_SEC, 
@@ -112,6 +110,8 @@ public class SwerveCommand extends CommandBase {
     -x * Constants.MAX_TRANS_METERS_PER_SEC, 
     rot * Constants.MAX_ANG_RAD_PER_SEC);
     drivetrain.updateOdometry();
+    prevX = x;
+    prevY = y;
   }
 
   // Called once the command ends or is interrupted.

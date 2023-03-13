@@ -53,9 +53,27 @@ public class ExtraMath {
         return x;
     }
 
+    public static final double clip(double x, double low, double high) {
+        if(x < low) {
+            return low;
+        } else if(x > high) {
+            return high;
+        }
+        return x;
+    }
+
     public static final double clipLowBound(double x, double low) {
         if(Math.abs(x) < low) {
             return 0;
+        }
+        return x;
+    }
+
+    public static final int loopNum(int x, int loop) {
+        if(x > loop) {
+            return 1;
+        } else if(x < 1) {
+            return loop;
         }
         return x;
     }

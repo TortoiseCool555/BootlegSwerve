@@ -44,25 +44,26 @@ public class AutoControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.switchStates(state);
+    elevator.setState(state);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // check1 = Math.abs(elPos + elevator.getPosition()) < 1000;
-    check1 = true;
-    check2 = Math.abs(exPos - elevator.getExtDist()) < 1;
-    check3 = Math.abs(angle - elevator.armAng()) < 3;
+    check1 = Math.abs(elPos + elevator.getPosition()) < 1000;
+    // check1 = true;
+    check2 = Math.abs(exPos - elevator.getExtDist()) < 1.3;
+    check3 = Math.abs(angle - elevator.getArmAngle()) < 10;
     check4 = check1 && check2 && check3;
 
+    SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
     SmartDashboard.putNumber("Elevator Position AUTO:", elevator.getPosition());
     SmartDashboard.putNumber("Elevator Power AUTO:", ExtraMath.clip((-elPos - elevator.getPosition())/4500.0, 0.5));
     SmartDashboard.putNumber("Target Position AUTO: ", elPos);
 
     elevator.setExtend(exPos);
-    elevator.setArmPower(angle);
-    // elevator.setPower(elPos);
+    elevator.setArmAngle(angle);
+    elevator.setPosition(elPos, false);
     elevator.setIntake(inPow);
   }
 

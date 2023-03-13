@@ -4,46 +4,51 @@
 
 package frc.robot.commands.AutoCommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.NewSwerveDrivetrain;
 
-public class PrepElevator extends CommandBase {
-  /** Creates a new PrepArm. */
-  Elevator elevator;
-  int pos;
+public class DriveTime extends CommandBase {
+  /** Creates a new DriveTime. */
+  NewSwerveDrivetrain drivetrain;
+  Timer timer = new Timer();
+  double x;
+  double y;
   double angle;
-  double extend;
-  public PrepElevator(Elevator elevator, int pos, double extend) {
+  double time;
+  public DriveTime(NewSwerveDrivetrain drivetrain, double x, double y, double angleSpeed, double time) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
-    this.pos = pos;
-    this.extend = extend;
+    this.drivetrain = drivetrain;
+    addRequirements(drivetrain);
+    this.x = x;
+    this.y = y;
+    this.angle = angleSpeed;
+    this.time = time;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    angle = elevator.armAng();
+    drivetrain.initialize();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    elevator.setPower(pos);
-    elevator.setArm(angle);
-    elevator.setExtend(extend); 
-    elevator.setIntake(0);
+    drivetrain.setChassisSpeeds(x, y, angle);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.setChassisSpeeds(0, 0, 0);
+    timer.stop();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return Math.abs(pos - elevator.getPosition()) < 40;
-    return false;
+    return timer.get() > time;
   }
 }

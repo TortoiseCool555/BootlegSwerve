@@ -40,10 +40,5 @@ public final class Constants {
 
     public final static double pRot = 0.005;
 
-    public final static List<Point> DrivePreload = Arrays.asList(new Point(1, 1, 1), new Point(1, 1, 1), new Point(1, 1, 1),
-    new Point(1, 1, 1));
-    public final static List<Point> CollectExtraFromPreload = Arrays.asList(new Point(1, 1, 1), new Point(1, 1, 1), new Point(1, 1, 1),
-    new Point(1, 1, 1));
-    public final static List<Point> ScoreExtra = Arrays.asList(new Point(1, 1, 1), new Point(1, 1, 1), new Point(1, 1, 1),
-    new Point(1, 1, 1));
+    public static boolean scoringMode = false;
 }

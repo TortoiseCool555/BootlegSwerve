@@ -18,14 +18,15 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
+import frc.robot.commands.ElevatorAutomized;
 import frc.robot.commands.ElevatorDrive;
 
 public class Elevator extends SubsystemBase {
   private Compressor compressor = new Compressor(24, PneumaticsModuleType.REVPH);
   private Solenoid solenoid = new Solenoid(24, PneumaticsModuleType.REVPH, 9);
 
-  private CANSparkMax LS = new CANSparkMax(16, MotorType.kBrushless);
-  private CANSparkMax RS = new CANSparkMax(15,MotorType.kBrushless);
+  private CANSparkMax LS = new CANSparkMax(15, MotorType.kBrushless);
+  private CANSparkMax RS = new CANSparkMax(16,MotorType.kBrushless);
   private CANSparkMax ex = new CANSparkMax(18,MotorType.kBrushless);
   private CANSparkMax arm1 = new CANSparkMax(19, MotorType.kBrushless);
   private CANSparkMax arm2 = new CANSparkMax(20, MotorType.kBrushless);
@@ -49,17 +50,16 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDefaultCommand(new ElevatorDrive(this, controller));
+    setDefaultCommand(new ElevatorAutomized(this, controller));
   }
-  public void setPower(double pos){
-    double Lpower = ExtraMath.clip((-pos - getPosition())/3500.0, 0.5);
-    double Rpower = ExtraMath.clip((-pos - getPosition())/3500.0, 0.5);
-    LS.set(Lpower);
-    RS.set(Rpower);
-  }
-  public void zeroPower(){
-    LS.set(0);
-    RS.set(0);
+
+  // Init
+  public void resetElevator(){
+    LSEnc.setPosition(0);
+    RSEnc.setPosition(0);
+    liftEnc.reset();
+    armEnc.reset();
+    EXEnc.setPosition(0);
   }
   public void setBrake(){
     LS.setIdleMode(IdleMode.kBrake);
@@ -72,17 +72,34 @@ public class Elevator extends SubsystemBase {
   }
   public void setExBrake(){
     ex.setIdleMode(IdleMode.kBrake);
+  }
 
+  public void setSmartCurrentLimit() {
+    LS.setSmartCurrentLimit(40);
+    RS.setSmartCurrentLimit(40);
   }
-  public String positionString(){
-    return "Elevator Position: " + liftEnc.getDistance(); 
+
+  // Elevator
+  public void setPosition(double pos, boolean slow){
+    double high = 0.6;
+    if(-pos - getPosition() > 0 && slow) {
+      high = 0.25;
+    }
+    double Lpower = ExtraMath.clip(((-pos - getPosition())*0.00038) - 0.09, high);
+    double Rpower = ExtraMath.clip(((-pos - getPosition())*0.00038) - 0.09, high);
+    LS.set(Lpower);
+    RS.set(Rpower);
   }
-  public void resetElevator(){
-    LSEnc.setPosition(0);
-    RSEnc.setPosition(0);
-    liftEnc.reset();
-    armEnc.reset();
-    EXEnc.setPosition(0);
+  public double getPower(double pos, boolean slow) {
+    double high = 0.6;
+    if(-pos - getPosition() > 0 && slow) {
+      high = 0.25;
+    }
+    return ExtraMath.clip(((-pos - getPosition())*0.00038)-0.09, high);
+  }
+  public void elevatorOff(){
+    LS.set(0);
+    RS.set(0);
   }
   public double getPosition(){
     return liftEnc.getDistance();
@@ -93,46 +110,57 @@ public class Elevator extends SubsystemBase {
   public double getRightPos(){
     return RSEnc.getPosition();
   }
-  public double setArm(double angle){
-    double pow = (angle - armAng())*0.009;
-    pow = Math.abs(pow) > 0.7 ? Math.copySign(0.7,pow) : pow;
-    return pow;
+  public String positionString(){
+    return "Elevator Position: " + liftEnc.getDistance(); 
   }
-  public void setArmPower(double angle) {
-    double pow = setArm(angle);
-    // pow = Math.abs(pow) > 0.8 ? Math.copySign(0.8,pow) : pow;
+  
+  // Arm
+  public void setArmAngle(double angle) {
+    double pow = getArmPower(angle);
     arm1.set(-pow);
     arm2.set(pow);
   }
-  public double armAng(){
-    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (62 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
+  public double getArmAngle(){
+    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (60 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
-  public double getExtDist(){
-    return EXEnc.getPosition();
+  public double getArmPower(double angle){
+    double pow = Math.copySign(Math.pow(angle - getArmAngle(), 2)*0.008, angle - getArmAngle());
+    pow = Math.abs(pow) > 0.2 ? Math.copySign(0.2,pow) : pow;
+    double added = angle < 80 ? 0.008 : -0.09;
+    return pow + added;
   }
+  
+  // Extend
   public double setExtend(double pos){
     double power = ExtraMath.clip((pos - getExtDist()) * 0.06, 1);
     ex.set(power);
     return power;
   }
+  public double getExtDist(){
+    return EXEnc.getPosition();
+  }
+
+  // Intake
   public void setIntake(double power){
     intake1.set(-power);
     intake2.set(power);
   }
+
+  // Compressor
   public void startComp(){
-    compressor.enableAnalog(80, 120);
+    // compressor.enableAnalog(80, 120);
   }
   public void stopComp(){
-    compressor.disable();
+    // compressor.disable();
   }
-  public void switchStates(boolean var){
+  public void setState(boolean var){
     solenoid.set(var);
-    // solenoid.set(true);
   }
-
+  public void switchState(){
+    solenoid.toggle();
+  }
   public boolean getSolenoidState() {
     return solenoid.get();
-    // return solenoid.isDisabled();
   }
 }
