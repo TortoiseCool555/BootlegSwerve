@@ -8,11 +8,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Paths;
 import frc.robot.commands.AutoCommands.AutoControl;
+import frc.robot.commands.AutoCommands.AutoControlPower;
 import frc.robot.commands.AutoCommands.Balance;
 import frc.robot.commands.AutoCommands.DriveTime;
 import frc.robot.commands.AutoCommands.FollowPath;
 import frc.robot.commands.AutoCommands.InitDrivetrain;
 import frc.robot.commands.AutoCommands.Pause;
+import frc.robot.commands.AutoCommands.ResetElevator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 
@@ -24,20 +26,38 @@ public class Preload extends SequentialCommandGroup {
   public Preload(NewSwerveDrivetrain drivetrain, Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoControl(elevator, 0, 0, 80, true),
-    new AutoControl(elevator, 11600, 0, 95, true),
-    new AutoControl(elevator, 11600, 17, 95, true),
-    new AutoControl(elevator,11600,17,120,false, 0.5), new Pause(elevator, 11600, 17, 120, 1.5),
-    new AutoControl(elevator, 11600, .5, 80, false, 0),
-    new AutoControl(elevator, 0, .5, 80, false, 0)
-    );
+    // double elHeight = 8300;
+    // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
+    
+    // new AutoControl(elevator, 0, 0, 80, true),
+    // new AutoControl(elevator, elHeight, 0, 95, true),
+    // new AutoControl(elevator, elHeight, 17, 95, true),
+    // new AutoControl(elevator,elHeight,17,150,true, 0), new Pause(elevator, 8500, 17, 150, 1),
+    // new AutoControl(elevator,elHeight,17,150,false, 0.4), new Pause(elevator, 8500, 17, 150, 0.5),
+    // new AutoControl(elevator, elHeight, 1, 85, false, 0),
+    // new AutoControl(elevator, 0, 1, 85, false, 0)
+    // );
+
+    // Over charge and back with score
+    // double elHeight = 4000;
+    // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
+    // new AutoControl(elevator, 0, 0, 80, true),
+    // new AutoControl(elevator, elHeight, 0, 95, true),
+    // new AutoControl(elevator, elHeight, 17, 95, true),
+    // new AutoControl(elevator,elHeight,17,140,true, 0), new Pause(elevator, elHeight, 17, 140, 1),
+    // new AutoControl(elevator,elHeight,17,140,false, 0.4), new Pause(elevator, elHeight, 17, 140, 0.5),
+    // new AutoControl(elevator, elHeight, 1, 85, false, 0),
+    // new AutoControl(elevator, 0, 1, 75, false, 0),
+    // new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 4.5).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
+    // new DriveTime(drivetrain, 0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
+    // );
 
     // Balancing Portion
     // addCommands(new DriveTime(drivetrain, -0.23 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2.1),
     // new Balance(drivetrain)
 
-    // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new FollowPath(drivetrain, Paths.SmC)
-    // );
+    addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new FollowPath(drivetrain, Paths.SmC)
+    );
     // addCommands(new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2.1)
     // );
   }

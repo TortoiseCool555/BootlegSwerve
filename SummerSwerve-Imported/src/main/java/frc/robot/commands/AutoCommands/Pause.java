@@ -27,6 +27,7 @@ public class Pause extends CommandBase {
   @Override
   public void initialize() {
     timer.start();
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

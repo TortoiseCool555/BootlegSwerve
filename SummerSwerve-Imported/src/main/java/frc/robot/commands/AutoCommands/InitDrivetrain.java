@@ -19,6 +19,7 @@ public class InitDrivetrain extends CommandBase {
     this.x = x;
     this.y = y;
     this.angleRad = angleRad;
+    this.drivetrain = drivetrain;
   }
 
   // Called when the command is initially scheduled.

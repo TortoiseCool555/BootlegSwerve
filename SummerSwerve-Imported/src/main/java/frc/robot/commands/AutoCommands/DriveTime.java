@@ -29,8 +29,8 @@ public class DriveTime extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.initialize();
     timer.start();
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

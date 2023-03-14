@@ -119,7 +119,7 @@ public class Path {
         double currentAngle = previousWanted;
         double wantedAngle = ExtraMath.atanNew(dx, dy);
         double added = ExtraMath.angleError(currentAngle, wantedAngle);
-        previousWanted = currentAngle - (added / 1);
+        previousWanted = currentAngle - (added / 9);
 
         if(segNum < points.size() - 1) {
             lastVeloc = 3.5;

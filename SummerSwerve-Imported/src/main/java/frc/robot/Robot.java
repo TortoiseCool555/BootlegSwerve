@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -47,6 +48,8 @@ public class Robot extends TimedRobot {
             continue;
           }
           cvSink.grabFrame(input);
+          Core.flip(input, input, 0);
+          Core.flip(input, input, 1);
           output.putFrame(input);
         }
       }
@@ -54,7 +57,7 @@ public class Robot extends TimedRobot {
 
     visionThread.setDaemon(true);
     visionThread.start();
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
   }
 

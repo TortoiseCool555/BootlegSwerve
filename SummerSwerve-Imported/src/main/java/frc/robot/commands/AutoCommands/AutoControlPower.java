@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.ExtraMath;
 import frc.robot.subsystems.Elevator;
 
-public class AutoControl extends CommandBase {
-  /** Creates a new AutoControl. */
+public class AutoControlPower extends CommandBase {
+  /** Creates a new AutoControlPower. */
   Elevator elevator;
   double angle;
   double elPos;
@@ -21,7 +21,7 @@ public class AutoControl extends CommandBase {
   boolean check2;
   boolean check3;
   boolean check4;
-  public AutoControl(Elevator elevator, double elPos, double exPos, double angle, boolean state) {
+  public AutoControlPower(Elevator elevator, double elPos, double exPos, double angle, boolean state) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
     this.elevator = elevator;
@@ -30,7 +30,8 @@ public class AutoControl extends CommandBase {
     this.angle = angle;
     this.state = state;
   }
-  public AutoControl(Elevator elevator, double elPos, double exPos, double angle, boolean state, double inPow) {
+
+  public AutoControlPower(Elevator elevator, double elPos, double exPos, double angle, boolean state, double inPow) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
     this.elevator = elevator;
@@ -77,6 +78,6 @@ public class AutoControl extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return check4;
+    return false;
   }
 }

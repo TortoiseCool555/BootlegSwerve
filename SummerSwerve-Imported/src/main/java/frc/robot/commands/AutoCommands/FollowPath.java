@@ -39,15 +39,15 @@ public class FollowPath extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Point robotPoint = new Point(drivetrain.getXPose(), drivetrain.getYPose(), Math.toRadians(drivetrain.getAngle()));
+    Point robotPoint = new Point(drivetrain.getXPose(), drivetrain.getYPose(), Math.toRadians(drivetrain.getHeadingPose()));
     mag = Math.hypot(robotPoint.getX() - points.get(segNum).getX(), robotPoint.getY() - points.get(segNum).getY());
     if(mag < 0.5 && segNum < points.size() - 1) {
       segNum++;
     }
     
-    Point wantedPoint = path.getNextPoint(robotPoint, segNum, 6);
+    Point wantedPoint = path.getNextPoint(robotPoint, segNum, 4);
     Point finalPoint = path.getSegment(segNum).get(1);
-    double[] veloc = path.getVelocities(robotPoint, segNum, 6);
+    double[] veloc = path.getVelocities(robotPoint, segNum, 4);
     double x = veloc[0];
     double y = veloc[1];
     double transVeloc = Math.hypot(x, y);

@@ -135,7 +135,7 @@ public class Elevator extends SubsystemBase {
   
   // Extend
   public double setExtend(double pos){
-    double power = ExtraMath.clip((pos - getExtDist()) * 0.06, 1);
+    double power = ExtraMath.clip((pos - getExtDist()) * 0.04, 1);
     ex.set(power);
     return power;
   }

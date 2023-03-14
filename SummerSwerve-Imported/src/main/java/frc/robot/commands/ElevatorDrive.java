@@ -49,7 +49,7 @@ public class ElevatorDrive extends CommandBase {
   public void execute() {
     int currentPOV = controller.getPOV();
     elevatorVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
-    angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.5;
+    angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.65;
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
 
     pos = ExtraMath.clip(pos + (elevatorVal * 200), 0, 11600);
