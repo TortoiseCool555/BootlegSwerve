@@ -77,6 +77,8 @@ public class ElevatorDrive extends CommandBase {
 
     }
 
+    Constants.elevatorHeight = elevator.getPosition();
+
     elevator.setPosition(pos, false);
     elevator.setExtend(distExt);
     elevator.setArmAngle(angle);

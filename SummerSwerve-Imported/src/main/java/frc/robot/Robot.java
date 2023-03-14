@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
@@ -35,27 +33,27 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    // Thread visionThread = new Thread(
-    //   () -> {
-    //     UsbCamera camera = CameraServer.startAutomaticCapture();
-    //     camera.setResolution(640, 480);
-    //     CvSink cvSink = CameraServer.getVideo();
-    //     CvSource output = CameraServer.putVideo("Driver Cam", 640, 480);
+    Thread visionThread = new Thread(
+      () -> {
+        UsbCamera camera = CameraServer.startAutomaticCapture();
+        camera.setResolution(640, 480);
+        CvSink cvSink = CameraServer.getVideo();
+        CvSource output = CameraServer.putVideo("Driver Cam", 640, 480);
 
-    //     Mat input = new Mat();
+        Mat input = new Mat();
 
-    //     while(!Thread.interrupted()) {
-    //       if(cvSink.grabFrame(input) == 0) {
-    //         continue;
-    //       }
-    //       cvSink.grabFrame(input);
-    //       output.putFrame(input);
-    //     }
-    //   }
-    // );
+        while(!Thread.interrupted()) {
+          if(cvSink.grabFrame(input) == 0) {
+            continue;
+          }
+          cvSink.grabFrame(input);
+          output.putFrame(input);
+        }
+      }
+    );
 
-    // visionThread.setDaemon(true);
-    // visionThread.start();
+    visionThread.setDaemon(true);
+    visionThread.start();
     CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
   }

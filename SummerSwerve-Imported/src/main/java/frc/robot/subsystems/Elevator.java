@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
@@ -24,6 +25,7 @@ import frc.robot.commands.ElevatorDrive;
 public class Elevator extends SubsystemBase {
   private Compressor compressor = new Compressor(24, PneumaticsModuleType.REVPH);
   private Solenoid solenoid = new Solenoid(24, PneumaticsModuleType.REVPH, 9);
+  private Spark color = new Spark(0);
 
   private CANSparkMax LS = new CANSparkMax(15, MotorType.kBrushless);
   private CANSparkMax RS = new CANSparkMax(16,MotorType.kBrushless);
@@ -50,7 +52,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDefaultCommand(new ElevatorAutomized(this, controller));
+    setDefaultCommand(new ElevatorDrive(this, controller));
   }
 
   // Init
@@ -149,10 +151,10 @@ public class Elevator extends SubsystemBase {
 
   // Compressor
   public void startComp(){
-    // compressor.enableAnalog(80, 120);
+    compressor.enableAnalog(80, 120);
   }
   public void stopComp(){
-    // compressor.disable();
+    compressor.disable();
   }
   public void setState(boolean var){
     solenoid.set(var);
@@ -162,5 +164,10 @@ public class Elevator extends SubsystemBase {
   }
   public boolean getSolenoidState() {
     return solenoid.get();
+  }
+
+  // Color
+  public void setColor(double colorNum) {
+    color.set(colorNum);
   }
 }

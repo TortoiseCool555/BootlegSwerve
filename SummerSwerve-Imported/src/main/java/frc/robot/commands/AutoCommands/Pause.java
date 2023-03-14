@@ -4,27 +4,38 @@
 
 package frc.robot.commands.AutoCommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 
-public class ResetElevator extends CommandBase {
-  /** Creates a new ResetElevator. */
+public class Pause extends CommandBase {
+  /** Creates a new Pause. */
+  Timer timer = new Timer();
+  double pos, extend, angle, pause;
   Elevator elevator;
-  public ResetElevator(Elevator elevator) {
+  public Pause(Elevator elevator, double pos, double extend, double angle, double pause) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(elevator);
+    this.pause = pause;
     this.elevator = elevator;
+    this.pos = pos;
+    this.extend = extend;
+    this.angle = angle;
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.resetElevator();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    elevator.setPosition(pos, true);
+    elevator.setArmAngle(angle);
+    elevator.setExtend(extend);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -33,6 +44,6 @@ public class ResetElevator extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return timer.get() > pause;
   }
 }

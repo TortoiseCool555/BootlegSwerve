@@ -31,6 +31,7 @@ public class ElevatorAutomized extends CommandBase {
   double previousElevator;
   double previousExtension;
   double previousAngle;
+  double additionalAngle;
   /** Creates a new ElevatorDrive. */
   public ElevatorAutomized(Elevator elevator, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -47,6 +48,9 @@ public class ElevatorAutomized extends CommandBase {
     elevator.setExBrake();
     elevator.startComp();
     elevator.setSmartCurrentLimit();
+    elevator.setColor(0.69);
+    additionalAngle = 0;
+    angle = 80;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,7 +60,7 @@ public class ElevatorAutomized extends CommandBase {
     double subPreviousExtension = distExt;
     int currentPOV = controller.getPOV();
     elevatorVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
-    angle += Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.5;
+    additionalAngle += Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.5;
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
 
     angle = ExtraMath.clip(angle, 62, 270);
@@ -84,6 +88,7 @@ public class ElevatorAutomized extends CommandBase {
 
     if(Constants.scoringMode) {
       heightSequence = ExtraMath.loopNum(heightSequence, 3);
+      elevator.setColor(0.5);
       if(heightSequence == 1) {
         elevatorVal = 40;
         distExt = 0;
@@ -91,26 +96,34 @@ public class ElevatorAutomized extends CommandBase {
       }else if(heightSequence == 2) {
         elevatorVal = 4000;
         distExt = 9;
-        angle = 120;
+        angle = 145;
       } else {
         elevatorVal = 11000;
         distExt = 14;
-        angle = 120;
+        angle = 145;
       }
     } else {
-      heightSequence = ExtraMath.loopNum(heightSequence, 2);
+      heightSequence = ExtraMath.loopNum(heightSequence, 3);
       if(heightSequence == 1) {
         elevatorVal = 40;
         distExt = 0;
+        elevator.setColor(0.69);
+        angle = 80;
+      } else if(heightSequence == 2) {
+        elevatorVal = 40;
+        distExt = 0;
         if(controller.getLeftBumper()) {
-          angle = 160;
+          angle = 175;
+          elevator.setColor(0.89);
         } else if(controller.getRightBumper()) {
-          angle = 170;
+          angle = 195;
+          elevator.setColor(0.69);
         }
       } else {
         elevatorVal = 11000;
         distExt = 0;
-        angle = 160;
+        angle = 168;
+        elevator.setColor(0.69);
       }
     }
 
@@ -118,11 +131,13 @@ public class ElevatorAutomized extends CommandBase {
       goingUp = true;
       previousElevator = subPreviousElevator;
       previousExtension = subPreviousExtension;
+      additionalAngle = 0;
     } 
     else if(heightSequence - previousHeighSequence < 0) { // Lower Arm
       goingUp = false;
       previousElevator = subPreviousElevator;
       previousExtension = subPreviousExtension;
+      additionalAngle = 0;
     }
 
     if(goingUp) {
@@ -134,10 +149,10 @@ public class ElevatorAutomized extends CommandBase {
       }
 
       if(Math.abs(elevator.getExtDist() - distExt) < 2) {
-        elevator.setArmAngle(angle);
+        elevator.setArmAngle(angle + additionalAngle);
       }
     } else {
-      elevator.setArmAngle(angle);
+      elevator.setArmAngle(angle + additionalAngle);
 
       if(Math.abs(elevator.getArmAngle() - angle) < 5) {
         elevator.setExtend(distExt);
@@ -149,6 +164,7 @@ public class ElevatorAutomized extends CommandBase {
         elevator.setPosition(previousElevator, true);
       }
     }
+
     
 
     SmartDashboard.putNumber("POV", currentPOV);

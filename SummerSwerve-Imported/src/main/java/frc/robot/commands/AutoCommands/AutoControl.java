@@ -50,10 +50,10 @@ public class AutoControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    check1 = Math.abs(elPos + elevator.getPosition()) < 1000;
+    check1 = Math.abs(elPos + elevator.getPosition()) < 200;
     // check1 = true;
     check2 = Math.abs(exPos - elevator.getExtDist()) < 1.3;
-    check3 = Math.abs(angle - elevator.getArmAngle()) < 10;
+    check3 = Math.abs(angle - elevator.getArmAngle()) < 5;
     check4 = check1 && check2 && check3;
 
     SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
@@ -63,7 +63,7 @@ public class AutoControl extends CommandBase {
 
     elevator.setExtend(exPos);
     elevator.setArmAngle(angle);
-    elevator.setPosition(elPos, false);
+    elevator.setPosition(elPos, true);
     elevator.setIntake(inPow);
   }
 

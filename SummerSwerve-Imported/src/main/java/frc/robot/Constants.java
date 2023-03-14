@@ -41,4 +41,5 @@ public final class Constants {
     public final static double pRot = 0.005;
 
     public static boolean scoringMode = false;
+    public static double elevatorHeight = 0;
 }
