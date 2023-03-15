@@ -150,21 +150,21 @@ public class Elevator extends SubsystemBase {
   }
 
   // Compressor
-  public void startComp(){
-    compressor.enableAnalog(80, 120);
-  }
-  public void stopComp(){
-    compressor.disable();
-  }
-  public void setState(boolean var){
-    solenoid.set(var);
-  }
-  public void switchState(){
-    solenoid.toggle();
-  }
-  public boolean getSolenoidState() {
-    return solenoid.get();
-  }
+  // public void startComp(){
+  //   compressor.enableAnalog(80, 120);
+  // }
+  // public void stopComp(){
+  //   compressor.disable();
+  // }
+  // public void setState(boolean var){
+  //   solenoid.set(var);
+  // }
+  // public void switchState(){
+  //   solenoid.toggle();
+  // }
+  // public boolean getSolenoidState() {
+  //   return solenoid.get();
+  // }
 
   // Color
   public void setColor(double colorNum) {

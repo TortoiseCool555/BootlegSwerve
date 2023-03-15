@@ -40,7 +40,7 @@ public class ElevatorDrive extends CommandBase {
     elevator.setBrake();
     elevator.resetElevator();
     elevator.setExBrake();
-    elevator.startComp();
+    //elevator.startComp();
     elevator.setSmartCurrentLimit();
   }
 
@@ -72,9 +72,9 @@ public class ElevatorDrive extends CommandBase {
 
     // Set elevator, then check extend, then check angle
     if(Constants.scoringMode) {
-      
+      elevator.setColor(0.69);
     } else {
-
+      elevator.setColor(0.89);
     }
 
     Constants.elevatorHeight = elevator.getPosition();
@@ -82,17 +82,17 @@ public class ElevatorDrive extends CommandBase {
     elevator.setPosition(pos, false);
     elevator.setExtend(distExt);
     elevator.setArmAngle(angle);
-    elevator.setState(state);
+    // elevator.setState(state);
 
     if(controller.getLeftTriggerAxis() > 0.1) {
-      elevator.setIntake(0.5);
+      elevator.setIntake(0.7);
     } else if(controller.getRightTriggerAxis()  > 0.1) {
-      elevator.setIntake(-0.5);
+      elevator.setIntake(-0.7);
     } else {
       elevator.setIntake(0);
     }
     SmartDashboard.putString("Elevator", elevator.positionString());
-    SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
+    // SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
     SmartDashboard.putNumber("Left Pos: ", elevator.getLeftPos());
     SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
     SmartDashboard.putString("Desired Position: ", df.format(pos));
@@ -110,7 +110,7 @@ public class ElevatorDrive extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     elevator.elevatorOff();
-    elevator.stopComp();
+    // elevator.stopComp();
   }
 
   // Returns true when the command should end.

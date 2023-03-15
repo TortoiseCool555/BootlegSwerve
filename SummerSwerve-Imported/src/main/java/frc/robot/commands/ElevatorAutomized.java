@@ -46,7 +46,7 @@ public class ElevatorAutomized extends CommandBase {
     elevator.setBrake();
     elevator.resetElevator();
     elevator.setExBrake();
-    elevator.startComp();
+    //elevator.startComp();
     elevator.setSmartCurrentLimit();
     elevator.setColor(0.69);
     additionalAngle = 0;
@@ -66,15 +66,12 @@ public class ElevatorAutomized extends CommandBase {
     angle = ExtraMath.clip(angle, 62, 270);
     distExt = ExtraMath.clip(distExt, 0, 17.6);
 
-    if(controller.getBButtonPressed()){
-      elevator.switchState();
-    }
 
     // Intake
     if(controller.getLeftTriggerAxis() > 0.1) {
-      elevator.setIntake(0.5);
+      elevator.setIntake(0.3);
     } else if(controller.getRightTriggerAxis()  > 0.1) {
-      elevator.setIntake(-0.4);
+      elevator.setIntake(-0.3);
     } else {
       elevator.setIntake(0);
     }
@@ -175,7 +172,7 @@ public class ElevatorAutomized extends CommandBase {
     SmartDashboard.putNumber("Extension Error", elevator.getExtDist() - distExt);
     SmartDashboard.putNumber("Angle Error", elevator.getArmAngle() - angle);
     SmartDashboard.putString("Elevator", elevator.positionString());
-    SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
+    // SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
     SmartDashboard.putNumber("Left Pos: ", elevator.getLeftPos());
     SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
     SmartDashboard.putString("Desired Position: ", df.format(elevatorVal));
@@ -193,7 +190,7 @@ public class ElevatorAutomized extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     elevator.elevatorOff();
-    elevator.stopComp();
+    // elevator.stopComp();
   }
 
   // Returns true when the command should end.
