@@ -39,16 +39,29 @@ public class Preload extends SequentialCommandGroup {
     // );
 
     // Over charge and back with score
-    double elHeight = 4000;
+    // double elHeight = 4000;
+    // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
+    // new AutoControl(elevator, 0, 0, 80, true),
+    // new AutoControl(elevator, elHeight, 0, 95, true),
+    // new AutoControl(elevator, elHeight, 15, 95, true),
+    // new AutoControl(elevator, elHeight,15,140,true, 0), new Pause(elevator, elHeight, 17, 140, 1),
+    // new AutoControl(elevator, elHeight,15,140,false, 0.4), new Pause(elevator, elHeight, 17, 140, 0.5),
+    // new AutoControl(elevator, elHeight, 1, 85, false, 0),
+    // new AutoControl(elevator, 0, 1, 75, false, 0),
+    // new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 3.2).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
+    // );
+
+    double elHeight = 0;
+    double exPos = 0;
     addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
     new AutoControl(elevator, 0, 0, 80, true),
     new AutoControl(elevator, elHeight, 0, 95, true),
-    new AutoControl(elevator, elHeight, 17, 95, true),
-    new AutoControl(elevator,elHeight,17,140,true, 0), new Pause(elevator, elHeight, 17, 140, 1),
-    new AutoControl(elevator,elHeight,17,140,false, 0.4), new Pause(elevator, elHeight, 17, 140, 0.5),
+    new AutoControl(elevator, elHeight, exPos, 95, true),
+    new AutoControl(elevator, elHeight,exPos,120,true, 0), new Pause(elevator, elHeight, exPos, 120, 1),
+    new AutoControl(elevator, elHeight,exPos,120,false, 0.4), new Pause(elevator, elHeight, exPos, 120, 0.5),
     new AutoControl(elevator, elHeight, 1, 85, false, 0),
     new AutoControl(elevator, 0, 1, 75, false, 0),
-    new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 4.5).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
+    new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 4).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
     );
 
     // Balancing Portion

@@ -46,7 +46,7 @@ public class ElevatorAutomized extends CommandBase {
     elevator.setBrake();
     elevator.resetElevator();
     elevator.setExBrake();
-    //elevator.startComp();
+    elevator.startComp();
     elevator.setSmartCurrentLimit();
     elevator.setColor(0.69);
     additionalAngle = 0;

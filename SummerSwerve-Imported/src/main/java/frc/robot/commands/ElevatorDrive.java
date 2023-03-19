@@ -26,6 +26,7 @@ public class ElevatorDrive extends CommandBase {
   DecimalFormat df = new DecimalFormat("0.00");
   int heightSequence = 0;
   int previousPOV = -1;
+  boolean isEncoders = true;
   /** Creates a new ElevatorDrive. */
   public ElevatorDrive(Elevator elevator, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,7 +41,7 @@ public class ElevatorDrive extends CommandBase {
     elevator.setBrake();
     elevator.resetElevator();
     elevator.setExBrake();
-    //elevator.startComp();
+    elevator.startComp();
     elevator.setSmartCurrentLimit();
   }
 
@@ -48,12 +49,21 @@ public class ElevatorDrive extends CommandBase {
   @Override
   public void execute() {
     int currentPOV = controller.getPOV();
-    elevatorVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
-    angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.65;
+    if(-controller.getLeftY() < 0) {
+      elevatorVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY() * 0.8;
+    } else {
+      elevatorVal = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
+    }
+    // angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.5;
+    if(controller.getRightY() < 0) {
+      angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 2.5;
+    } else {
+      angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.3;
+    }
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
 
-    pos = ExtraMath.clip(pos + (elevatorVal * 200), 0, 11600);
-    angle = ExtraMath.clip(angle, 62, 270);
+    pos = ExtraMath.clip(pos + (elevatorVal * 200), 10, 9500);
+    angle = ExtraMath.clip(angle, 62, 205);
     distExt = ExtraMath.clip(distExt, 0, 17.6);
 
     if(controller.getLeftBumper()){
@@ -79,30 +89,46 @@ public class ElevatorDrive extends CommandBase {
 
     Constants.elevatorHeight = elevator.getPosition();
 
-    elevator.setPosition(pos, false);
-    elevator.setExtend(distExt);
-    elevator.setArmAngle(angle);
-    // elevator.setState(state);
+    if(controller.getXButton()) {
+      isEncoders = true;
+    } else if(controller.getAButton()) {
+      isEncoders = false;
+    }
+
+    if(isEncoders) {
+      elevator.setPosition(pos, false);
+      elevator.setExtend(distExt);
+      elevator.setArmAngle(angle);
+      elevator.setState(state);
+    } else {
+      elevator.setPower(controller.getLeftY() * 0.6);
+      elevator.setExtend(controller.getLeftX() * 1);
+      elevator.setArmPower(-controller.getRightY() * 0.2);
+    }
+
+    if(controller.getBackButton()) {
+      elevator.resetElevator();
+    }
 
     if(controller.getLeftTriggerAxis() > 0.1) {
-      elevator.setIntake(0.7);
+      elevator.setIntake(0.5);
     } else if(controller.getRightTriggerAxis()  > 0.1) {
-      elevator.setIntake(-0.7);
+      elevator.setIntake(-0.4);
     } else {
       elevator.setIntake(0);
     }
     SmartDashboard.putString("Elevator", elevator.positionString());
-    // SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
-    SmartDashboard.putNumber("Left Pos: ", elevator.getLeftPos());
-    SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
-    SmartDashboard.putString("Desired Position: ", df.format(pos));
-    SmartDashboard.putNumber("Arm Power", elevator.getArmPower(angle));
-    SmartDashboard.putNumber("Desired Arm Angle", angle);
-    SmartDashboard.putNumber("Desired Extension", distExt);
-    SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
-    SmartDashboard.putNumber("Arm Ang Pow", elevator.getArmPower(angle));
-    SmartDashboard.putNumber("Extension Distance", elevator.getExtDist());
-    SmartDashboard.putNumber("Extension Power", elevator.setExtend(distExt));
+    // // SmartDashboard.putBoolean("Solenoid", elevator.getSolenoidState());
+    // SmartDashboard.putNumber("Left Pos: ", elevator.getLeftPos());
+    // SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
+    // SmartDashboard.putString("Desired Position: ", df.format(pos));
+    // SmartDashboard.putNumber("Arm Power", elevator.getArmPower(angle));
+    // SmartDashboard.putNumber("Desired Arm Angle", angle);
+    // SmartDashboard.putNumber("Desired Extension", distExt);
+    // SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
+    // SmartDashboard.putNumber("Arm Ang Pow", elevator.getArmPower(angle));
+    // SmartDashboard.putNumber("Extension Distance", elevator.getExtDist());
+    // SmartDashboard.putNumber("Extension Power", elevator.setExtend(distExt));
     previousPOV = currentPOV;
   }
 
@@ -110,7 +136,7 @@ public class ElevatorDrive extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     elevator.elevatorOff();
-    // elevator.stopComp();
+    elevator.stopComp();
   }
 
   // Returns true when the command should end.

@@ -14,8 +14,11 @@ import frc.robot.commands.CameraStream;
 import frc.robot.commands.ElevatorDrive;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.commands.ZeroGyro;
+import frc.robot.commands.Auto.ChargeOnly;
 import frc.robot.commands.Auto.ChargeStatiom;
+import frc.robot.commands.Auto.Park;
 import frc.robot.commands.Auto.Preload;
+import frc.robot.commands.Auto.PureChargeNoPreload;
 import frc.robot.commands.AutoCommands.AprilTagCommand;
 import frc.robot.commands.AutoCommands.Balance;
 import frc.robot.commands.AutoCommands.DriveTime;
@@ -45,6 +48,9 @@ public class RobotContainer {
   // private final AprilTagCommand autoCommand = new AprilTagCommand(swerve);
   private final Preload preloadAndPark = new Preload(swerve, elevator);
   private final ChargeStatiom chargeStation = new ChargeStatiom(swerve, elevator);
+  private final ChargeOnly chargePreload = new ChargeOnly(swerve, elevator);
+  private final PureChargeNoPreload chargeOnly = new PureChargeNoPreload(swerve, elevator);
+  private final Park park = new Park(swerve);
   // private final Balance balance = new Balance(swerve);
   // private final FollowPath path = new FollowPath(swerve, Paths.SmC);
   // private final DriveTime time = new DriveTime(swerve, -.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 300);
@@ -56,8 +62,11 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelect.addOption("Charge Station", chargeStation);
-    autoSelect.addOption("Preload and Park", preloadAndPark);
+    autoSelect.addOption("Preload and Charge Station", chargePreload);
+    autoSelect.addOption("Charge Station", chargeOnly);
+    autoSelect.addOption("Charge Station With Extra Points", chargeStation);
+    autoSelect.addOption("Park", park);
+    autoSelect.setDefaultOption("Preload and Park", preloadAndPark);
     SmartDashboard.putData(autoSelect);
     configureButtonBindings();
   }

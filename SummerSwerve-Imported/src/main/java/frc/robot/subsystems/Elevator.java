@@ -92,6 +92,11 @@ public class Elevator extends SubsystemBase {
     LS.set(Lpower);
     RS.set(Rpower);
   }
+
+  public void setPower(double power) {
+    LS.set(power);
+    RS.set(power);
+  }
   public double getPower(double pos, boolean slow) {
     double high = 0.6;
     if(-pos - getPosition() > 0 && slow) {
@@ -132,6 +137,11 @@ public class Elevator extends SubsystemBase {
     double added = angle < 80 ? 0.008 : -0.09;
     return pow + added;
   }
+
+  public void setArmPower(double power) {
+    arm1.set(power);
+    arm2.set(-power);
+  }
   
   // Extend
   public double setExtend(double pos){
@@ -143,6 +153,10 @@ public class Elevator extends SubsystemBase {
     return EXEnc.getPosition();
   }
 
+  public void setExtendPower(double power) {
+    ex.set(power);
+  }
+
   // Intake
   public void setIntake(double power){
     intake1.set(-power);
@@ -150,21 +164,21 @@ public class Elevator extends SubsystemBase {
   }
 
   // Compressor
-  // public void startComp(){
-  //   compressor.enableAnalog(80, 120);
-  // }
-  // public void stopComp(){
-  //   compressor.disable();
-  // }
-  // public void setState(boolean var){
-  //   solenoid.set(var);
-  // }
-  // public void switchState(){
-  //   solenoid.toggle();
-  // }
-  // public boolean getSolenoidState() {
-  //   return solenoid.get();
-  // }
+  public void startComp(){
+    compressor.enableAnalog(60, 120);
+  }
+  public void stopComp(){
+    compressor.disable();
+  }
+  public void setState(boolean var){
+    solenoid.set(var);
+  }
+  public void switchState(){
+    solenoid.toggle();
+  }
+  public boolean getSolenoidState() {
+    return solenoid.get();
+  }
 
   // Color
   public void setColor(double colorNum) {

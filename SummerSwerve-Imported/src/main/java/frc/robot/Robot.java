@@ -11,6 +11,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -34,30 +35,32 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    Thread visionThread = new Thread(
-      () -> {
-        UsbCamera camera = CameraServer.startAutomaticCapture();
-        camera.setResolution(640, 480);
-        CvSink cvSink = CameraServer.getVideo();
-        CvSource output = CameraServer.putVideo("Driver Cam", 640, 480);
+    // Thread visionThread = new Thread(
+    //   () -> {
+    //     UsbCamera camera = CameraServer.startAutomaticCapture();
+    //     camera.setResolution(640, 480);
+    //     CvSink cvSink = CameraServer.getVideo();
+    //     CvSource output = CameraServer.putVideo("Driver Cam", 640, 480);
 
-        Mat input = new Mat();
+    //     Mat input = new Mat();
 
-        while(!Thread.interrupted()) {
-          if(cvSink.grabFrame(input) == 0) {
-            continue;
-          }
-          cvSink.grabFrame(input);
-          Core.flip(input, input, 0);
-          Core.flip(input, input, 1);
-          output.putFrame(input);
-        }
-      }
-    );
+    //     while(!Thread.interrupted()) {
+    //       if(cvSink.grabFrame(input) == 0) {
+    //         continue;
+    //       }
+    //       cvSink.grabFrame(input);
+    //       Core.flip(input, input, 0);
+    //       Core.flip(input, input, 1);
+    //       output.putFrame(input);
+    //     }
+    //   }
+    // );
 
-    visionThread.setDaemon(true);
-    visionThread.start();
-    // CameraServer.startAutomaticCapture();
+    // visionThread.setDaemon(true);
+    // visionThread.start();
+    // CameraServer.startAutomaticCapture().setResolution(640, 480);
+    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kYUYV, 320, 180, 30);
+    CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
   }
 
@@ -87,7 +90,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(); 
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

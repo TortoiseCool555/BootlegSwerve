@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.AutoCommands.AutoControl;
 import frc.robot.commands.AutoCommands.AutoControlPower;
+import frc.robot.commands.AutoCommands.Balance;
 import frc.robot.commands.AutoCommands.DriveTime;
 import frc.robot.commands.AutoCommands.InitDrivetrain;
 import frc.robot.commands.AutoCommands.Pause;
@@ -33,7 +34,8 @@ public class ChargeStatiom extends SequentialCommandGroup {
     new AutoControl(elevator, elHeight, 1, 85, false, 0),
     new AutoControl(elevator, 0, 1, 75, false, 0),
     new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 4.5).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
-    new DriveTime(drivetrain, 0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
+    new DriveTime(drivetrain, 0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
+    new Balance(drivetrain)
     );
   }
 }

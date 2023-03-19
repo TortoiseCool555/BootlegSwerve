@@ -44,7 +44,8 @@ public class AutoControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // elevator.setState(state);
+    check4 = false;
+    elevator.setState(state);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,6 +59,7 @@ public class AutoControl extends CommandBase {
 
     SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
     SmartDashboard.putNumber("Desired Angle", angle);
+    SmartDashboard.putNumber("Angle Error", elevator.getArmAngle() - angle);
     SmartDashboard.putNumber("Extension", elevator.getExtDist());
     SmartDashboard.putNumber("Desired Extension", exPos);
     SmartDashboard.putNumber("Elevator Position AUTO:", elevator.getPosition());

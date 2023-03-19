@@ -20,6 +20,7 @@ public class ResetElevator extends CommandBase {
   @Override
   public void initialize() {
     elevator.resetElevator();
+    elevator.startComp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -13,6 +13,7 @@ import frc.robot.subsystems.NewSwerveDrivetrain;
 public class Balance extends CommandBase {
   /** Creates a new Balance. */
   NewSwerveDrivetrain drivetrain;
+  double angleOffground;
   public Balance(NewSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
@@ -36,9 +37,9 @@ public class Balance extends CommandBase {
     double pz = -1 * Math.cos(pitch) * Math.cos(roll);
     double mag1 = Math.hypot(px, py);
     double mag2 = Math.sqrt(Math.pow(px,2) + Math.pow(py,2) + Math.pow(pz,2));
-    double angleOffground = Math.abs(Math.toRadians(90) - Math.acos(mag1/mag2)) < 0.005 ? 0 : Math.toRadians(90) - Math.acos(mag1/mag2);
+    angleOffground = Math.abs(Math.toRadians(90) - Math.acos(mag1/mag2)) < 0.005 ? 0 : Math.toRadians(90) - Math.acos(mag1/mag2);
     double angleAround = ExtraMath.atanNew(px, py);
-    double kConst = 2.15;
+    double kConst = 1.7; //2.15
     double xSpd = Math.abs(Math.cos(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.cos(angleAround)*(angleOffground * kConst), 0.5);
     double ySpd = Math.abs(Math.sin(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.sin(angleAround)*(angleOffground * kConst), 0.5);
     drivetrain.setChassisSpeeds(xSpd, ySpd, 0);
@@ -57,6 +58,6 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(angleOffground) < Math.toRadians(10);
   }
 }

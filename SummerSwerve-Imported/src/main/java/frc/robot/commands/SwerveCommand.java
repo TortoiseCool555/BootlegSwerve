@@ -19,6 +19,7 @@ public class SwerveCommand extends CommandBase {
   double rollInit = 0;
   double prevX = 0;
   double prevY = 0;
+  boolean disablePidgeon = false;
   public SwerveCommand(XboxController controller, NewSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
@@ -39,18 +40,30 @@ public class SwerveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double scale = 0.37; //0.37
+    double scale = 0.7; //0.37
     double rotScale = 0.25;
     if(controller.getRightTriggerAxis() > 0.1) {
-      scale = 0.1;
+      scale = 0.13;
       rotScale = 0.1;
     }
     if(Math.abs(Constants.elevatorHeight) > 4000) {
-      scale = 0.1;
+      scale = 0.23;
     }
     double x = controller.getLeftX() * scale;
     double y = -controller.getLeftY() * scale;
     double rot = -controller.getRightX() * rotScale;
+
+    if(controller.getYButtonPressed()) {
+      disablePidgeon = true;
+    } else if(controller.getAButtonPressed()) {
+      disablePidgeon = false;
+    }
+
+    if(disablePidgeon) {
+
+    } else {
+
+    }
 
     if(Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rot) < 0.1) {
       // x = prevX / 4;
@@ -83,31 +96,31 @@ public class SwerveCommand extends CommandBase {
 
 
     SmartDashboard.putBoolean("Mode", Constants.scoringMode);
-    SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
-    SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
-    SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
-    SmartDashboard.putString("Module Translation Velocities", drivetrain.getModuleVelocities());
-    SmartDashboard.putString("Wanted Translation Velocities", drivetrain.getModuleWantedTranslationVelocity(x,y,rot));
-    SmartDashboard.putString("Module Angular Power: ", drivetrain.getModulePositionPowers(x,y,rot));
-    SmartDashboard.putString("Module Position Distance", drivetrain.displayModulePositionDist());
-    SmartDashboard.putString("Module Position Angle", drivetrain.displayModulePositionAng());
-    SmartDashboard.putString("X Stick", Double.toString(x));
-    SmartDashboard.putString("Y Stick", Double.toString(y));
-    SmartDashboard.putString("Rot Stick", Double.toString(rot));
-    SmartDashboard.putString("X", drivetrain.x());
-    SmartDashboard.putString("Y", drivetrain.y());
-    SmartDashboard.putString("Z", drivetrain.z());
-    SmartDashboard.putNumber("Roll: ", Math.toDegrees(roll));
-    SmartDashboard.putNumber("Pitch", Math.toDegrees(pitch));
+    // SmartDashboard.putNumber("Yaw Angle", drivetrain.getAngle());
+    // SmartDashboard.putString("Module Angle Position Values", drivetrain.getModulePositionErrors());
+    // SmartDashboard.putString("Module Translation Positions", drivetrain.getModuleTranslationPositions());
+    // SmartDashboard.putString("Module Translation Velocities", drivetrain.getModuleVelocities());
+    // SmartDashboard.putString("Wanted Translation Velocities", drivetrain.getModuleWantedTranslationVelocity(x,y,rot));
+    // SmartDashboard.putString("Module Angular Power: ", drivetrain.getModulePositionPowers(x,y,rot));
+    // SmartDashboard.putString("Module Position Distance", drivetrain.displayModulePositionDist());
+    // SmartDashboard.putString("Module Position Angle", drivetrain.displayModulePositionAng());
+    // SmartDashboard.putString("X Stick", Double.toString(x));
+    // SmartDashboard.putString("Y Stick", Double.toString(y));
+    // SmartDashboard.putString("Rot Stick", Double.toString(rot));
+    // SmartDashboard.putString("X", drivetrain.x());
+    // SmartDashboard.putString("Y", drivetrain.y());
+    // SmartDashboard.putString("Z", drivetrain.z());
+    // SmartDashboard.putNumber("Roll: ", Math.toDegrees(roll));
+    // SmartDashboard.putNumber("Pitch", Math.toDegrees(pitch));
     SmartDashboard.putNumber("Raw Roll", drivetrain.getRoll());
     SmartDashboard.putNumber("Raw Pitch", drivetrain.getPitch());
-    SmartDashboard.putNumber("Yaw", drivetrain.getYaw());
-    SmartDashboard.putNumber("x speed", xSpd);
-    SmartDashboard.putNumber("y speed", ySpd);
+    // SmartDashboard.putNumber("Yaw", drivetrain.getYaw());
+    // SmartDashboard.putNumber("x speed", xSpd);
+    // SmartDashboard.putNumber("y speed", ySpd);
     SmartDashboard.putNumber("Angle, Off", Math.toDegrees(angleOffground));
     SmartDashboard.putNumber("Angle, Around", Math.toDegrees(angleAround));
-    //SmartDashboard.putNumber("Overall", Math.toDegrees(angle));
-    SmartDashboard.putString("Module Angles", drivetrain.getModuleAngles());
+    // //SmartDashboard.putNumber("Overall", Math.toDegrees(angle));
+    // SmartDashboard.putString("Module Angles", drivetrain.getModuleAngles());
     // drivetrain.setChassisSpeeds(0 * Constants.MAX_TRANS_METERS_PER_SEC, 
     // 0 * Constants.MAX_TRANS_METERS_PER_SEC, 
     // 0 * Constants.MAX_ANG_RAD_PER_SEC);
