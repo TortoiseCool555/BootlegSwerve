@@ -23,6 +23,7 @@ public class ElevatorUnion extends CommandBase {
   double extendAdjustment = 0;
   boolean shouldReset = false;
   boolean scoringMode = false;
+  boolean cubeMode = true;
   Toggle adjustmentToggle = new Toggle(1);
   double sequenceNum = 1;
   double elColor;
@@ -30,6 +31,7 @@ public class ElevatorUnion extends CommandBase {
   public ElevatorUnion(Elevator elevator, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
+    this.controller = controller;
     this.elevator = elevator;
   }
 
@@ -43,18 +45,19 @@ public class ElevatorUnion extends CommandBase {
   @Override
   public void execute() {
     // Set Elevator Position
-    wantedElevatorPos += -controller.getLeftY();
+    wantedElevatorPos += -controller.getLeftY() * 200;
     elevator.setPosition(wantedElevatorPos, true);
 
     // Driver adjustments
     extendAdjustment += controller.getLeftX();
     armAdjustment += -controller.getRightY();
    
+    if(controller.getLeftBumperPressed()) {
+      cubeMode = !cubeMode;
+    }
     // Select Scoring Mode
     if(controller.getRightBumperPressed()){
-      scoringMode = true;
-    } else if(controller.getLeftBumperPressed()) {
-     scoringMode = false;
+      scoringMode = !scoringMode;
     }
 
     // Reset Mode
@@ -66,7 +69,7 @@ public class ElevatorUnion extends CommandBase {
     if(shouldReset) {
       sequenceNum = 1;
       elColor = 0.01;
-      driverIntentArm = 70;
+      driverIntentArm = 80;
       driverIntentExtend = 0;
     } else if(scoringMode) {
       elColor = 0.69;
@@ -108,14 +111,26 @@ public class ElevatorUnion extends CommandBase {
     elevator.setExtend(driverIntentExtend + extendAdjustment);
     elevator.setArmAngle(driverIntentArm + armAdjustment);
 
-    if(controller.getLeftTriggerAxis() > 0.1 && shouldReset) {
-      elevator.setIntake(0.9);
-      elColor = 0.7;
-    } if(controller.getLeftTriggerAxis() > 0.1) {
-      elevator.setIntake(0.3);
-      elColor = 0.6;
-    } else if(controller.getRightTriggerAxis()  > 0.1) {
+    // if(controller.getLeftTriggerAxis() > 0.1 && shouldReset) {
+    //   elevator.setIntake(0.9);
+    //   elColor = 0.7;
+    // } else if(controller.getLeftTriggerAxis() > 0.1) {
+    //   elevator.setIntake(0.3);
+    //   elColor = 0.6;
+    // } else if(controller.getRightTriggerAxis()  > 0.1) {
+    //   elevator.setIntake(-0.3);
+    // } else {
+    //   elevator.setIntake(0);
+    // }
+
+    if(controller.getRightTriggerAxis() > 0.1) {
       elevator.setIntake(-0.3);
+    } else if(controller.getLeftTriggerAxis() > 0.1) {
+      if(!cubeMode || shouldReset) {
+        elevator.setIntake(0.9);
+      } else {
+        elevator.setIntake(0.4);
+      }
     } else {
       elevator.setIntake(0);
     }

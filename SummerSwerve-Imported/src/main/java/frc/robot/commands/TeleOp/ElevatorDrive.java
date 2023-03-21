@@ -62,15 +62,8 @@ public class ElevatorDrive extends CommandBase {
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
 
     pos = ExtraMath.clip(pos + (elevatorVal * 200), 10, 9500);
-    angle = ExtraMath.clip(angle, 62, 205);
+    angle = ExtraMath.clip(angle, 62, 213);
     distExt = ExtraMath.clip(distExt, 0, 17.6);
-
-    if(controller.getLeftBumper()){
-      state = false;
-    }
-    else if(controller.getRightBumper()){
-      state = true;
-    }
 
     if(currentPOV != previousPOV && currentPOV == 1) {
       heightSequence ++;
@@ -113,6 +106,8 @@ public class ElevatorDrive extends CommandBase {
       elevator.setIntake(0.5);
     } else if(controller.getRightTriggerAxis()  > 0.1) {
       elevator.setIntake(-0.4);
+    } else if(controller.getLeftBumper()) {
+      elevator.setIntake(-0.9);
     } else {
       elevator.setIntake(0);
     }

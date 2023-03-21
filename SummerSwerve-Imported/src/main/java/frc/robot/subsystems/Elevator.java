@@ -132,7 +132,7 @@ public class Elevator extends SubsystemBase {
     arm2.set(pow);
   }
   public double getArmAngle(){
-    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (15 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
+    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (60 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getArmPower(double angle){
