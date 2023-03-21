@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -19,8 +20,8 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
-import frc.robot.commands.ElevatorAutomized;
-import frc.robot.commands.ElevatorDrive;
+          import frc.robot.commands.TeleOp.ElevatorDrive;
+import frc.robot.commands.TeleOp.ElevatorUnion;
 
 public class Elevator extends SubsystemBase {
   private Compressor compressor = new Compressor(24, PneumaticsModuleType.REVPH);
@@ -40,6 +41,7 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
+  PIDController armController = new PIDController(0.1, 0, 0.0001);
   //private DecimalFormat df = new DecimalFormat("0.00");
 
   XboxController controller;

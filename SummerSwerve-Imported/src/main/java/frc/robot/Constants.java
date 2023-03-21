@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -39,6 +36,7 @@ public final class Constants {
     public final static double MAX_PERSONAL_ROT_PER_SEC = 6380 / 60;
 
     public final static double pRot = 0.005;
+    public static final String grabMode = null;
 
     public static boolean scoringMode = false;
     public static double elevatorHeight = 0;

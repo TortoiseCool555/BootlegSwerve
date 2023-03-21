@@ -2,13 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.TeleOp;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.ExtraMath;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 
 public class SwerveCommand extends CommandBase {
@@ -79,20 +78,20 @@ public class SwerveCommand extends CommandBase {
       Constants.scoringMode = true;
     }
 
-    double pitch = Math.toRadians(drivetrain.getPitch()) - pitchInit;
-    double roll = Math.toRadians(drivetrain.getRoll()) - rollInit;
-    pitch = pitch < 0 ? pitch + (2*Math.PI) : pitch;
-    roll = roll < 0 ?  roll + (2 * Math.PI) : roll;
-    double px = Math.cos(pitch) * Math.sin(roll);
-    double py = Math.sin(pitch) * Math.cos(roll);
-    double pz = -1 * Math.cos(pitch) * Math.cos(roll);
-    double mag1 = Math.hypot(px, py);
-    double mag2 = Math.sqrt(Math.pow(px,2) + Math.pow(py,2) + Math.pow(pz,2));
-    double angleOffground = Math.abs(Math.toRadians(90) - Math.acos(mag1/mag2)) < 0.005 ? 0 : Math.toRadians(90) - Math.acos(mag1/mag2);
-    double angleAround = ExtraMath.atanNew(px, py);
-    double kConst = 2;
-    double xSpd =Math.abs(Math.cos(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.cos(angleAround)*(angleOffground * kConst), 0.25);
-    double ySpd =Math.abs(Math.sin(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.sin(angleAround)*(angleOffground * kConst), 0.25);
+    // double pitch = Math.toRadians(drivetrain.getPitch()) - pitchInit;
+    // double roll = Math.toRadians(drivetrain.getRoll()) - rollInit;
+    // pitch = pitch < 0 ? pitch + (2*Math.PI) : pitch;
+    // roll = roll < 0 ?  roll + (2 * Math.PI) : roll;
+    // double px = Math.cos(pitch) * Math.sin(roll);
+    // double py = Math.sin(pitch) * Math.cos(roll);
+    // double pz = -1 * Math.cos(pitch) * Math.cos(roll);
+    // double mag1 = Math.hypot(px, py);
+    // double mag2 = Math.sqrt(Math.pow(px,2) + Math.pow(py,2) + Math.pow(pz,2));
+    // double angleOffground = Math.abs(Math.toRadians(90) - Math.acos(mag1/mag2)) < 0.005 ? 0 : Math.toRadians(90) - Math.acos(mag1/mag2);
+    // double angleAround = ExtraMath.atanNew(px, py);
+    // double kConst = 2;
+    // double xSpd =Math.abs(Math.cos(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.cos(angleAround)*(angleOffground * kConst), 0.25);
+    // double ySpd =Math.abs(Math.sin(angleAround)*(angleOffground * kConst)) < 0.01 ? 0 : ExtraMath.clip(Math.sin(angleAround)*(angleOffground * kConst), 0.25);
 
 
     SmartDashboard.putBoolean("Mode", Constants.scoringMode);
@@ -107,18 +106,18 @@ public class SwerveCommand extends CommandBase {
     // SmartDashboard.putString("X Stick", Double.toString(x));
     // SmartDashboard.putString("Y Stick", Double.toString(y));
     // SmartDashboard.putString("Rot Stick", Double.toString(rot));
-    // SmartDashboard.putString("X", drivetrain.x());
-    // SmartDashboard.putString("Y", drivetrain.y());
-    // SmartDashboard.putString("Z", drivetrain.z());
+    SmartDashboard.putString("X", drivetrain.x());
+    SmartDashboard.putString("Y", drivetrain.y());
+    SmartDashboard.putString("Z", drivetrain.z());
     // SmartDashboard.putNumber("Roll: ", Math.toDegrees(roll));
     // SmartDashboard.putNumber("Pitch", Math.toDegrees(pitch));
-    SmartDashboard.putNumber("Raw Roll", drivetrain.getRoll());
-    SmartDashboard.putNumber("Raw Pitch", drivetrain.getPitch());
+    // SmartDashboard.putNumber("Raw Roll", drivetrain.getRoll());
+    // SmartDashboard.putNumber("Raw Pitch", drivetrain.getPitch());
     // SmartDashboard.putNumber("Yaw", drivetrain.getYaw());
     // SmartDashboard.putNumber("x speed", xSpd);
     // SmartDashboard.putNumber("y speed", ySpd);
-    SmartDashboard.putNumber("Angle, Off", Math.toDegrees(angleOffground));
-    SmartDashboard.putNumber("Angle, Around", Math.toDegrees(angleAround));
+    // SmartDashboard.putNumber("Angle, Off", Math.toDegrees(angleOffground));
+    // SmartDashboard.putNumber("Angle, Around", Math.toDegrees(angleAround));
     // //SmartDashboard.putNumber("Overall", Math.toDegrees(angle));
     // SmartDashboard.putString("Module Angles", drivetrain.getModuleAngles());
     // drivetrain.setChassisSpeeds(0 * Constants.MAX_TRANS_METERS_PER_SEC, 

@@ -4,26 +4,16 @@
 
 package frc.robot;
 
-import javax.lang.model.element.Element;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.CameraStream;
-import frc.robot.commands.ElevatorDrive;
-import frc.robot.commands.SwerveCommand;
-import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Auto.ChargeOnly;
 import frc.robot.commands.Auto.ChargeStatiom;
 import frc.robot.commands.Auto.Park;
 import frc.robot.commands.Auto.Preload;
 import frc.robot.commands.Auto.PureChargeNoPreload;
-import frc.robot.commands.AutoCommands.AprilTagCommand;
-import frc.robot.commands.AutoCommands.Balance;
-import frc.robot.commands.AutoCommands.DriveTime;
-import frc.robot.commands.AutoCommands.FollowPath;
-import frc.robot.subsystems.CameraSubsystem;
+import frc.robot.commands.TeleOp.ZeroGyro;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,24 +30,15 @@ public class RobotContainer {
   private final XboxController controller = new XboxController(0);
   private final XboxController controller2 = new XboxController(1);
   private final NewSwerveDrivetrain swerve = new NewSwerveDrivetrain(controller);
-  private final SwerveCommand swerveCommand = new SwerveCommand(controller, swerve);
-  private final CameraSubsystem cam = new CameraSubsystem();
-  private final CameraStream camStream = new CameraStream(cam);
   private final Elevator elevator = new Elevator(controller2);
-  private final ElevatorDrive elCommand = new ElevatorDrive(elevator, controller2);
-  // private final AprilTagCommand autoCommand = new AprilTagCommand(swerve);
+
+  // Autos
   private final Preload preloadAndPark = new Preload(swerve, elevator);
   private final ChargeStatiom chargeStation = new ChargeStatiom(swerve, elevator);
   private final ChargeOnly chargePreload = new ChargeOnly(swerve, elevator);
   private final PureChargeNoPreload chargeOnly = new PureChargeNoPreload(swerve, elevator);
   private final Park park = new Park(swerve);
-  // private final Balance balance = new Balance(swerve);
-  // private final FollowPath path = new FollowPath(swerve, Paths.SmC);
-  // private final DriveTime time = new DriveTime(swerve, -.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 300);
   private final SendableChooser<Command> autoSelect = new SendableChooser<>();
-
-  //private final TestSubsystem test = new TestSubsystem(controller);
-  //private final TestCommand tCom = new TestCommand(controller, test);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
