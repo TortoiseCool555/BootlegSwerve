@@ -123,12 +123,12 @@ public class ElevatorUnion extends CommandBase {
     elevator.setColor(elColor);
 
     SmartDashboard.putBoolean("Mode", scoringMode);
-    SmartDashboard.putNumber("Elevator Position", elevator.getPosition());
+    SmartDashboard.putNumber("Elevator", elevator.getPosition());
     SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
     SmartDashboard.putNumber("Extension Distance", elevator.getExtDist());
-    SmartDashboard.putNumber("Wanted Elevator", wantedElevatorPos);
-    SmartDashboard.putNumber("Wanted Arm Angle", driverIntentArm + armAdjustment);
-    SmartDashboard.putNumber("Wanted Extension Distance", driverIntentExtend + extendAdjustment);
+    SmartDashboard.putNumber("Desired Position", wantedElevatorPos);
+    SmartDashboard.putNumber("Desired  Arm Angle", driverIntentArm + armAdjustment);
+    SmartDashboard.putNumber("Desired Extension", driverIntentExtend + extendAdjustment);
     SmartDashboard.putNumber("Position Sequence", sequenceNum);
   }
 

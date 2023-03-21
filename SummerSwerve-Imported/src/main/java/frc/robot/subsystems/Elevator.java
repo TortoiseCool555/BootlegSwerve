@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
@@ -41,7 +42,8 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
-  PIDController armController = new PIDController(0.1, 0, 0.0001);
+  PIDController armController = new PIDController(4, 0, 0.5);
+  ArmFeedforward armFeedforward = new ArmFeedforward(0, 1.7, 1.4);
   //private DecimalFormat df = new DecimalFormat("0.00");
 
   XboxController controller;
@@ -54,7 +56,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDefaultCommand(new ElevatorUnion(this, controller));
+    setDefaultCommand(new ElevatorDrive(this, controller));
   }
 
   // Init
@@ -130,11 +132,13 @@ public class Elevator extends SubsystemBase {
     arm2.set(pow);
   }
   public double getArmAngle(){
-    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (60 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
+    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (15 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getArmPower(double angle){
-    // double pow = armController.calculate(getArmAngle(), angle);
+    // double ang = Math.toRadians(getArmAngle());
+    // double pow = armController.calculate(ang, Math.toRadians(angle));
+    // pow += armController.calculate(ang, Math.toRadians(angle));
     double pow = Math.copySign(Math.pow(angle - getArmAngle(), 2)*0.008, angle - getArmAngle());
     pow = Math.abs(pow) > 0.2 ? Math.copySign(0.2,pow) : pow;
     double added = angle < 80 ? 0.008 : -0.09;
@@ -168,19 +172,20 @@ public class Elevator extends SubsystemBase {
 
   // Compressor
   public void startComp(){
-    compressor.enableAnalog(60, 120);
+    // compressor.enableAnalog(60, 120);
   }
   public void stopComp(){
-    compressor.disable();
+    // compressor.disable();
   }
   public void setState(boolean var){
-    solenoid.set(var);
+    // solenoid.set(var);
   }
   public void switchState(){
-    solenoid.toggle();
+    // solenoid.toggle();
   }
   public boolean getSolenoidState() {
-    return solenoid.get();
+    // return solenoid.get();
+    return false;
   }
 
   // Color
