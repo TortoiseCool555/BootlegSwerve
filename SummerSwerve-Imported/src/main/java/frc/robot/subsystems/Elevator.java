@@ -54,7 +54,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDefaultCommand(new ElevatorDrive(this, controller));
+    setDefaultCommand(new ElevatorUnion(this, controller));
   }
 
   // Init
@@ -134,6 +134,7 @@ public class Elevator extends SubsystemBase {
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getArmPower(double angle){
+    // double pow = armController.calculate(getArmAngle(), angle);
     double pow = Math.copySign(Math.pow(angle - getArmAngle(), 2)*0.008, angle - getArmAngle());
     pow = Math.abs(pow) > 0.2 ? Math.copySign(0.2,pow) : pow;
     double added = angle < 80 ? 0.008 : -0.09;

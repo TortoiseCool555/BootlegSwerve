@@ -5,7 +5,9 @@
 package frc.robot.commands.TeleOp;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Toggle;
 import frc.robot.subsystems.Elevator;
 
 public class ElevatorUnion extends CommandBase {
@@ -21,6 +23,9 @@ public class ElevatorUnion extends CommandBase {
   double extendAdjustment = 0;
   boolean shouldReset = false;
   boolean scoringMode = false;
+  Toggle adjustmentToggle = new Toggle(1);
+  double sequenceNum = 1;
+  double elColor;
 
   public ElevatorUnion(Elevator elevator, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -59,35 +64,45 @@ public class ElevatorUnion extends CommandBase {
 
     // Select driver intent
     if(shouldReset) {
-      elevator.setColor(0.01);
+      sequenceNum = 1;
+      elColor = 0.01;
       driverIntentArm = 70;
       driverIntentExtend = 0;
-    }
-    else if(scoringMode) {
-      elevator.setColor(0.69);
+    } else if(scoringMode) {
+      elColor = 0.69;
       if (elevator.getPosition() > 6000) {
+        sequenceNum = 4;
         driverIntentExtend = 11;
         driverIntentArm = 160;
       } else if (elevator.getPosition() > 3000) {
+        sequenceNum = 3;
         driverIntentExtend = 5;
         driverIntentArm = 160;
       } else {
+        sequenceNum = 2;
         driverIntentExtend = 0;
         driverIntentArm = 120;
       }
-    }
-    else{ // Grab mode
-      elevator.setColor(0.89);
+    } else{ // Grab mode
+      elColor = 0.89;
       if (elevator.getPosition() > 6000) {
+        sequenceNum = 7;
         driverIntentExtend = 5;
         driverIntentArm = 160;
       } else if(elevator.getPosition() > 3000) {
+        sequenceNum = 6;
         driverIntentExtend = 0;
         driverIntentArm = 80;
       } else {
+        sequenceNum = 5;
         driverIntentExtend = 0;
         driverIntentArm = 160;
       }
+    }
+
+    if(adjustmentToggle.isToggled(sequenceNum)) {
+      armAdjustment = 0;
+      extendAdjustment = 0;
     }
     
     elevator.setExtend(driverIntentExtend + extendAdjustment);
@@ -95,13 +110,26 @@ public class ElevatorUnion extends CommandBase {
 
     if(controller.getLeftTriggerAxis() > 0.1 && shouldReset) {
       elevator.setIntake(0.9);
+      elColor = 0.7;
     } if(controller.getLeftTriggerAxis() > 0.1) {
       elevator.setIntake(0.3);
+      elColor = 0.6;
     } else if(controller.getRightTriggerAxis()  > 0.1) {
       elevator.setIntake(-0.3);
     } else {
       elevator.setIntake(0);
     }
+
+    elevator.setColor(elColor);
+
+    SmartDashboard.putBoolean("Mode", scoringMode);
+    SmartDashboard.putNumber("Elevator Position", elevator.getPosition());
+    SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
+    SmartDashboard.putNumber("Extension Distance", elevator.getExtDist());
+    SmartDashboard.putNumber("Wanted Elevator", wantedElevatorPos);
+    SmartDashboard.putNumber("Wanted Arm Angle", driverIntentArm + armAdjustment);
+    SmartDashboard.putNumber("Wanted Extension Distance", driverIntentExtend + extendAdjustment);
+    SmartDashboard.putNumber("Position Sequence", sequenceNum);
   }
 
   // Called once the command ends or is interrupted.
