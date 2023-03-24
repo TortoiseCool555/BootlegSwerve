@@ -37,11 +37,7 @@ public class ElevatorDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.setBrake();
     elevator.resetElevator();
-    elevator.setExBrake();
-    elevator.startComp();
-    elevator.setSmartCurrentLimit();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,7 +58,7 @@ public class ElevatorDrive extends CommandBase {
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
 
     pos = ExtraMath.clip(pos + (elevatorVal * 200), 10, 9500);
-    angle = ExtraMath.clip(angle, 62, 213);
+    angle = ExtraMath.clip(angle, 62, 221);
     distExt = ExtraMath.clip(distExt, 0, 17.6);
 
     if(currentPOV != previousPOV && currentPOV == 1) {
@@ -83,6 +79,9 @@ public class ElevatorDrive extends CommandBase {
 
     if(controller.getXButton()) {
       isEncoders = true;
+      pos = 0;
+      angle = 80;
+      distExt = 0;
     } else if(controller.getAButton()) {
       isEncoders = false;
     }
@@ -106,8 +105,6 @@ public class ElevatorDrive extends CommandBase {
       elevator.setIntake(0.5);
     } else if(controller.getRightTriggerAxis()  > 0.1) {
       elevator.setIntake(-0.4);
-    } else if(controller.getLeftBumper()) {
-      elevator.setIntake(-0.9);
     } else {
       elevator.setIntake(0);
     }

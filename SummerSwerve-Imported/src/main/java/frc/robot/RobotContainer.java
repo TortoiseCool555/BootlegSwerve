@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.Auto.ChargeOnly;
+import frc.robot.commands.Auto.PreloadCharge;
+import frc.robot.commands.Auto.PreloadMidCharge;
+import frc.robot.commands.Auto.PreloadMidPark;
 import frc.robot.commands.Auto.ChargeStatiom;
 import frc.robot.commands.Auto.Park;
-import frc.robot.commands.Auto.Preload;
+import frc.robot.commands.Auto.PreloadPark;
 import frc.robot.commands.Auto.PureChargeNoPreload;
+import frc.robot.commands.Auto.ScoreOnly;
 import frc.robot.commands.TeleOp.ZeroGyro;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NewSwerveDrivetrain;
@@ -33,21 +36,27 @@ public class RobotContainer {
   private final Elevator elevator = new Elevator(controller2);
 
   // Autos
-  private final Preload preloadAndPark = new Preload(swerve, elevator);
+  private final PreloadPark preloadAndPark = new PreloadPark(swerve, elevator);
   private final ChargeStatiom chargeStation = new ChargeStatiom(swerve, elevator);
-  private final ChargeOnly chargePreload = new ChargeOnly(swerve, elevator);
+  private final PreloadCharge chargePreload = new PreloadCharge(swerve, elevator);
   private final PureChargeNoPreload chargeOnly = new PureChargeNoPreload(swerve, elevator);
   private final Park park = new Park(swerve);
+  PreloadMidPark preloadMidPark = new PreloadMidPark(swerve, elevator);
+  PreloadMidCharge preloadMidCharge = new PreloadMidCharge(swerve, elevator);
   private final SendableChooser<Command> autoSelect = new SendableChooser<>();
+  private final ScoreOnly scoreOnly = new ScoreOnly(swerve, elevator);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelect.addOption("Preload and Charge Station", chargePreload);
-    autoSelect.addOption("Charge Station", chargeOnly);
-    autoSelect.addOption("Charge Station With Extra Points", chargeStation);
+    autoSelect.addOption("PreloadH and Charge Station", chargePreload);
+    autoSelect.addOption("PreloadM and Charge Station", preloadMidCharge);
+    autoSelect.addOption("Charge Staton Only", chargeOnly);
+    // autoSelect.addOption("Charge Station With Extra Points", chargeStation);
+    autoSelect.setDefaultOption("PreloadH and Park", preloadAndPark);
+    autoSelect.setDefaultOption("PreloadM and Park", preloadMidPark);
     autoSelect.addOption("Park", park);
-    autoSelect.setDefaultOption("Preload and Park", preloadAndPark);
+    autoSelect.addOption("Score Only", scoreOnly);
     SmartDashboard.putData(autoSelect);
     configureButtonBindings();
   }

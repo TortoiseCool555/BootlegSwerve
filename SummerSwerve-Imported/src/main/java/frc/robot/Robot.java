@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
     // visionThread.start();
     // CameraServer.startAutomaticCapture().setResolution(640, 480);
     CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kYUYV, 320, 180, 30);
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
   }
 

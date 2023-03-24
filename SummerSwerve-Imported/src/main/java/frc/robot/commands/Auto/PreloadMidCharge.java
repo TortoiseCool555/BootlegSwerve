@@ -19,24 +19,13 @@ import frc.robot.subsystems.NewSwerveDrivetrain;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ChargeOnly extends SequentialCommandGroup {
-  /** Creates a new ChargeOnly. */
-  public ChargeOnly(NewSwerveDrivetrain drivetrain, Elevator elevator) {
+public class PreloadMidCharge extends SequentialCommandGroup {
+  /** Creates a new PreloadMidCharge. */
+  public PreloadMidCharge(NewSwerveDrivetrain drivetrain, Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     double elHeight = 0;
     double exPos = 0;
-    // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
-    // new AutoControl(elevator, 0, 0, 80, true),
-    // new AutoControl(elevator, elHeight, 0, 95, true),
-    // new AutoControl(elevator, elHeight, exPos, 95, true),
-    // new AutoControl(elevator,elHeight,exPos,140,true, 0), new Pause(elevator, elHeight, 17, 140, 1),
-    // new AutoControl(elevator,elHeight,exPos,140,false, 0.4), new Pause(elevator, elHeight, 17, 140, 0.5),
-    // new AutoControl(elevator, elHeight, 1, 85, false, 0),
-    // new AutoControl(elevator, 0, 1, 75, false, 0),
-    // new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 1.6).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
-    // new Balance(drivetrain).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
-    // );
 
     addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
     new AutoControl(elevator, 0, 0, 80, true),
@@ -44,12 +33,10 @@ public class ChargeOnly extends SequentialCommandGroup {
     new AutoControl(elevator, elHeight, exPos, 95, true),
     new AutoControl(elevator,elHeight,exPos,135,true, 0), new Pause(elevator, elHeight, exPos, 135, 1),
     new AutoControl(elevator,elHeight,exPos,135,false, 0.4), new Pause(elevator, elHeight, exPos, 135, 0.5),
-    new AutoControl(elevator, elHeight, 1, 85, false, 0),
-    new AutoControl(elevator, 0, 1, 75, false, 0),
-    new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2.5).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
+    new AutoControl(elevator, elHeight, 1, 90, false, 0),
+    new AutoControl(elevator, 0, 1, 90, false, 0),
+    new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 2.2).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
     new Balance(drivetrain).raceWith(new AutoControlPower(elevator, 0, 0, 75, false))
     );
-    // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new DriveTime(drivetrain, -0.3 * Constants.MAX_TRANS_METERS_PER_SEC, 0, 0, 3)
-    // );
   }
 }

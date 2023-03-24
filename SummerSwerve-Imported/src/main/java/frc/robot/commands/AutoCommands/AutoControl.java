@@ -4,6 +4,8 @@
 
 package frc.robot.commands.AutoCommands;
 
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.ExtraMath;
@@ -12,6 +14,7 @@ import frc.robot.subsystems.Elevator;
 public class AutoControl extends CommandBase {
   /** Creates a new AutoControl. */
   Elevator elevator;
+  Timer timer = new Timer();
   double angle;
   double elPos;
   double exPos;
@@ -21,6 +24,7 @@ public class AutoControl extends CommandBase {
   boolean check2;
   boolean check3;
   boolean check4;
+  double time;
   public AutoControl(Elevator elevator, double elPos, double exPos, double angle, boolean state) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
@@ -46,6 +50,8 @@ public class AutoControl extends CommandBase {
   public void initialize() {
     check4 = false;
     elevator.setState(state);
+    timer.start();
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -74,7 +80,9 @@ public class AutoControl extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    timer.stop();
+  }
 
   // Returns true when the command should end.
   @Override

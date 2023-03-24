@@ -12,10 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,8 +22,8 @@ import frc.robot.ExtraMath;
 import frc.robot.commands.TeleOp.ElevatorUnion;
 
 public class Elevator extends SubsystemBase {
-  private Compressor compressor = new Compressor(24, PneumaticsModuleType.REVPH);
-  private Solenoid solenoid = new Solenoid(24, PneumaticsModuleType.REVPH, 9);
+  // private Compressor compressor = new Compressor(24, PneumaticsModuleType.REVPH);
+  // private Solenoid solenoid = new Solenoid(24, PneumaticsModuleType.REVPH, 9);
   private Spark color = new Spark(0);
 
   private CANSparkMax LS = new CANSparkMax(15, MotorType.kBrushless);
@@ -35,7 +32,7 @@ public class Elevator extends SubsystemBase {
   private CANSparkMax arm1 = new CANSparkMax(19, MotorType.kBrushless);
   private CANSparkMax arm2 = new CANSparkMax(20, MotorType.kBrushless);
   private CANSparkMax intake1 = new CANSparkMax(21, MotorType.kBrushless);
-  private CANSparkMax intake2 = new CANSparkMax(22, MotorType.kBrushless);
+  // private CANSparkMax intake2 = new CANSparkMax(22, MotorType.kBrushless);
 
   private RelativeEncoder LSEnc = LS.getEncoder();
   private RelativeEncoder RSEnc = RS.getEncoder();
@@ -66,6 +63,9 @@ public class Elevator extends SubsystemBase {
     liftEnc.reset();
     armEnc.reset();
     EXEnc.setPosition(0);
+    setBrake();
+    setExBrake();
+    setSmartCurrentLimit();
   }
   public void setBrake(){
     LS.setIdleMode(IdleMode.kBrake);
@@ -167,7 +167,7 @@ public class Elevator extends SubsystemBase {
   // Intake
   public void setIntake(double power){
     intake1.set(-power);
-    intake2.set(power);
+    // intake2.set(power);
   }
 
   // Compressor
