@@ -82,6 +82,7 @@ public class ElevatorDrive extends CommandBase {
       pos = 0;
       angle = 80;
       distExt = 0;
+      elevator.resetElevator();
     } else if(controller.getAButton()) {
       isEncoders = false;
     }
@@ -93,13 +94,13 @@ public class ElevatorDrive extends CommandBase {
       elevator.setState(state);
     } else {
       elevator.setPower(controller.getLeftY() * 0.6);
-      elevator.setExtend(controller.getLeftX() * 1);
+      elevator.setExtendPower(controller.getLeftX() * 0.3);
       elevator.setArmPower(-controller.getRightY() * 0.2);
     }
 
-    if(controller.getBackButton()) {
-      elevator.resetElevator();
-    }
+    // if(controller.getBackButton()) {
+    //   elevator.resetElevator();
+    // }
 
     if(controller.getLeftTriggerAxis() > 0.1) {
       elevator.setIntake(0.5);

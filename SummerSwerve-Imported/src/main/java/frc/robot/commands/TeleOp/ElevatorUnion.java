@@ -45,7 +45,7 @@ public class ElevatorUnion extends CommandBase {
   @Override
   public void execute() {
     // Set Elevator Position
-    wantedElevatorPos += -controller.getLeftY() * 200;
+    wantedElevatorPos += controller.getLeftY() > 0 ? -controller.getLeftY() * 200 * 0.8 : -controller.getLeftY() * 200;
     elevator.setPosition(wantedElevatorPos, true);
 
     // Driver adjustments
@@ -72,21 +72,31 @@ public class ElevatorUnion extends CommandBase {
       driverIntentArm = 80;
       driverIntentExtend = 0;
     } else if(scoringMode) {
+      if(cubeMode) {
+
+      } else {
+
+      }
       elColor = 0.69;
-      if (elevator.getPosition() > 6000) {
+      if (elevator.getPosition() > 7000) {
         sequenceNum = 4;
-        driverIntentExtend = 11;
-        driverIntentArm = 160;
-      } else if (elevator.getPosition() > 3000) {
+        driverIntentExtend = 15;
+        driverIntentArm = 135;
+      } else if (elevator.getPosition() > 1000) {
         sequenceNum = 3;
         driverIntentExtend = 5;
-        driverIntentArm = 160;
+        driverIntentArm = 135;
       } else {
         sequenceNum = 2;
         driverIntentExtend = 0;
-        driverIntentArm = 120;
+        driverIntentArm = 135;
       }
     } else{ // Grab mode
+      if(cubeMode) {
+
+      } else {
+
+      }
       elColor = 0.89;
       if (elevator.getPosition() > 6000) {
         sequenceNum = 7;
