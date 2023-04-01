@@ -69,14 +69,20 @@ public class ElevatorUnion extends CommandBase {
     wantedElevatorPos = ExtraMath.clip(wantedElevatorPos, 3, 9500);
 
     // Driver adjustments
-    extendAdjustment += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
-    extendAdjustment = ExtraMath.clip(extendAdjustment, 0, 16);
     if(driverIntentArm + armAdjustment > 236.5 && -controller.getRightY() < 0) {
       
     } else if(driverIntentArm + armAdjustment < 60 && -controller.getRightY() > 0) {
       
     } else {
       armAdjustment -= Math.abs(controller.getRightY()) < 0.1 ? 0 :  ExtraMath.exponential(-controller.getRightY(), 2.9, 0);
+    }
+
+    if(driverIntentExtend + extendAdjustment > 17.5 && controller.getLeftX() > 0) {
+      
+    } else if(driverIntentExtend + extendAdjustment < 0 && controller.getLeftX() < 0) {
+      
+    } else {
+      extendAdjustment += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
     }
     
     // armAdjustment = ExtraMath.clip(armAdjustment, 62, 216);

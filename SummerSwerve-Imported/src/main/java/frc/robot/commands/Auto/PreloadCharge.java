@@ -25,7 +25,7 @@ public class PreloadCharge extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     double elHeight = 7000;
-    double exPos = 15;
+    double exPos = 17.5;
     // addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
     // new AutoControl(elevator, 0, 0, 80, true),
     // new AutoControl(elevator, elHeight, 0, 95, true),

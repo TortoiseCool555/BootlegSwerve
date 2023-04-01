@@ -39,7 +39,7 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
-  PIDController armController = new PIDController(3, 0, 0.00145); // 4, 0, 0.0005
+  PIDController armController = new PIDController(.3, 0, 0.00145); // 4, 0, 0.0005
   ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.05, .1); // 0.81, 0.3
   //private DecimalFormat df = new DecimalFormat("0.00");
 
