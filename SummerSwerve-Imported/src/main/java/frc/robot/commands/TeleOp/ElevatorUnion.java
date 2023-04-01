@@ -7,6 +7,7 @@ package frc.robot.commands.TeleOp;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.ExtraMath;
 import frc.robot.Toggle;
 import frc.robot.subsystems.Elevator;
 
@@ -21,12 +22,15 @@ public class ElevatorUnion extends CommandBase {
   double driverIntentArm = 0;
   double armAdjustment = 0;
   double extendAdjustment = 0;
-  boolean shouldReset = false;
+  boolean shouldReset = true;
   boolean scoringMode = false;
   boolean cubeMode = true;
   Toggle adjustmentToggle = new Toggle(1);
   double sequenceNum = 1;
   double elColor;
+  boolean isEncoders = true;
+
+  String elString = "Stationary";
 
   public ElevatorUnion(Elevator elevator, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,19 +43,45 @@ public class ElevatorUnion extends CommandBase {
   @Override
   public void initialize() {
     elevator.resetElevator();
+    wantedElevatorPos = 0;
+    driverIntentExtend = 0;
+    driverIntentArm = 0;
+    armAdjustment = 0;
+    extendAdjustment = 0;
+    shouldReset = true;
+    scoringMode = false;
+    cubeMode = true;
+    sequenceNum = 1;
+    isEncoders = true;
+    elevator.setArmPID(.3, 0, 0.00145);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // Set Elevator Position
-    wantedElevatorPos += controller.getLeftY() > 0 ? -controller.getLeftY() * 200 * 0.8 : -controller.getLeftY() * 200;
-    elevator.setPosition(wantedElevatorPos, true);
+    double controllerVal = -controller.getLeftY();
+    if(Math.abs(controllerVal) < 0.1) {
+      controllerVal = 0;
+    }
+    controllerVal = controllerVal < 0 ? controllerVal * 200 * 0.8 : controllerVal * 200;
+    wantedElevatorPos += controllerVal;
+    wantedElevatorPos = ExtraMath.clip(wantedElevatorPos, 3, 9500);
 
     // Driver adjustments
-    extendAdjustment += controller.getLeftX();
-    armAdjustment += -controller.getRightY();
+    extendAdjustment += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
+    extendAdjustment = ExtraMath.clip(extendAdjustment, 0, 16);
+    if(driverIntentArm + armAdjustment > 236.5 && -controller.getRightY() < 0) {
+      
+    } else if(driverIntentArm + armAdjustment < 60 && -controller.getRightY() > 0) {
+      
+    } else {
+      armAdjustment -= Math.abs(controller.getRightY()) < 0.1 ? 0 :  ExtraMath.exponential(-controller.getRightY(), 2.9, 0);
+    }
+    
+    // armAdjustment = ExtraMath.clip(armAdjustment, 62, 216);
    
+    // Select Element Mode
     if(controller.getLeftBumperPressed()) {
       cubeMode = !cubeMode;
     }
@@ -66,89 +96,127 @@ public class ElevatorUnion extends CommandBase {
     }
 
     // Select driver intent
+    if(scoringMode) {
+      if(cubeMode) { // SCoring Cube
+        elColor = 0.89;
+        if (elevator.getPosition() < -7000) {
+          sequenceNum = 4;
+          elString = "High Cube";
+          driverIntentExtend = 15;
+          driverIntentArm = 135;
+        } else if (elevator.getPosition() < -1000) {
+          sequenceNum = 3;
+          elString = "Mid Cube";
+          driverIntentExtend = 5;
+          driverIntentArm = 135;
+        } else {
+          sequenceNum = 2;
+          elString = "Low/Mid Cube";
+          driverIntentExtend = 0;
+          driverIntentArm = 135;
+        }
+      } // SCoring Cones
+      else {
+        elColor = 0.69;
+        if(elevator.getPosition() < -7000) {
+          sequenceNum = 7;
+          elString = "High Cone";
+          driverIntentExtend = 10;
+          driverIntentArm = 265;
+        } else if (elevator.getPosition() < -1000) {
+          sequenceNum = 6;
+          elString = "Mid Cone";
+          driverIntentExtend = 5;
+          driverIntentArm = 165;
+        } else {
+          sequenceNum = 5;
+          elString = "Low Cone";
+          driverIntentExtend = 0;
+          driverIntentArm = 135;
+        }
+      }
+    } 
+    else{ // Grab mode
+      elColor = 0.89;
+      if(cubeMode) {
+        if(elevator.getPosition() < -6000) {
+          sequenceNum = 9;
+          elString = "Alliance Station Cube";
+          driverIntentExtend = 5;
+          driverIntentArm = 135;
+        } else {
+          sequenceNum = 8;
+          elString = "Intake Cube";
+          driverIntentExtend = 0;
+          driverIntentArm = 180;
+        }
+      } else {
+        elColor = 0.69;
+        if(elevator.getPosition() < -6000) {
+          sequenceNum = 11;
+          elString = "Alliance Station Cone";
+          driverIntentExtend = 5;
+          driverIntentArm = 135;
+        } else {
+          sequenceNum = 10;
+          elString = "Intake Cone";
+          driverIntentExtend = 0;
+          driverIntentArm = 160;
+        }
+      }
+    }
+
     if(shouldReset) {
       sequenceNum = 1;
       elColor = 0.01;
-      driverIntentArm = 80;
+      driverIntentArm = 75;
       driverIntentExtend = 0;
-    } else if(scoringMode) {
-      if(cubeMode) {
-
-      } else {
-
-      }
-      elColor = 0.69;
-      if (elevator.getPosition() > 7000) {
-        sequenceNum = 4;
-        driverIntentExtend = 15;
-        driverIntentArm = 135;
-      } else if (elevator.getPosition() > 1000) {
-        sequenceNum = 3;
-        driverIntentExtend = 5;
-        driverIntentArm = 135;
-      } else {
-        sequenceNum = 2;
-        driverIntentExtend = 0;
-        driverIntentArm = 135;
-      }
-    } else{ // Grab mode
-      if(cubeMode) {
-
-      } else {
-
-      }
-      elColor = 0.89;
-      if (elevator.getPosition() > 6000) {
-        sequenceNum = 7;
-        driverIntentExtend = 5;
-        driverIntentArm = 160;
-      } else if(elevator.getPosition() > 3000) {
-        sequenceNum = 6;
-        driverIntentExtend = 0;
-        driverIntentArm = 80;
-      } else {
-        sequenceNum = 5;
-        driverIntentExtend = 0;
-        driverIntentArm = 160;
-      }
-    }
+    } 
 
     if(adjustmentToggle.isToggled(sequenceNum)) {
       armAdjustment = 0;
       extendAdjustment = 0;
     }
-    
-    elevator.setExtend(driverIntentExtend + extendAdjustment);
-    elevator.setArmAngle(driverIntentArm + armAdjustment);
 
-    // if(controller.getLeftTriggerAxis() > 0.1 && shouldReset) {
-    //   elevator.setIntake(0.9);
-    //   elColor = 0.7;
-    // } else if(controller.getLeftTriggerAxis() > 0.1) {
-    //   elevator.setIntake(0.3);
-    //   elColor = 0.6;
-    // } else if(controller.getRightTriggerAxis()  > 0.1) {
-    //   elevator.setIntake(-0.3);
-    // } else {
-    //   elevator.setIntake(0);
-    // }
+    if(controller.getXButton()) {
+      isEncoders = true;
+      wantedElevatorPos = 0;
+      driverIntentExtend = 0;
+      driverIntentArm = 80;
+      extendAdjustment = 0;
+      armAdjustment = 0;
+      elevator.resetElevator();
+    } else if(controller.getAButton()) {
+      isEncoders = false;
+    }
+
+    if(isEncoders) {
+      elevator.setPosition(wantedElevatorPos, true);
+      elevator.setExtend(driverIntentExtend + extendAdjustment);
+      elevator.setArmAngle(driverIntentArm + armAdjustment);
+    } else {
+      elevator.setPower(controller.getLeftY() * 0.6);
+      elevator.setExtendPower(controller.getLeftX() * 0.3);
+      elevator.setArmPower(-controller.getRightY() * 0.2);
+    }
 
     if(controller.getRightTriggerAxis() > 0.1) {
-      elevator.setIntake(-0.3);
+      elevator.setIntake(-0.4);
     } else if(controller.getLeftTriggerAxis() > 0.1) {
-      if(!cubeMode || shouldReset) {
-        elevator.setIntake(0.9);
-      } else {
-        elevator.setIntake(0.4);
-      }
+      elevator.setIntake(0.5);
     } else {
       elevator.setIntake(0);
     }
 
     elevator.setColor(elColor);
 
-    SmartDashboard.putBoolean("Mode", scoringMode);
-    SmartDashboard.putNumber("Elevator", elevator.getPosition());
+    // Driver dashboard
+    SmartDashboard.putBoolean("Scoring Mode", scoringMode);
+    SmartDashboard.putBoolean("Cube Mode", cubeMode);
+    SmartDashboard.putString("Elevator Prediction", elString);
+
+    // Program Values
+    SmartDashboard.putNumber("Elevator", -elevator.getPosition());
     SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
     SmartDashboard.putNumber("Extension Distance", elevator.getExtDist());
     SmartDashboard.putNumber("Desired Position", wantedElevatorPos);

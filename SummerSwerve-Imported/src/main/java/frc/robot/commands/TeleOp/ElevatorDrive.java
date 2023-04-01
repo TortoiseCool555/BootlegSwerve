@@ -53,12 +53,12 @@ public class ElevatorDrive extends CommandBase {
     if(controller.getRightY() < 0) {
       angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 2.5;
     } else {
-      angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 1.3;
+      angle -= Math.abs(-controller.getRightY()) < 0.1 ? 0 : -controller.getRightY() * 2.3;
     }
     distExt += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
 
     pos = ExtraMath.clip(pos + (elevatorVal * 200), 10, 9500);
-    angle = ExtraMath.clip(angle, 62, 221);
+    angle = ExtraMath.clip(angle, 62, 216);
     distExt = ExtraMath.clip(distExt, 0, 17.6);
 
     if(currentPOV != previousPOV && currentPOV == 1) {
@@ -115,10 +115,12 @@ public class ElevatorDrive extends CommandBase {
     // SmartDashboard.putNumber("Right Pos: ", elevator.getRightPos());
     // SmartDashboard.putString("Desired Position: ", df.format(pos));
     // SmartDashboard.putNumber("Arm Power", elevator.getArmPower(angle));
-    // SmartDashboard.putNumber("Desired Arm Angle", angle);
+    SmartDashboard.putNumber("Desired Arm Angle", angle);
     // SmartDashboard.putNumber("Desired Extension", distExt);
-    // SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
-    // SmartDashboard.putNumber("Arm Ang Pow", elevator.getArmPower(angle));
+    SmartDashboard.putNumber("Arm Angle", elevator.getArmAngle());
+    SmartDashboard.putNumber("Arm Ang Pow", elevator.getArmPower(angle));
+    SmartDashboard.putNumber("Arm Pos Error", Math.toDegrees(elevator.getPositionError()));
+    SmartDashboard.putNumber("Arm Der Error", Math.toDegrees(elevator.getDerivativeError()));
     // SmartDashboard.putNumber("Extension Distance", elevator.getExtDist());
     // SmartDashboard.putNumber("Extension Power", elevator.setExtend(distExt));
     previousPOV = currentPOV;

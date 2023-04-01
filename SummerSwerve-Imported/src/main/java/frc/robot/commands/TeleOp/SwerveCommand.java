@@ -111,9 +111,9 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putString("Z", drivetrain.z());
     // SmartDashboard.putNumber("Roll: ", Math.toDegrees(roll));
     // SmartDashboard.putNumber("Pitch", Math.toDegrees(pitch));
-    // SmartDashboard.putNumber("Raw Roll", drivetrain.getRoll());
-    // SmartDashboard.putNumber("Raw Pitch", drivetrain.getPitch());
-    // SmartDashboard.putNumber("Yaw", drivetrain.getYaw());
+    SmartDashboard.putNumber("Yaw", drivetrain.getYaw());
+    SmartDashboard.putNumber("Raw Roll", drivetrain.getRoll());
+    SmartDashboard.putNumber("Raw Pitch", drivetrain.getPitch());
     // SmartDashboard.putNumber("x speed", xSpd);
     // SmartDashboard.putNumber("y speed", ySpd);
     // SmartDashboard.putNumber("Angle, Off", Math.toDegrees(angleOffground));

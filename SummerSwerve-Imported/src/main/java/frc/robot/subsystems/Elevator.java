@@ -39,8 +39,8 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
-  PIDController armController = new PIDController(4, 0, 0.5);
-  ArmFeedforward armFeedforward = new ArmFeedforward(0, 1.7, 1.4);
+  PIDController armController = new PIDController(3, 0, 0.00145); // 4, 0, 0.0005
+  ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.05, .1); // 0.81, 0.3
   //private DecimalFormat df = new DecimalFormat("0.00");
 
   XboxController controller;
@@ -53,7 +53,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDefaultCommand(new ElevatorDrive(this, controller));
+    setDefaultCommand(new ElevatorUnion(this, controller));
   }
 
   // Init
@@ -128,21 +128,21 @@ public class Elevator extends SubsystemBase {
   // Arm
   public void setArmAngle(double angle) {
     double pow = getArmPower(angle);
-    arm1.set(-pow);
-    arm2.set(pow);
+    arm1.set(pow);
+    arm2.set(-pow);
   }
   public double getArmAngle(){
-    double ticksFixed = ((armEnc.getRaw() / 4.0 ) + (60 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
+    double ticksFixed = ((-armEnc.getRaw()) + (60 * Constants.through_bore_TPR / 360)) % Constants.through_bore_TPR;
     return Math.toDegrees(ticksFixed * (2 * Math.PI/Constants.through_bore_TPR));
   }
   public double getArmPower(double angle){
-    // double ang = Math.toRadians(getArmAngle());
-    // double pow = armController.calculate(ang, Math.toRadians(angle));
-    // pow += armController.calculate(ang, Math.toRadians(angle));
-    double pow = Math.copySign(Math.pow(angle - getArmAngle(), 2)*0.008, angle - getArmAngle());
-    pow = Math.abs(pow) > 0.2 ? Math.copySign(0.2,pow) : pow;
-    double added = angle < 80 ? 0.008 : -0.09;
-    return pow + added;
+    double ang = Math.toRadians(getArmAngle());
+    double pow = armController.calculate(ang, Math.toRadians(angle));
+    pow += armFeedforward.calculate(Math.toRadians(angle), 0);
+    // double pow = Math.copySign(Math.pow(angle - getArmAngle(), 2)*0.008, angle - getArmAngle());
+    // pow = Math.abs(pow) > 0.2 ? Math.copySign(0.2,pow) : pow;
+    // double added = angle < 80 ? 0.008 : -0.09;
+    return ExtraMath.clip(pow, 0.5);
   }
 
   public void setArmPower(double power) {
@@ -192,4 +192,22 @@ public class Elevator extends SubsystemBase {
   public void setColor(double colorNum) {
     color.set(colorNum);
   }
+
+  public void setArmPID(double p, double i, double d) {
+    armController.setP(p);
+    armController.setI(i);
+    armController.setD(d);
+  }
+
+  public double getPositionError() {
+    return armController.getPositionError();
+  }
+
+  public double getDerivativeError(){
+    return armController.getVelocityError();
+  }
+
+  // public void setArmFeedForward(double g, double k) {
+  //   armFeedforward.
+  // }
 }
