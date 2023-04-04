@@ -27,7 +27,8 @@ public class InitDrivetrain extends CommandBase {
   public void initialize() {
     drivetrain.initialize();
     drivetrain.setX(x, y, angleRad);
-    drivetrain.resetOdo();
+    drivetrain.setYaw(Math.toDegrees(angleRad));
+    // drivetrain.resetOdo();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

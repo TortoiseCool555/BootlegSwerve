@@ -18,5 +18,5 @@ public class Paths {
     new Point(1, 1, 1));
     public final static List<Point> ScoreExtra = Arrays.asList(new Point(1, 1, 1), new Point(1, 1, 1), new Point(1, 1, 1),
     new Point(1, 1, 1));
-    public final static List<Point> SmC = Arrays.asList(new Point(0, 0, 0), new Point(1, 0, 0));
+    public final static List<Point> SmC = Arrays.asList(new Point(0, 0.0, Math.toRadians(180)), new Point(5.65, 0.01, Math.toRadians(180)));
 }

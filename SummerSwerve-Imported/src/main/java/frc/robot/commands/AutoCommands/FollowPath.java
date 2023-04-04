@@ -26,6 +26,7 @@ public class FollowPath extends CommandBase {
   Field2d field = new Field2d();
   public FollowPath(NewSwerveDrivetrain drivetrain, List<Point> points) {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivetrain);
     this.drivetrain = drivetrain;
     this.points = points;
   }
@@ -45,9 +46,9 @@ public class FollowPath extends CommandBase {
       segNum++;
     }
     
-    Point wantedPoint = path.getNextPoint(robotPoint, segNum, 4);
+    Point wantedPoint = path.getNextPoint(robotPoint, segNum, 1);
     Point finalPoint = path.getSegment(segNum).get(1);
-    double[] veloc = path.getVelocities(robotPoint, segNum, 4);
+    double[] veloc = path.getVelocities(robotPoint, segNum, 1);
     double x = veloc[0];
     double y = veloc[1];
     double transVeloc = Math.hypot(x, y);
@@ -58,14 +59,15 @@ public class FollowPath extends CommandBase {
 
     double rot = ExtraMath.clip(veloc[2], 9);
 
-    drivetrain.setChassisSpeeds(x,y,rot);
+    drivetrain.setChassisSpeeds(x/4,y/4,rot/4);
     drivetrain.updateOdometry();
 
     field.setRobotPose(robotPoint.getX(), robotPoint.getY(), Rotation2d.fromRadians(robotPoint.getAngleRad()));
     SmartDashboard.putData("Field", field);
-    SmartDashboard.putString("Robot Point", robotPoint.getX() + ", " + robotPoint.getY() + ", " + Math.toRadians(robotPoint.getAngleRad()));
-    SmartDashboard.putString("Wanted Point", wantedPoint.getX() + ", " + wantedPoint.getY() + ", " + Math.toRadians(wantedPoint.getAngleRad()));
-    SmartDashboard.putString("Final Point", finalPoint.getX() + ", " + finalPoint.getY() + ", " + Math.toRadians(finalPoint.getAngleRad()));
+    SmartDashboard.putString("Robot Point", robotPoint.getX() + ", " + robotPoint.getY() + ", " + Math.toDegrees(robotPoint.getAngleRad()));
+    SmartDashboard.putNumber("Odom Angle Off", ExtraMath.angleError(robotPoint.getAngleRad(), wantedPoint.getAngleRad()));
+    SmartDashboard.putString("Wanted Point", wantedPoint.getX() + ", " + wantedPoint.getY() + ", " + Math.toDegrees(wantedPoint.getAngleRad()));
+    SmartDashboard.putString("Final Point", finalPoint.getX() + ", " + finalPoint.getY() + ", " + Math.toDegrees(finalPoint.getAngleRad()));
     SmartDashboard.putString("Velocities", x + ", " + y + ", " + rot);
   }
 
@@ -78,6 +80,6 @@ public class FollowPath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return segNum == points.size() - 1 && mag < 0.35;
+    return segNum == points.size() - 1 && mag < 0.2;
   }
 }

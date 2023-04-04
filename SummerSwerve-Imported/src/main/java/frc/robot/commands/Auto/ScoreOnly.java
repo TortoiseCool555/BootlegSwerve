@@ -5,10 +5,7 @@
 package frc.robot.commands.Auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.commands.AutoCommands.AutoControl;
-import frc.robot.commands.AutoCommands.AutoControlPower;
-import frc.robot.commands.AutoCommands.DriveTime;
 import frc.robot.commands.AutoCommands.InitDrivetrain;
 import frc.robot.commands.AutoCommands.Pause;
 import frc.robot.commands.AutoCommands.ResetElevator;

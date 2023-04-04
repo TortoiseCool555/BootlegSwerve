@@ -12,6 +12,7 @@ import frc.robot.commands.Auto.PreloadCharge;
 import frc.robot.commands.Auto.PreloadMidCharge;
 import frc.robot.commands.Auto.PreloadMidPark;
 import frc.robot.commands.Auto.ChargeStatiom;
+import frc.robot.commands.Auto.OdomTest;
 import frc.robot.commands.Auto.Park;
 import frc.robot.commands.Auto.PreloadPark;
 import frc.robot.commands.Auto.PureChargeNoPreload;
@@ -45,6 +46,7 @@ public class RobotContainer {
   PreloadMidCharge preloadMidCharge = new PreloadMidCharge(swerve, elevator);
   private final SendableChooser<Command> autoSelect = new SendableChooser<>();
   private final ScoreOnly scoreOnly = new ScoreOnly(swerve, elevator);
+  OdomTest odomTest = new OdomTest(swerve);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -57,6 +59,7 @@ public class RobotContainer {
     autoSelect.setDefaultOption("PreloadM and Park", preloadMidPark);
     autoSelect.addOption("Park", park);
     autoSelect.addOption("Score Only", scoreOnly);
+    autoSelect.addOption("Odom Test", odomTest);
     SmartDashboard.putData(autoSelect);
     configureButtonBindings();
   }

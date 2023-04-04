@@ -30,6 +30,9 @@ public class SwerveCommand extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.initialize();
+    drivetrain.setX(0, 0, drivetrain.getAngle());
+    drivetrain.setX(0, 0, drivetrain.getAngle());
+    drivetrain.resetOdo();
     // pitchInit = Math.toRadians(drivetrain.getPitch());
     // rollInit = Math.toRadians(drivetrain.getRoll());
     pitchInit = 0;
@@ -106,8 +109,8 @@ public class SwerveCommand extends CommandBase {
     // SmartDashboard.putString("X Stick", Double.toString(x));
     // SmartDashboard.putString("Y Stick", Double.toString(y));
     // SmartDashboard.putString("Rot Stick", Double.toString(rot));
-    SmartDashboard.putString("X", drivetrain.x());
-    SmartDashboard.putString("Y", drivetrain.y());
+    SmartDashboard.putNumber("X", drivetrain.getXPose());
+    SmartDashboard.putNumber("Y", drivetrain.getYPose());
     SmartDashboard.putString("Z", drivetrain.z());
     // SmartDashboard.putNumber("Roll: ", Math.toDegrees(roll));
     // SmartDashboard.putNumber("Pitch", Math.toDegrees(pitch));

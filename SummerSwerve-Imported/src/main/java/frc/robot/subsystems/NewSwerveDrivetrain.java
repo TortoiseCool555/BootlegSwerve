@@ -30,9 +30,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,4);
   NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, -2);
 
-  double x = 0;
-  double y = 0;
-  double angle = 0;
+  private double x = 0;
+  private double y = 0;
+  private double angle = 0;
 
   private Pigeon2 gyro = new Pigeon2(13, "rio");
 
@@ -71,7 +71,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    * @param angularVelocity - Angular velocity in rad/s
    */
   public void resetOdo(){
-    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(x, y),new Rotation2d(angle)));
+    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(x, y),new Rotation2d(Math.toRadians(getAngle()))));
   }
   public void setChassisSpeeds(double velocityX, double velocityY, double angularVelocity) {
     double angle = getAngle();
@@ -188,5 +188,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   }
   public String getModuleAngles(){
     return "FL: " + lfModule.getAngleRot() + " FR: " + rfModule.getAngleRot() + " BL: " + lbModule.getAngleRot() + " BR: " + rbModule.getAngleRot();
+  }
+
+  public void setYaw(double angleDeg) {
+    gyro.setYaw(angleDeg);
   }
 }
