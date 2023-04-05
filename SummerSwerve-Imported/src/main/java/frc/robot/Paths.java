@@ -18,5 +18,10 @@ public class Paths {
     new Point(1, 1, 1));
     public final static List<Point> ScoreExtra = Arrays.asList(new Point(1, 1, 1), new Point(1, 1, 1), new Point(1, 1, 1),
     new Point(1, 1, 1));
-    public final static List<Point> SmC = Arrays.asList(new Point(0, 0.0, Math.toRadians(180)), new Point(5.65, 0.01, Math.toRadians(180)));
+    public final static List<Point> SmC = Arrays.asList(new Point(0, 0.0, Math.toRadians(0)), new Point(5.65, 2.0, Math.toRadians(90)));
+    public final static List<Point> ScoreToCollectInBetween = Arrays.asList(new Point(0, 0.0, Math.toRadians(180)), new Point(1.3, -0.5, Math.toRadians(0)));
+    public final static List<Point> ScoreToCollect = Arrays.asList(new Point(0, -0.5, Math.toRadians(0)), new Point(5.38, -0.5, Math.toRadians(0)));
+    public final static List<Point> CollectToScoreInBetween = Arrays.asList(new Point(5.38, -0.5, Math.toRadians(0)), new Point(3.3, -0.5, Math.toRadians(180)));
+    public final static List<Point> CollectToScore = Arrays.asList(new Point(5.38, -0.5, Math.toRadians(180)), new Point(0, -0.5, Math.toRadians(180)));
+
 }

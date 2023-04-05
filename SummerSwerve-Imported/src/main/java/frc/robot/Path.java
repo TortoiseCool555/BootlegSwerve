@@ -105,7 +105,7 @@ public class Path {
      * @param radius Distance from the robot that we select a point
      * @return Returns the velocities in the x, y, and rotational format. Retrieve values in that order
      */
-    public double[] getVelocities(Point robotPoint, int segNum, double radius) {
+    public double[] getVelocities(Point robotPoint, int segNum, double radius, boolean shouldPID) {
        Point wanted = getNextPoint(robotPoint, segNum, radius);
         double dx = wanted.getX() - robotPoint.getX();
         double dy = wanted.getY() - robotPoint.getY();
@@ -114,7 +114,8 @@ public class Path {
         double odx = last.getX() - robotPoint.getX();
         double ody = last.getY() - robotPoint.getY();
 
-        double lastVeloc = Math.hypot(odx, ody) * 3;
+        double mult = shouldPID ? 2.5 : 3.3;
+        double lastVeloc = Math.hypot(odx, ody) * mult; //3.5
 
         double currentAngle = previousWanted;
         double wantedAngle = ExtraMath.atanNew(dx, dy);
@@ -122,14 +123,14 @@ public class Path {
         previousWanted = currentAngle - (added / 9);
 
         if(segNum < points.size() - 1) {
-            lastVeloc = 3.5;
+            lastVeloc = 2.5;
         }
 
         dx = Math.cos(previousWanted) * lastVeloc;
         dy = Math.sin(previousWanted) * lastVeloc;
 
         // double angleVeloc = (wanted.getAngleRad() - robotPoint.getAngleRad()) * 7;
-        double angleVeloc = ExtraMath.angleError(robotPoint.getAngleRad(), wanted.getAngleRad()) * 7;
+        double angleVeloc = -ExtraMath.angleError(robotPoint.getAngleRad(), wanted.getAngleRad()) * 7;
 
         double[] solutions = {dx,dy,angleVeloc};
         return solutions;

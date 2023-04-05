@@ -18,6 +18,6 @@ public class OdomTest extends SequentialCommandGroup {
   public OdomTest(NewSwerveDrivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InitDrivetrain(drivetrain, 0, 0, Math.toRadians(180)), new FollowPath(drivetrain, Paths.SmC));
+    addCommands(new InitDrivetrain(drivetrain, 0, 0, Math.toRadians(0)), new FollowPath(drivetrain, Paths.SmC, true));
   }
 }

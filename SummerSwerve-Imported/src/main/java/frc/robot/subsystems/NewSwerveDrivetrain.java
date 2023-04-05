@@ -30,7 +30,7 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   NewSwerveModule rfModule = new NewSwerveModule(3, 2, 1,4);
   NewSwerveModule rbModule = new NewSwerveModule(12, 11,10, -2);
 
-  private double x = 0;
+  private double x = 1;
   private double y = 0;
   private double angle = 0;
 
@@ -48,10 +48,11 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     setDefaultCommand(new SwerveCommand(controller, this));
+    updateOdometry();
   }
 
   public void initialize() {
-    gyro.setYaw(0);
+    // gyro.setYaw(0);
     lfModule.initialize();
     lbModule.initialize();
     rfModule.initialize();
@@ -70,8 +71,19 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    * @param velocityY - Y velocity in m/s
    * @param angularVelocity - Angular velocity in rad/s
    */
-  public void resetOdo(){
-    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(x, y),new Rotation2d(Math.toRadians(getAngle()))));
+  public void resetOdo(double xN, double yN){
+    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(Math.toRadians(getAngle()))));
+    updateOdometry();
+    x = getXPose();
+    y = getYPose();
+  }
+
+  public double getStartingX() {
+    return x;
+  }
+
+  public double getStartingY() {
+    return y;
   }
   public void setChassisSpeeds(double velocityX, double velocityY, double angularVelocity) {
     double angle = getAngle();

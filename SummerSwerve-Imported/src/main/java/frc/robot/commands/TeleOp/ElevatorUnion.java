@@ -184,7 +184,7 @@ public class ElevatorUnion extends CommandBase {
       extendAdjustment = 0;
     }
 
-    if(controller.getXButton()) {
+    if(controller.getXButtonPressed()) {
       isEncoders = true;
       wantedElevatorPos = 0;
       driverIntentExtend = 0;
@@ -192,7 +192,7 @@ public class ElevatorUnion extends CommandBase {
       extendAdjustment = 0;
       armAdjustment = 0;
       elevator.resetElevator();
-    } else if(controller.getAButton()) {
+    } else if(controller.getAButtonPressed()) {
       isEncoders = false;
     }
 

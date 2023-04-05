@@ -29,10 +29,12 @@ public class SwerveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // drivetrain.setChassisSpeeds(0, 0, 0);
     drivetrain.initialize();
-    drivetrain.setX(0, 0, drivetrain.getAngle());
-    drivetrain.setX(0, 0, drivetrain.getAngle());
-    drivetrain.resetOdo();
+    // drivetrain.setX(0, 0, drivetrain.getAngle());
+    drivetrain.resetOdo(0, 0);
+    drivetrain.setChassisSpeeds(0, 0, 0);
+    // drivetrain.resetOdo(0, 0);
     // pitchInit = Math.toRadians(drivetrain.getPitch());
     // rollInit = Math.toRadians(drivetrain.getRoll());
     pitchInit = 0;
@@ -109,8 +111,12 @@ public class SwerveCommand extends CommandBase {
     // SmartDashboard.putString("X Stick", Double.toString(x));
     // SmartDashboard.putString("Y Stick", Double.toString(y));
     // SmartDashboard.putString("Rot Stick", Double.toString(rot));
-    SmartDashboard.putNumber("X", drivetrain.getXPose());
-    SmartDashboard.putNumber("Y", drivetrain.getYPose());
+    SmartDashboard.putNumber("X", drivetrain.getXPose() - drivetrain.getStartingX());
+    SmartDashboard.putNumber("Y", drivetrain.getYPose() - drivetrain.getStartingY());
+    SmartDashboard.putNumber("xOff", drivetrain.getStartingX());
+    SmartDashboard.putNumber("yOff", drivetrain.getStartingY());
+    SmartDashboard.putNumber("RawX", drivetrain.getXPose());
+    SmartDashboard.putNumber("RawY", drivetrain.getYPose());
     SmartDashboard.putString("Z", drivetrain.z());
     // SmartDashboard.putNumber("Roll: ", Math.toDegrees(roll));
     // SmartDashboard.putNumber("Pitch", Math.toDegrees(pitch));
@@ -129,7 +135,6 @@ public class SwerveCommand extends CommandBase {
     drivetrain.setChassisSpeeds(y * Constants.MAX_TRANS_METERS_PER_SEC, 
     -x * Constants.MAX_TRANS_METERS_PER_SEC, 
     rot * Constants.MAX_ANG_RAD_PER_SEC);
-    drivetrain.updateOdometry();
     prevX = x;
     prevY = y;
   }

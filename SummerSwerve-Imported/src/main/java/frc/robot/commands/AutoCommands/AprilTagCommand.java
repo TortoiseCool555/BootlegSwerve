@@ -42,7 +42,7 @@ public class AprilTagCommand extends CommandBase {
   @Override
   public void initialize() {
     drive.initialize();
-    drive.resetOdo();
+    drive.resetOdo(0, 0);
     segNum = 1;
   }
 
@@ -61,7 +61,7 @@ public class AprilTagCommand extends CommandBase {
     currentRad = ExtraMath.clip(currentRad + 1, maxRad);
 
     Point target = path.getNextPoint(robotPoint, segNum, currentRad);
-    double[] velocities = path.getVelocities(robotPoint, segNum, currentRad);
+    double[] velocities = path.getVelocities(robotPoint, segNum, currentRad, true);
     xDiff = velocities[0];
     yDiff = velocities[1];
     rotDiff = velocities[2];
