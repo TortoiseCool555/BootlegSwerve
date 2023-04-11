@@ -39,9 +39,10 @@ public class NewSwerveDrivetrain extends SubsystemBase {
   boolean stalled = false;
   SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2), 
   new Translation2d(-Constants.TRACKWIDTH/2,Constants.WHEELBASE/2), new Translation2d(-Constants.TRACKWIDTH/2,-Constants.WHEELBASE/2));
-  SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()});
+  SwerveDriveOdometry odometry;
   public NewSwerveDrivetrain(XboxController controller) {
     this.controller = controller;
+    odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()});
   }
 
   @Override
@@ -72,10 +73,16 @@ public class NewSwerveDrivetrain extends SubsystemBase {
    * @param angularVelocity - Angular velocity in rad/s
    */
   public void resetOdo(double xN, double yN){
-    odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(Math.toRadians(getAngle()))));
-    updateOdometry();
+    // lfModule.resetTransEncoder();
+    // lbModule.resetTransEncoder();
+    // rfModule.resetTransEncoder();
+    // rbModule.resetTransEncoder();
+    // odometry.resetPosition(Rotation2d.fromDegrees(getAngle()),new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()} , new Pose2d(new Translation2d(0, 0),new Rotation2d(Math.toRadians(getAngle()))));
+    // updateOdometry();
+    odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new SwerveModulePosition[]{lfModule.getModulePosition(),rfModule.getModulePosition(),lbModule.getModulePosition(),rbModule.getModulePosition()}, new Pose2d(new Translation2d(0,0), new Rotation2d(Math.toRadians(getAngle()))));
     x = getXPose();
     y = getYPose();
+    // updateOdometry();
   }
 
   public double getStartingX() {

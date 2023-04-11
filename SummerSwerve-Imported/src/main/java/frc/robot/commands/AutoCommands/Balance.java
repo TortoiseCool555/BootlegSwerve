@@ -53,11 +53,12 @@ public class Balance extends CommandBase {
   public void end(boolean interrupted) {
     drivetrain.setChassisSpeeds(0, 0, 0.01);
     drivetrain.setChassisSpeeds(0, 0, 0.0);
+    drivetrain.setYaw(180);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(angleOffground) < Math.toRadians(7);
+    return Math.abs(angleOffground) < Math.toRadians(10);
   }
 }

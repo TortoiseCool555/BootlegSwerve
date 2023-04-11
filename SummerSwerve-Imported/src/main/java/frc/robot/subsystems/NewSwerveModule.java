@@ -43,6 +43,8 @@ public class NewSwerveModule extends SubsystemBase {
     rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
+    rotation.configOpenloopRamp(0.04);
+
     rotPID = new PIDController(0.007, 0, 0.000000011);
     rotPID.enableContinuousInput(-180, 180);
     rotPID.setTolerance(Math.toRadians(0.1));
@@ -59,8 +61,12 @@ public class NewSwerveModule extends SubsystemBase {
 
   public void initialize() {
     translation.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    translation.setSelectedSensorPosition(0);
+    // translation.setSelectedSensorPosition(0);
     rotation.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+  }
+
+  public void resetTransEncoder() {
+    translation.setSelectedSensorPosition(0);
   }
 
   public SwerveModuleState getModuleState(double angle) {

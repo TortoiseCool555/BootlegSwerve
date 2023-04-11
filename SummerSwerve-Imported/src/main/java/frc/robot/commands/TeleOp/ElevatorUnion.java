@@ -7,6 +7,7 @@ package frc.robot.commands.TeleOp;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.Toggle;
 import frc.robot.subsystems.Elevator;
@@ -59,6 +60,10 @@ public class ElevatorUnion extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // double lowAngle = 236.5;
+    // if(Math.abs(elevator.getPosition()) > 1000) {
+    //   lowAngle = 250;
+    // }
     // Set Elevator Position
     double controllerVal = -controller.getLeftY();
     if(Math.abs(controllerVal) < 0.1) {
@@ -172,23 +177,27 @@ public class ElevatorUnion extends CommandBase {
       }
     }
 
-    if(shouldReset) {
-      sequenceNum = 1;
-      elColor = 0.01;
-      driverIntentArm = 75;
-      driverIntentExtend = 0;
-    } 
+    // if(shouldReset) {
+    //   sequenceNum = 1;
+    //   elColor = 0.01;
+    //   driverIntentArm = 75;
+    //   driverIntentExtend = 0;
+    // } 
+    sequenceNum = 1;
+    elColor = 0.01;
+    driverIntentArm = 75;
+    driverIntentExtend = 0;
 
-    if(adjustmentToggle.isToggled(sequenceNum)) {
-      armAdjustment = 0;
-      extendAdjustment = 0;
-    }
+    // if(adjustmentToggle.isToggled(sequenceNum)) {
+    //   armAdjustment = 0;
+    //   extendAdjustment = 0;
+    // }
 
     if(controller.getXButtonPressed()) {
       isEncoders = true;
       wantedElevatorPos = 0;
       driverIntentExtend = 0;
-      driverIntentArm = 80;
+      driverIntentArm = 75;
       extendAdjustment = 0;
       armAdjustment = 0;
       elevator.resetElevator();
@@ -209,12 +218,17 @@ public class ElevatorUnion extends CommandBase {
     if(controller.getRightTriggerAxis() > 0.1) {
       elevator.setIntake(-0.4);
     } else if(controller.getLeftTriggerAxis() > 0.1) {
-      elevator.setIntake(0.5);
+      elevator.setIntake(0.65);
     } else {
       elevator.setIntake(0);
     }
 
-    elevator.setColor(elColor);
+    // elevator.setColor(elColor);
+    if(Constants.scoringMode) {
+      elevator.setColor(0.69);
+    } else {
+      elevator.setColor(0.89);
+    }
 
     // Driver dashboard
     SmartDashboard.putBoolean("Scoring Mode", scoringMode);

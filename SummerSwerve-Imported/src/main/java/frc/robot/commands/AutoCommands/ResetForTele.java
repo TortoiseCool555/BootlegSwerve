@@ -5,36 +5,27 @@
 package frc.robot.commands.AutoCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.ExtraMath;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 
-public class InitDrivetrain extends CommandBase {
-  /** Creates a new InitDrivetrain. */
+public class ResetForTele extends CommandBase {
+  /** Creates a new ResetForTele. */
   NewSwerveDrivetrain drivetrain;
-  double x;
-  double y;
-  double angleRad;
-  public InitDrivetrain(NewSwerveDrivetrain drivetrain, double x, double y, double angleRad) {
+  public ResetForTele(NewSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drivetrain);
-    this.x = x;
-    this.y = y;
-    this.angleRad = angleRad;
     this.drivetrain = drivetrain;
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.initialize();
-    // drivetrain.setYaw(Math.toDegrees(angleRad));
-    // drivetrain.resetOdo(0, 0);
-    drivetrain.ZeroGyro();
+    drivetrain.setYaw(ExtraMath.mod(drivetrain.getYaw() - 180, 360));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

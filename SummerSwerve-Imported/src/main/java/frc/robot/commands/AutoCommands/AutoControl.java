@@ -59,7 +59,7 @@ public class AutoControl extends CommandBase {
   public void execute() {
     check1 = Math.abs(elPos + elevator.getPosition()) < 200;
     // check1 = true;
-    check2 = Math.abs(exPos - elevator.getExtDist()) < 1.3;
+    check2 = Math.abs(exPos - elevator.getExtDist()) < 1.7;
     check3 = Math.abs(angle - elevator.getArmAngle()) < 5;
     check4 = check1 && check2 && check3;
 

@@ -59,13 +59,13 @@ public class FollowPath extends CommandBase {
     double x = veloc[0];
     double y = veloc[1];
     double transVeloc = Math.hypot(x, y);
-    if(transVeloc > 3.5) {
-      x = x * 3.5 / transVeloc;
-      y = y * 3.5 / transVeloc;
+    if(transVeloc > 5) {
+      x = x * 7.5 / transVeloc;
+      y = y * 7.5 / transVeloc;
     }
 
     rotErr = Math.toDegrees(ExtraMath.simpleAngleError(robotPoint.getAngleRad(), wantedPoint.getAngleRad()));
-    double rot = ExtraMath.clip(veloc[2], 9);
+    double rot = ExtraMath.clip(veloc[2], 10.2);
 
     drivetrain.setChassisSpeeds(x/3,y/3,rot/3);
 
@@ -86,6 +86,6 @@ public class FollowPath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return segNum == points.size() - 1 && mag < 0.3 && Math.abs(rotErr) < 2;
+    return segNum == points.size() - 1 && mag < 0.8 && Math.abs(rotErr) < 3;
   }
 }

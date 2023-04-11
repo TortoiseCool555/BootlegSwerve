@@ -19,6 +19,9 @@ public class SwerveCommand extends CommandBase {
   double prevX = 0;
   double prevY = 0;
   boolean disablePidgeon = false;
+  double startX = 1;
+  double startY = 1;
+  double startAngle = 1;
   public SwerveCommand(XboxController controller, NewSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
@@ -31,9 +34,24 @@ public class SwerveCommand extends CommandBase {
   public void initialize() {
     // drivetrain.setChassisSpeeds(0, 0, 0);
     drivetrain.initialize();
-    // drivetrain.setX(0, 0, drivetrain.getAngle());
-    drivetrain.resetOdo(0, 0);
-    drivetrain.setChassisSpeeds(0, 0, 0);
+    // drivetrain.setChassisSpeeds(0, 0, 0);
+    // drivetrain.setYaw(0);
+    // drivetrain.getYaw();
+    // drivetrain.resetOdo(0, 0);
+    // drivetrain.updateOdometry();
+    // drivetrain.setChassisSpeeds(0.01, 0, 0);
+    // drivetrain.updateOdometry();
+    startX = drivetrain.getXPose();
+    startY = drivetrain.getYPose();
+    // startX = drivetrain.getXPose();
+    // startY = drivetrain.getYPose();
+    // startX = drivetrain.getXPose();
+    // startY = drivetrain.getYPose();
+    // startX = drivetrain.getXPose();
+    // startY = drivetrain.getYPose();
+    // startX = drivetrain.getXPose();
+    // startY = drivetrain.getYPose();
+    // startAngle = drivetrain.getYaw();
     // drivetrain.resetOdo(0, 0);
     // pitchInit = Math.toRadians(drivetrain.getPitch());
     // rollInit = Math.toRadians(drivetrain.getRoll());
@@ -51,7 +69,7 @@ public class SwerveCommand extends CommandBase {
       rotScale = 0.1;
     }
     if(Math.abs(Constants.elevatorHeight) > 4000) {
-      scale = 0.23;
+      scale = 0.1;
     }
     double x = controller.getLeftX() * scale;
     double y = -controller.getLeftY() * scale;
@@ -111,10 +129,10 @@ public class SwerveCommand extends CommandBase {
     // SmartDashboard.putString("X Stick", Double.toString(x));
     // SmartDashboard.putString("Y Stick", Double.toString(y));
     // SmartDashboard.putString("Rot Stick", Double.toString(rot));
-    SmartDashboard.putNumber("X", drivetrain.getXPose() - drivetrain.getStartingX());
-    SmartDashboard.putNumber("Y", drivetrain.getYPose() - drivetrain.getStartingY());
-    SmartDashboard.putNumber("xOff", drivetrain.getStartingX());
-    SmartDashboard.putNumber("yOff", drivetrain.getStartingY());
+    SmartDashboard.putNumber("X", drivetrain.getXPose());
+    SmartDashboard.putNumber("Y", drivetrain.getYPose());
+    SmartDashboard.putNumber("xOff", startX);
+    SmartDashboard.putNumber("yOff", startAngle);
     SmartDashboard.putNumber("RawX", drivetrain.getXPose());
     SmartDashboard.putNumber("RawY", drivetrain.getYPose());
     SmartDashboard.putString("Z", drivetrain.z());

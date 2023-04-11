@@ -7,6 +7,7 @@ package frc.robot.commands.Auto;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.DriveTime;
 import frc.robot.commands.AutoCommands.InitDrivetrain;
+import frc.robot.commands.AutoCommands.ResetForTele;
 import frc.robot.subsystems.NewSwerveDrivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -17,6 +18,7 @@ public class Park extends SequentialCommandGroup {
   public Park(NewSwerveDrivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new DriveTime(drivetrain, -0.3, 0, 0, 3));
+    addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new DriveTime(drivetrain, -0.3, 0, 0, 3),
+    new ResetForTele(drivetrain));
   }
 }

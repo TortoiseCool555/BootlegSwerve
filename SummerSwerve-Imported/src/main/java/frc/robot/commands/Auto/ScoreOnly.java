@@ -21,15 +21,15 @@ public class ScoreOnly extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     double elHeight = 7000;
-    double exPos = 15;
+    double exPos = 16;
     addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
     new AutoControl(elevator, 0, 0, 80, true),
     new AutoControl(elevator, elHeight, 0, 95, true),
     new AutoControl(elevator, elHeight, exPos, 95, true),
     new AutoControl(elevator, elHeight,exPos,120,true, 0), new Pause(elevator, elHeight, exPos, 120, 1),
     new AutoControl(elevator, elHeight,exPos,120,false, 0.4), new Pause(elevator, elHeight, exPos, 120, 0.5),
-    new AutoControl(elevator, elHeight, 1, 90, false, 0),
-    new AutoControl(elevator, 0, 1, 90, false, 0)
+    new AutoControl(elevator, elHeight, 0, 80, false, 0),
+    new AutoControl(elevator, 0, 0, 75, false, 0)
     );
   }
 }

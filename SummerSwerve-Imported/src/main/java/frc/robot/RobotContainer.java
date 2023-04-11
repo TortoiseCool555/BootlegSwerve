@@ -9,15 +9,19 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Auto.PreloadCharge;
+import frc.robot.commands.Auto.PreloadChargeOver;
 import frc.robot.commands.Auto.PreloadMidCharge;
 import frc.robot.commands.Auto.PreloadMidPark;
+import frc.robot.commands.Auto.BumpTwoPieceLeft;
 import frc.robot.commands.Auto.ChargeStatiom;
 import frc.robot.commands.Auto.OdomTest;
 import frc.robot.commands.Auto.Park;
 import frc.robot.commands.Auto.PreloadPark;
 import frc.robot.commands.Auto.PreloadParkPlus;
+import frc.robot.commands.Auto.PreloadParkPlusLeft;
 import frc.robot.commands.Auto.PureChargeNoPreload;
 import frc.robot.commands.Auto.ScoreOnly;
+import frc.robot.commands.Auto.StrafeOutAuto;
 import frc.robot.commands.TeleOp.ZeroGyro;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NewSwerveDrivetrain;
@@ -41,6 +45,7 @@ public class RobotContainer {
   private final PreloadPark preloadAndPark = new PreloadPark(swerve, elevator);
   private final ChargeStatiom chargeStation = new ChargeStatiom(swerve, elevator);
   private final PreloadCharge chargePreload = new PreloadCharge(swerve, elevator);
+  private final PreloadChargeOver chargeOver = new PreloadChargeOver(swerve, elevator);
   private final PureChargeNoPreload chargeOnly = new PureChargeNoPreload(swerve, elevator);
   private final Park park = new Park(swerve);
   PreloadMidPark preloadMidPark = new PreloadMidPark(swerve, elevator);
@@ -48,7 +53,10 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelect = new SendableChooser<>();
   private final ScoreOnly scoreOnly = new ScoreOnly(swerve, elevator);
   private final PreloadParkPlus preloadParkPlus = new PreloadParkPlus(swerve, elevator);
+  private final PreloadParkPlusLeft preloadParkPlusLeft = new PreloadParkPlusLeft(swerve, elevator);
   OdomTest odomTest = new OdomTest(swerve);
+  private final BumpTwoPieceLeft bumpTwoPieceLeft = new BumpTwoPieceLeft(swerve, elevator);
+  private final StrafeOutAuto strafeOutAuto = new StrafeOutAuto(swerve, elevator);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,13 +64,18 @@ public class RobotContainer {
     autoSelect.addOption("PreloadH and Charge Station", chargePreload);
     autoSelect.addOption("PreloadM and Charge Station", preloadMidCharge);
     autoSelect.addOption("Charge Staton Only", chargeOnly);
+    autoSelect.addOption("PreloadH Charge and Park", chargeOver);
     // autoSelect.addOption("Charge Station With Extra Points", chargeStation);
     autoSelect.setDefaultOption("PreloadH and Park", preloadAndPark);
     autoSelect.setDefaultOption("PreloadM and Park", preloadMidPark);
     autoSelect.addOption("Park", park);
     autoSelect.addOption("Score Only", scoreOnly);
-    autoSelect.addOption("Odom Test", odomTest);
-    autoSelect.addOption("PreloadParkPlus", preloadParkPlus);
+    // autoSelect.addOption("Odom Test", odomTest);
+    autoSelect.addOption("2 Piece Right Side", preloadParkPlus);
+
+    autoSelect.addOption("2 Piece Left Side", preloadParkPlusLeft);
+    autoSelect.addOption("Strafe out of charge", strafeOutAuto);
+    autoSelect.addOption("Bump Side", bumpTwoPieceLeft);
     SmartDashboard.putData(autoSelect);
     configureButtonBindings();
   }
