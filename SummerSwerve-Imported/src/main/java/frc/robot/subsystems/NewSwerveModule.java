@@ -73,7 +73,9 @@ public class NewSwerveModule extends SubsystemBase {
     return new SwerveModuleState(translation.getSelectedSensorVelocity(), Rotation2d.fromDegrees(rotationEncoder.getPosition()));
   }
   
-  public void set(SwerveModuleState wanted, double angle, boolean isStalled) {
+  public void set(SwerveModuleState wanted1, double angle, boolean isStalled) {
+    // Test optimization
+    SwerveModuleState wanted = SwerveModuleState.optimize(wanted1, new Rotation2d(Math.toRadians(rotationEncoder.getAbsolutePosition())));
     double additional = ExtraMath.clip(transPID.calculate(translation.getSelectedSensorVelocity(), wanted.speedMetersPerSecond), .2);
     translation.set(ControlMode.PercentOutput, additional + (wanted.speedMetersPerSecond / Constants.MAX_TRANS_METERS_PER_SEC));
 

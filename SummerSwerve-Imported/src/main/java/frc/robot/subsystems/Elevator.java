@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
-          import frc.robot.commands.TeleOp.ElevatorDrive;
+import frc.robot.commands.TeleOp.ElevatorAutoFinalized;
+import frc.robot.commands.TeleOp.ElevatorDrive;
 import frc.robot.commands.TeleOp.ElevatorUnion;
 
 public class Elevator extends SubsystemBase {
@@ -39,7 +40,7 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
-  PIDController armController = new PIDController(.3, 0, 0.00145); // 4, 0, 0.0005
+  PIDController armController = new PIDController(.3, 0, 0.00148); // 4, 0, 0.0005
   ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.05, .1); // 0.81, 0.3
   //private DecimalFormat df = new DecimalFormat("0.00");
 
@@ -53,7 +54,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDefaultCommand(new ElevatorUnion(this, controller));
+    setDefaultCommand(new ElevatorAutoFinalized(this, controller));
   }
 
   // Init
@@ -142,7 +143,7 @@ public class Elevator extends SubsystemBase {
     // double pow = Math.copySign(Math.pow(angle - getArmAngle(), 2)*0.008, angle - getArmAngle());
     // pow = Math.abs(pow) > 0.2 ? Math.copySign(0.2,pow) : pow;
     // double added = angle < 80 ? 0.008 : -0.09;
-    return ExtraMath.clip(pow, 0.5);
+    return ExtraMath.clip(pow, 0.35);
   }
 
   public void setArmPower(double power) {
