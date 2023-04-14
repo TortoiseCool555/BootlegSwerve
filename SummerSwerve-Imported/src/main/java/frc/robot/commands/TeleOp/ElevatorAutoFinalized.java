@@ -70,7 +70,7 @@ public class ElevatorAutoFinalized extends CommandBase {
     } else if(driverIntentExtend + adjustmentExtend < 0 && controller.getLeftX() < 0) {
       
     } else {
-      driverIntentExtend += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
+      adjustmentExtend += Math.abs(controller.getLeftX()) < 0.1 ? 0 : controller.getLeftX();
     }
 
     if(driverIntentArm + adjustmentArm > 236.5 && -controller.getRightY() < 0) {
@@ -94,7 +94,7 @@ public class ElevatorAutoFinalized extends CommandBase {
     } else if(controller.getBButtonPressed()) {
       sequenceNum = 1;
       heightSequence = 1;
-      driverIntentElevator = 3;
+      driverIntentElevator = 2000;
       driverIntentExtend = 0;
       driverIntentArm = 90;
       heightString = "Score Cube Mid";
@@ -110,8 +110,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       heightSequence = 0;
       driverIntentElevator = 3;
       driverIntentExtend = 0;
-      driverIntentArm = 180
-      ;
+      driverIntentArm = 180;
       heightString = "Collect Cube";
     } else if(controller.getRightBumperPressed()) {
       sequenceNum = 4;
@@ -125,28 +124,28 @@ public class ElevatorAutoFinalized extends CommandBase {
       heightSequence = 0;
       driverIntentElevator = 3;
       driverIntentExtend = 0;
-      driverIntentArm = 90;
+      driverIntentArm = 135;
       heightString = "Score Cone Low";
     } else if(pov && currentPOV == 90) {
       sequenceNum = 6;
       heightSequence = 1;
       driverIntentElevator = 9000;
       driverIntentExtend = 3;
-      driverIntentArm = 220;
+      driverIntentArm = 195;
       heightString = "Score Cone Mid";
     } else if(pov && currentPOV == 0) {
       sequenceNum = 7;
       heightSequence = 2;
-      driverIntentElevator = 9000;
-      driverIntentExtend = 5;
-      driverIntentArm = 180;
+      driverIntentElevator = 9400;
+      driverIntentExtend = 17;
+      driverIntentArm = 164;
       heightString = "Score Cone High";
     } else if(pov && currentPOV == 270) {
       sequenceNum = 8;
       heightSequence = 0;
       driverIntentElevator = 3;
       driverIntentExtend = 0;
-      driverIntentArm = 220;
+      driverIntentArm = 226;
       heightString = "Collect Cone";
     } else if(controller.getLeftBumperPressed()) {
       sequenceNum = 9;
@@ -213,12 +212,12 @@ public class ElevatorAutoFinalized extends CommandBase {
       // }
       elevator.setPosition(driverIntentElevator + adjustmentElevator, true);
       elevator.setArmAngle(driverIntentArm + adjustmentArm);
-      elevator.setExtendConstrainedScore((driverIntentExtend + adjustmentExtend) * Constants.EXTENSION_TO_METERS, driverIntentArm + adjustmentArm);
+      elevator.setExtendConstrainedScore((driverIntentExtend + adjustmentExtend) * Constants.EXTENSION_TO_METERS, driverIntentArm + adjustmentArm + 0.01);
     } else {
       elevator.setArmAngle(driverIntentArm + adjustmentArm);
 
       if(Math.abs(elevator.getArmAngle() - (driverIntentArm + adjustmentArm)) < 10) {
-        elevator.setExtend(driverIntentExtend + adjustmentExtend);
+        SmartDashboard.putNumber("Ext Power", elevator.setExtend(driverIntentExtend + adjustmentExtend));
       }
 
       if(Math.abs(elevator.getExtDist() - (driverIntentExtend + adjustmentExtend)) < 5) {
@@ -226,7 +225,9 @@ public class ElevatorAutoFinalized extends CommandBase {
       } else {
         elevator.setPosition(previousElevator, true);
       }
+
     }
+    Constants.elevatorHeight = -elevator.getPosition();
 
 
     SmartDashboard.putString("Elevator Setting", heightString);
@@ -235,7 +236,10 @@ public class ElevatorAutoFinalized extends CommandBase {
     SmartDashboard.putNumber("El Height", -elevator.getPosition());
     SmartDashboard.putNumber("Predicted Max Ext", elevator.getExtPredicted(driverIntentExtend + adjustmentExtend));
     SmartDashboard.putNumber("Ext Wanted", driverIntentExtend + adjustmentExtend);
+    SmartDashboard.putNumber("Ext Predicted Max", elevator.getExtPredicted(driverIntentExtend + adjustmentExtend));
     SmartDashboard.putNumber("Ext Pos", elevator.getExtDist());
+    SmartDashboard.putNumber("Elevator Error", driverIntentElevator + adjustmentElevator + elevator.getPosition());
+    SmartDashboard.putNumber("Angle Error", driverIntentArm + adjustmentArm - elevator.getArmAngle());
     
     previousHeightSequence = heightSequence;
   }

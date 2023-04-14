@@ -160,6 +160,7 @@ public class ElevatorAutomized extends CommandBase {
         elevator.setPosition(previousElevator, true);
       }
     }
+    
 
     
 

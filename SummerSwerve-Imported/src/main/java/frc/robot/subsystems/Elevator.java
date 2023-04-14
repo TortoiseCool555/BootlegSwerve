@@ -40,8 +40,8 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder EXEnc = ex.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
-  PIDController armController = new PIDController(.3, 0, 0.00148); // 4, 0, 0.0005
-  ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.05, .1); // 0.81, 0.3
+  PIDController armController = new PIDController(.33, 0, 0.02); // 4, 0, 0.0005
+  ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.048, .1); // 0.81, 0.3
   //private DecimalFormat df = new DecimalFormat("0.00");
 
   XboxController controller;
@@ -153,7 +153,7 @@ public class Elevator extends SubsystemBase {
   
   // Extend
   public double setExtend(double pos){
-    double power = ExtraMath.clip((pos - getExtDist()) * 0.04, 1);
+    double power = ExtraMath.clip((pos - getExtDist()) * 0.14, 0.7);
     ex.set(power);
     return power;
   }
@@ -183,7 +183,7 @@ public class Elevator extends SubsystemBase {
       obstacleHeight = Constants.HEIGHT_FOR_SCORE;
     }
 
-    double predictedMax = ((obstacleHeight - elPos) / Math.tan(3.14 - angleRad)) + wantedDist;
+    double predictedMax = (-(obstacleHeight - elPos) / Math.tan(3.14 - angleRad)) + wantedDist;
     double finalizedMax;
     if(angleDeg <= 90) {
       finalizedMax = wantedDist;
@@ -195,7 +195,7 @@ public class Elevator extends SubsystemBase {
 
     double wantedExtension = extend < finalizedMax ? extend : finalizedMax - 0.3;
 
-    double power = ExtraMath.clip((wantedExtension - (getExtDist() * Constants.EXTENSION_TO_METERS)) * 4, 0.7);
+    double power = ExtraMath.clip((wantedExtension - (getExtDist() * Constants.EXTENSION_TO_METERS)) * 4, 0.5);
     ex.set(power);
     return power;
   }

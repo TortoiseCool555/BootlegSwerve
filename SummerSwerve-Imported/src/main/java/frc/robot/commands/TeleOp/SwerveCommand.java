@@ -62,14 +62,17 @@ public class SwerveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double scale = 0.6; //0.37
-    double rotScale = 0.25;
+    double scale = 1.0; //0.37
+    double rotScale = 0.75;
+    double speedToCoast = 3.5;
     if(controller.getRightTriggerAxis() > 0.1) {
       scale = 0.13;
       rotScale = 0.1;
     }
     if(Math.abs(Constants.elevatorHeight) > 4000) {
-      scale = 0.1;
+      scale = 0.13;
+      rotScale = 0.1;
+      speedToCoast = 1;
     }
     double x = controller.getLeftX() * scale;
     double y = -controller.getLeftY() * scale;
@@ -93,6 +96,13 @@ public class SwerveCommand extends CommandBase {
       x = 0;
       y = 0;
       rot = 0;
+    }
+
+    if(Math.abs(drivetrain.driveSpeed()) < speedToCoast && (x == 0 && y == 0 && rot == 0)){
+      drivetrain.setBrake();
+    }
+    else{
+      drivetrain.setCoast();
     }
 
     if(controller.getLeftBumper()) {
@@ -141,6 +151,9 @@ public class SwerveCommand extends CommandBase {
     SmartDashboard.putNumber("Yaw", drivetrain.getYaw());
     SmartDashboard.putNumber("Raw Roll", drivetrain.getRoll());
     SmartDashboard.putNumber("Raw Pitch", drivetrain.getPitch());
+    SmartDashboard.putString("Wheel velocities", drivetrain.getModuleVelocities());
+    SmartDashboard.putNumber("Scale value", scale);
+    SmartDashboard.putNumber("Speed to Coast", speedToCoast);
     // SmartDashboard.putNumber("x speed", xSpd);
     // SmartDashboard.putNumber("y speed", ySpd);
     // SmartDashboard.putNumber("Angle, Off", Math.toDegrees(angleOffground));

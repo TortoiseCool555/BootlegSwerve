@@ -148,6 +148,9 @@ public class NewSwerveDrivetrain extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.MAX_TRANS_METERS_PER_SEC);
     return moduleStates[0].speedMetersPerSecond + " " + moduleStates[2].speedMetersPerSecond + " " + moduleStates[1].speedMetersPerSecond + " " + moduleStates[3].speedMetersPerSecond;
   }
+  public double driveSpeed(){
+    return (Math.abs(lfModule.getVelocity()) + Math.abs(rfModule.getVelocity()) + Math.abs(lbModule.getVelocity()) + Math.abs(rbModule.getVelocity())) / 4;
+  }
 
   // Other
   public String getModuleVelocities() {
@@ -211,5 +214,19 @@ public class NewSwerveDrivetrain extends SubsystemBase {
 
   public void setYaw(double angleDeg) {
     gyro.setYaw(angleDeg);
+  }
+
+  public void setBrake() {
+    lfModule.setBrake();
+    lbModule.setBrake();
+    rfModule.setBrake();
+    rbModule.setBrake();
+  }
+
+  public void setCoast() {
+    lfModule.setCoast();
+    lbModule.setCoast();
+    rfModule.setCoast();
+    rbModule.setCoast();
   }
 }

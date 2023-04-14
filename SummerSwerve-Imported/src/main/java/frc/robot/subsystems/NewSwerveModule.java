@@ -38,7 +38,7 @@ public class NewSwerveModule extends SubsystemBase {
     rotation = new TalonFX(rot, "CANivoreA");
     rotation.configNeutralDeadband(0.001);
 
-    translation.setNeutralMode(NeutralMode.Brake);
+    translation.setNeutralMode(NeutralMode.Coast);
     rotation.setNeutralMode(NeutralMode.Brake);
     rotationEncoder = new CANCoder(rotEnc, "CANivoreA");
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
@@ -72,7 +72,6 @@ public class NewSwerveModule extends SubsystemBase {
   public SwerveModuleState getModuleState(double angle) {
     return new SwerveModuleState(translation.getSelectedSensorVelocity(), Rotation2d.fromDegrees(rotationEncoder.getPosition()));
   }
-  
   public void set(SwerveModuleState wanted1, double angle, boolean isStalled) {
     // Test optimization
     SwerveModuleState wanted = SwerveModuleState.optimize(wanted1, new Rotation2d(Math.toRadians(rotationEncoder.getAbsolutePosition())));
@@ -119,5 +118,13 @@ public class NewSwerveModule extends SubsystemBase {
   }
   public void resetCanCoder(){
     rotationEncoder.setPosition(0);
+  }
+
+  public void setBrake() {
+    translation.setNeutralMode(NeutralMode.Brake);
+  }
+
+  public void setCoast() {
+    translation.setNeutralMode(NeutralMode.Coast);
   }
 }
