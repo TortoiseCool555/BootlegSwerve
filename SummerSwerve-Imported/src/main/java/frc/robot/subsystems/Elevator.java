@@ -157,6 +157,86 @@ public class Elevator extends SubsystemBase {
     ex.set(power);
     return power;
   }
+  public double setExtendConstrainedScore(double extend, double inputAng){
+    double elPos = (-getPosition() * Constants.ELEVATOR_TO_METERS) + Constants.EL_HEIGHT_OFF_GROUND;
+    double angleDeg = inputAng;
+    double angleRad = Math.toRadians(inputAng);
+    double wantedDist;
+    double obstacleHeight;
+    // Wanted Distance
+    if(angleDeg > 180) {
+      if(elPos + (Constants.ARM_LENGTH * Math.sin(3.14 - angleRad)) > Constants.HEIGHT_FOR_SCORE) {
+        wantedDist = Constants.DIST_FROM_SCORE + Constants.HEIGHT_FOR_SCORE;
+      } else {
+        wantedDist = Constants.DIST_FROM_SCORE;
+      }
+    } else if(elPos > Constants.HEIGHT_FOR_SCORE) {
+      wantedDist = Constants.DIST_FROM_SCORE + Constants.DIST_FOR_CUBE;
+    } else {
+      wantedDist = Constants.DIST_FROM_SCORE;
+    }
+
+    // Current Obstacle Height
+    if(elPos > Constants.HEIGHT_FOR_SCORE) {
+      obstacleHeight = Constants.HEIGHT_FOR_SCORE2;
+    } else {
+      obstacleHeight = Constants.HEIGHT_FOR_SCORE;
+    }
+
+    double predictedMax = ((obstacleHeight - elPos) / Math.tan(3.14 - angleRad)) + wantedDist;
+    double finalizedMax;
+    if(angleDeg <= 90) {
+      finalizedMax = wantedDist;
+    } else if(angleDeg > 180 || predictedMax - (Constants.ARM_LENGTH * Math.cos(angleRad)) < wantedDist) {
+      finalizedMax = wantedDist + (Constants.ARM_LENGTH * Math.cos(angleRad));
+    } else {
+      finalizedMax = predictedMax;
+    }
+
+    double wantedExtension = extend < finalizedMax ? extend : finalizedMax - 0.3;
+
+    double power = ExtraMath.clip((wantedExtension - (getExtDist() * Constants.EXTENSION_TO_METERS)) * 4, 0.7);
+    ex.set(power);
+    return power;
+  }
+
+  public double getExtPredicted(double extend) {
+    double elPos = (-getPosition() * Constants.ELEVATOR_TO_METERS) + Constants.EL_HEIGHT_OFF_GROUND;
+    double angleDeg = getArmAngle();
+    double angleRad = Math.toRadians(angleDeg);
+    double wantedDist;
+    double obstacleHeight;
+    // Wanted Distance
+    if(angleDeg > 180) {
+      if(elPos + (Constants.ARM_LENGTH * Math.sin(3.14 - angleRad)) > Constants.HEIGHT_FOR_SCORE) {
+        wantedDist = Constants.DIST_FROM_SCORE + Constants.HEIGHT_FOR_SCORE;
+      } else {
+        wantedDist = Constants.DIST_FROM_SCORE;
+      }
+    } else if(elPos > Constants.HEIGHT_FOR_SCORE) {
+      wantedDist = Constants.DIST_FROM_SCORE + Constants.HEIGHT_FOR_SCORE;
+    } else {
+      wantedDist = Constants.DIST_FROM_SCORE;
+    }
+
+    // Current Obstacle Height
+    if(elPos > Constants.HEIGHT_FOR_SCORE) {
+      obstacleHeight = Constants.HEIGHT_FOR_SCORE2;
+    } else {
+      obstacleHeight = Constants.HEIGHT_FOR_SCORE;
+    }
+
+    double predictedMax = ((obstacleHeight - elPos) / Math.tan(3.14 - angleRad)) + wantedDist;
+    double finalizedMax;
+    if(angleDeg == 90) {
+      finalizedMax = wantedDist;
+    } else if(angleDeg > 180 || predictedMax - (Constants.ARM_LENGTH * Math.cos(angleRad)) < wantedDist) {
+      finalizedMax = wantedDist + (Constants.ARM_LENGTH * Math.cos(angleRad));
+    } else {
+      finalizedMax = predictedMax;
+    }
+    return predictedMax;
+  }
   public double getExtDist(){
     return EXEnc.getPosition();
   }

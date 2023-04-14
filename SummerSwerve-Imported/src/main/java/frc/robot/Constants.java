@@ -40,4 +40,13 @@ public final class Constants {
 
     public static boolean scoringMode = false;
     public static double elevatorHeight = 0;
+
+    public static final double EL_HEIGHT_OFF_GROUND = .30;
+    public static final double ELEVATOR_TO_METERS = .78 / 9500; // Inches over ticks
+    public static final double EXTENSION_TO_METERS = .52 / 17.2; // Inches over ticks
+    public static final double DIST_FROM_SCORE = 0.361;
+    public static final double HEIGHT_FOR_SCORE = 0.597;
+    public static final double HEIGHT_FOR_SCORE2 = 0.9017;
+    public static final double DIST_FOR_CUBE = 0.44;
+    public static final double ARM_LENGTH = .5;
 }

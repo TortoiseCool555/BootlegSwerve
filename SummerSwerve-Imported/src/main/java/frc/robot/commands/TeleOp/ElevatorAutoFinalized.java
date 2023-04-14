@@ -7,6 +7,7 @@ package frc.robot.commands.TeleOp;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.Toggle;
 import frc.robot.subsystems.Elevator;
@@ -56,9 +57,9 @@ public class ElevatorAutoFinalized extends CommandBase {
     // Driver adjustments
     subElevator = driverIntentElevator;
     double elStick = Math.abs(controller.getLeftY()) < 0.1 ? 0 : -controller.getLeftY();
-    if(driverIntentElevator + adjustmentElevator > 9500 && elStick < 0) {
+    if(driverIntentElevator + adjustmentElevator > 9500 && elStick > 0) {
       
-    } else if(driverIntentElevator + adjustmentElevator < 0 && elStick > 0) {
+    } else if(driverIntentElevator + adjustmentElevator < 0 && elStick < 0) {
       
     } else {
       adjustmentElevator += elStick < 0 ? elStick * 200 * 0.8 : elStick * 200;
@@ -201,15 +202,18 @@ public class ElevatorAutoFinalized extends CommandBase {
     }
 
     if(goingUp) {
+      // elevator.setPosition(driverIntentElevator + adjustmentElevator, true);
+
+      // if(Math.abs(-elevator.getPosition() - (driverIntentElevator + adjustmentElevator)) < 500) {
+      //   elevator.setExtend(driverIntentExtend + adjustmentExtend);
+      // }
+
+      // if(Math.abs(elevator.getExtDist() - (driverIntentExtend + adjustmentExtend)) < 2) {
+      //   elevator.setArmAngle(driverIntentArm + adjustmentArm);
+      // }
       elevator.setPosition(driverIntentElevator + adjustmentElevator, true);
-
-      if(Math.abs(-elevator.getPosition() - (driverIntentElevator + adjustmentElevator)) < 500) {
-        elevator.setExtend(driverIntentExtend + adjustmentExtend);
-      }
-
-      if(Math.abs(elevator.getExtDist() - (driverIntentExtend + adjustmentExtend)) < 2) {
-        elevator.setArmAngle(driverIntentArm + adjustmentArm);
-      }
+      elevator.setArmAngle(driverIntentArm + adjustmentArm);
+      elevator.setExtendConstrainedScore((driverIntentExtend + adjustmentExtend) * Constants.EXTENSION_TO_METERS, driverIntentArm + adjustmentArm);
     } else {
       elevator.setArmAngle(driverIntentArm + adjustmentArm);
 
@@ -224,9 +228,14 @@ public class ElevatorAutoFinalized extends CommandBase {
       }
     }
 
+
     SmartDashboard.putString("Elevator Setting", heightString);
     SmartDashboard.putBoolean("Going Up", goingUp);
     SmartDashboard.putNumber("POV", currentPOV);
+    SmartDashboard.putNumber("El Height", -elevator.getPosition());
+    SmartDashboard.putNumber("Predicted Max Ext", elevator.getExtPredicted(driverIntentExtend + adjustmentExtend));
+    SmartDashboard.putNumber("Ext Wanted", driverIntentExtend + adjustmentExtend);
+    SmartDashboard.putNumber("Ext Pos", elevator.getExtDist());
     
     previousHeightSequence = heightSequence;
   }
