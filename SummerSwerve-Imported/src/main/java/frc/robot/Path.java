@@ -114,17 +114,17 @@ public class Path {
         double odx = last.getX() - robotPoint.getX();
         double ody = last.getY() - robotPoint.getY();
 
-        double speed = 14;
+        double speed = 4.66;
         double mult = shouldPID ? speed : speed;
         double lastVeloc = Math.hypot(odx, ody) * mult; //3.5
 
         double currentAngle = previousWanted;
         double wantedAngle = ExtraMath.atanNew(dx, dy);
         double added = ExtraMath.angleError(currentAngle, wantedAngle);
-        previousWanted = currentAngle - (added / 9);
+        previousWanted = currentAngle - (added / 1);
 
         if(segNum < points.size() - 1) {
-            lastVeloc = speed;
+            lastVeloc = 4.66;
         }
 
         dx = Math.cos(previousWanted) * lastVeloc;
@@ -137,7 +137,7 @@ public class Path {
         }
 
         // double angleVeloc = (wanted.getAngleRad() - robotPoint.getAngleRad()) * 7;
-        double angleVeloc = -ExtraMath.angleError(robotPoint.getAngleRad(), wanted.getAngleRad()) * 10;
+        double angleVeloc = -ExtraMath.angleError(robotPoint.getAngleRad(), wanted.getAngleRad()) * 3.33;
 
         double[] solutions = {dx,dy,angleVeloc};
         return solutions;

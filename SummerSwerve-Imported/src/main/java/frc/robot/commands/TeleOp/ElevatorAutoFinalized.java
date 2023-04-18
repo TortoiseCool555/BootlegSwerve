@@ -4,6 +4,7 @@
 
 package frc.robot.commands.TeleOp;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -20,6 +21,7 @@ public class ElevatorAutoFinalized extends CommandBase {
   Toggle POVToggle = new Toggle(0);
   Toggle sequenceToggle = new Toggle(0);
   double previousElevator = 0;
+  Timer timer = new Timer();
 
   double adjustmentElevator = 0;
   double adjustmentExtend = 0;
@@ -27,6 +29,7 @@ public class ElevatorAutoFinalized extends CommandBase {
   int heightSequence = 0;
   int previousHeightSequence = 0;
   boolean goingUp = true;
+  // double storedElColor = 0;
 
   String heightString = "NONE";
 
@@ -34,6 +37,8 @@ public class ElevatorAutoFinalized extends CommandBase {
   double driverIntentExtend = 0;
   double driverIntentArm = 75;
   double subElevator = 0;
+  double storedElColor = 0;
+  double elColor = 0;
   public ElevatorAutoFinalized(Elevator elevator, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
@@ -48,7 +53,9 @@ public class ElevatorAutoFinalized extends CommandBase {
     adjustmentExtend = 0;
     adjustmentArm = 0;
     sequenceNum = 0;
-    elevator.resetElevator();
+    // elevator.resetElevator();
+    timer.start();
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,6 +97,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 3;
       driverIntentExtend = 0;
       driverIntentArm = 75;
+      storedElColor = 0.89;
       heightString = "Score Cube Low";
     } else if(controller.getBButtonPressed()) {
       sequenceNum = 1;
@@ -97,6 +105,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 2000;
       driverIntentExtend = 0;
       driverIntentArm = 90;
+      storedElColor = 0.89;
       heightString = "Score Cube Mid";
     } else if(controller.getYButtonPressed()) {
       sequenceNum = 2;
@@ -104,6 +113,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 9000;
       driverIntentExtend = 17;
       driverIntentArm = 120;
+      storedElColor = 0.89;
       heightString = "Score Cube High";
     } else if(controller.getXButtonPressed()) {
       sequenceNum = 3;
@@ -111,6 +121,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 3;
       driverIntentExtend = 0;
       driverIntentArm = 180;
+      storedElColor = 0.89;
       heightString = "Collect Cube";
     } else if(controller.getRightBumperPressed()) {
       sequenceNum = 4;
@@ -118,6 +129,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 9000;
       driverIntentExtend = 0;
       driverIntentArm = 180;
+      storedElColor = 0.89;
       heightString = "Cube Alliance Station";
     } else if(pov && currentPOV == 180) {
       sequenceNum = 5;
@@ -125,6 +137,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 3;
       driverIntentExtend = 0;
       driverIntentArm = 135;
+      storedElColor = 0.69;
       heightString = "Score Cone Low";
     } else if(pov && currentPOV == 90) {
       sequenceNum = 6;
@@ -132,20 +145,23 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 9000;
       driverIntentExtend = 3;
       driverIntentArm = 195;
+      storedElColor = 0.69;
       heightString = "Score Cone Mid";
     } else if(pov && currentPOV == 0) {
       sequenceNum = 7;
       heightSequence = 2;
       driverIntentElevator = 9400;
       driverIntentExtend = 17;
-      driverIntentArm = 164;
+      driverIntentArm = 165.5;
+      storedElColor = 0.69;
       heightString = "Score Cone High";
     } else if(pov && currentPOV == 270) {
       sequenceNum = 8;
       heightSequence = 0;
       driverIntentElevator = 3;
       driverIntentExtend = 0;
-      driverIntentArm = 226;
+      driverIntentArm = 227;
+      storedElColor = 0.69;
       heightString = "Collect Cone";
     } else if(controller.getLeftBumperPressed()) {
       sequenceNum = 9;
@@ -153,6 +169,7 @@ public class ElevatorAutoFinalized extends CommandBase {
       driverIntentElevator = 9000;
       driverIntentExtend = 0;
       driverIntentArm = 180;
+      storedElColor = 0.69;
       heightString = "Cone Alliance Station";
     }
 
@@ -177,12 +194,22 @@ public class ElevatorAutoFinalized extends CommandBase {
     // } else if(sequenceNum == 9) {
       
     // }
+    elColor = storedElColor;
 
     if(controller.getRightTriggerAxis() > 0.1) {
       elevator.setIntake(-0.4);
-    } else if(controller.getLeftTriggerAxis() > 0.1) {
+      if(timer.get() < 1) {
+      } else if(Math.abs(elevator.getIntakeVelocity()) < 2000) {
+        elColor = -0.11;
+      }
+    } else if(Math.abs(controller.getLeftTriggerAxis()) > 0.1) {
       elevator.setIntake(0.65);
+      if(timer.get() < 1) {
+      } else if(Math.abs(elevator.getIntakeVelocity()) < 3000) {
+        elColor = -0.11;
+      }
     } else {
+      timer.reset();
       elevator.setIntake(0);
     }
 
@@ -228,8 +255,10 @@ public class ElevatorAutoFinalized extends CommandBase {
 
     }
     Constants.elevatorHeight = -elevator.getPosition();
+    elevator.setColor(elColor);
 
 
+    SmartDashboard.putNumber("Intake Veloc", elevator.getIntakeVelocity());
     SmartDashboard.putString("Elevator Setting", heightString);
     SmartDashboard.putBoolean("Going Up", goingUp);
     SmartDashboard.putNumber("POV", currentPOV);

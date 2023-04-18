@@ -29,8 +29,8 @@ public class PreloadCharge extends SequentialCommandGroup {
 
     // -0.3 for 2.2 secs
     addCommands(new InitDrivetrain(drivetrain, 0, 0, 0), new ResetElevator(elevator), 
-    new AutoControl(elevator, 0, 0, 80, true),
-    new AutoControl(elevator, elHeight, 0, 95, true),
+    // new AutoControl(elevator, 0, 0, 80, true),
+    // new AutoControl(elevator, elHeight, 0, 95, true),
     new AutoControl(elevator, elHeight, exPos, 95, true),
     new AutoControl(elevator,elHeight,exPos,135,true, 0), new Pause(elevator, elHeight, exPos, 135, 1),
     new AutoControl(elevator,elHeight,exPos,135,false, 0.4), new Pause(elevator, elHeight, exPos, 135, 0.5),

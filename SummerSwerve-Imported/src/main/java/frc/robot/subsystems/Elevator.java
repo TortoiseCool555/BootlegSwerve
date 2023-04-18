@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 
+import java.util.Timer;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -38,6 +40,7 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder LSEnc = LS.getEncoder();
   private RelativeEncoder RSEnc = RS.getEncoder();
   private RelativeEncoder EXEnc = ex.getEncoder();
+  private RelativeEncoder intakEncoder = intake1.getEncoder();
   private Encoder liftEnc = new Encoder(0, 1);
   private Encoder armEnc = new Encoder(2,3);
   PIDController armController = new PIDController(.33, 0, 0.02); // 4, 0, 0.0005
@@ -286,6 +289,10 @@ public class Elevator extends SubsystemBase {
 
   public double getDerivativeError(){
     return armController.getVelocityError();
+  }
+
+  public double getIntakeVelocity() {
+    return intakEncoder.getVelocity();
   }
 
   // public void setArmFeedForward(double g, double k) {

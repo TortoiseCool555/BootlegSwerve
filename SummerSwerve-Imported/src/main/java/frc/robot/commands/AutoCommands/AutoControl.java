@@ -25,6 +25,8 @@ public class AutoControl extends CommandBase {
   boolean check3;
   boolean check4;
   double time;
+  boolean goingUp = true;
+  boolean isClose = false;
   public AutoControl(Elevator elevator, double elPos, double exPos, double angle, boolean state) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
@@ -48,6 +50,8 @@ public class AutoControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    goingUp = elPos - (-elevator.getPosition()) > 0 ? true : false;
+    isClose = Math.abs(elPos - (-elevator.getPosition())) < 300;
     check4 = false;
     elevator.setState(state);
     timer.start();
@@ -72,7 +76,11 @@ public class AutoControl extends CommandBase {
     SmartDashboard.putNumber("Elevator Power AUTO:", ExtraMath.clip((-elPos - elevator.getPosition())/4500.0, 0.5));
     SmartDashboard.putNumber("Target Position AUTO: ", elPos);
 
-    elevator.setExtend(exPos);
+    if(goingUp && !isClose) {
+      elevator.setExtendConstrainedScore(exPos, angle);
+    } else {
+      elevator.setExtend(exPos);
+    }
     elevator.setArmAngle(angle);
     elevator.setPosition(elPos, true);
     elevator.setIntake(inPow);

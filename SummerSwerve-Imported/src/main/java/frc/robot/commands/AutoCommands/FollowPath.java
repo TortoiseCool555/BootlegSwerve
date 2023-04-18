@@ -52,22 +52,22 @@ public class FollowPath extends CommandBase {
     if(mag < 0.5 && segNum < points.size() - 1) {
       segNum++;
     }
-    
+
     Point wantedPoint = path.getNextPoint(robotPoint, segNum, 1);
     Point finalPoint = path.getSegment(segNum).get(1);
     double[] veloc = path.getVelocities(robotPoint, segNum, 1, shouldPID);
     double x = veloc[0];
     double y = veloc[1];
     double transVeloc = Math.hypot(x, y);
-    if(transVeloc > 5) {
-      x = x * 7.5 / transVeloc;
-      y = y * 7.5 / transVeloc;
+    if(transVeloc > 1.66) {
+      x = x * 3.15 / transVeloc;
+      y = y * 3.15 / transVeloc;
     }
 
     rotErr = Math.toDegrees(ExtraMath.simpleAngleError(robotPoint.getAngleRad(), wantedPoint.getAngleRad()));
-    double rot = ExtraMath.clip(veloc[2], 10.2);
+    double rot = ExtraMath.clip(veloc[2], 3.4);
 
-    drivetrain.setChassisSpeeds(x/3,y/3,rot/3);
+    drivetrain.setChassisSpeeds(x,y,rot);
 
     field.setRobotPose(robotPoint.getX(), robotPoint.getY(), Rotation2d.fromRadians(robotPoint.getAngleRad()));
     SmartDashboard.putString("Robot Point", formatter.format(robotPoint.getX())  + ", " + formatter.format(robotPoint.getY()) + ", " + formatter.format(Math.toDegrees(robotPoint.getAngleRad())));
@@ -80,6 +80,7 @@ public class FollowPath extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    drivetrain.setBrake();
     drivetrain.setChassisSpeeds(0, 0, 0);
   }
 

@@ -26,23 +26,50 @@ public class PreloadParkPlusLeft extends SequentialCommandGroup {
   public PreloadParkPlusLeft(NewSwerveDrivetrain drivetrain, Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    double elHeight = 7000;
-    double exPos = 17.1;
+    // double elHeight = 7000;
+    // double exPos = 17.1;
+    // addCommands(new InitDrivetrainOdom(drivetrain, Math.toRadians(180)), new ResetElevator(elevator), 
+    // new AutoControl(elevator, 0, 0, 95, true),
+    // new AutoControl(elevator, elHeight, 0, 95, true),
+    // new AutoControl(elevator, elHeight, exPos, 135, true),
+    // new AutoControl(elevator, elHeight,exPos,135,true, 0), new Pause(elevator, elHeight, exPos, 135, 0.5),
+    // new AutoControl(elevator, elHeight,exPos,135,false, 0.4), new Pause(elevator, elHeight, exPos, 135, 0.5),
+    // new AutoControl(elevator, elHeight, 1, 90, false, 0),
+    // new AutoControl(elevator, 0, 1, 90, false, 0),
+    // new FollowPath(drivetrain, Paths.ScoreToCollectInBetweenLeft, false).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    // new FollowPath(drivetrain, Paths.ScoreToCollectLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 180, false)),
+    // new DriveTime(drivetrain, 0.2, 0, 0, 1).raceWith(new AutoControlPower(elevator, 0, 0, 235, false, -0.35)),
+    // new AutoControl(elevator, 0, 0, 75, false, 0),
+    // new FollowPath(drivetrain, Paths.CollectToScoreInBetweenLeft, false).raceWith(new AutoControlPower(elevator, 0, 0, 75, false, 0)),
+    // new FollowPath(drivetrain, Paths.CollectToScoreLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
+    // new DriveTime(drivetrain, 0, 0, 0, 1).raceWith(new AutoControl(elevator, 0, 0, 75, false, 0.9))
+    // );
+
+    double elHeight = 9500;
+    double exPos = 17;
     addCommands(new InitDrivetrainOdom(drivetrain, Math.toRadians(180)), new ResetElevator(elevator), 
-    new AutoControl(elevator, 0, 0, 95, true),
-    new AutoControl(elevator, elHeight, 0, 95, true),
+    // new AutoControl(elevator, 0, 0, 95, true),
+    // new AutoControl(elevator, elHeight, 0, 95, true),
     new AutoControl(elevator, elHeight, exPos, 135, true),
-    new AutoControl(elevator, elHeight,exPos,135,true, 0), new Pause(elevator, elHeight, exPos, 135, 0.5),
-    new AutoControl(elevator, elHeight,exPos,135,false, 0.4), new Pause(elevator, elHeight, exPos, 135, 0.5),
-    new AutoControl(elevator, elHeight, 1, 90, false, 0),
-    new AutoControl(elevator, 0, 1, 90, false, 0),
-    new FollowPath(drivetrain, Paths.ScoreToCollectInBetweenLeft, false).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
-    new FollowPath(drivetrain, Paths.ScoreToCollectLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 180, false)),
-    new DriveTime(drivetrain, 0.2, 0, 0, 1).raceWith(new AutoControlPower(elevator, 0, 0, 235, false, -0.35)),
-    new AutoControl(elevator, 0, 0, 75, false, 0),
-    new FollowPath(drivetrain, Paths.CollectToScoreInBetweenLeft, false).raceWith(new AutoControlPower(elevator, 0, 0, 75, false, 0)),
-    new FollowPath(drivetrain, Paths.CollectToScoreLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 75, false)),
-    new DriveTime(drivetrain, 0, 0, 0, 1).raceWith(new AutoControl(elevator, 0, 0, 75, false, 0.9))
+    new AutoControl(elevator, elHeight,exPos,125,true, 0), new Pause(elevator, elHeight, exPos, 125, 0.1),
+    new AutoControl(elevator, elHeight,exPos,125,false, 0.4), new Pause(elevator, elHeight, exPos, 125, 0.2),
+    new AutoControl(elevator, elHeight, 0, 90.1, false, 0),
+    // new AutoControl(elevator, 5000, 0, 90.1, false, 0),
+    new DriveTime(drivetrain, 0, 0, 0, 0.2).raceWith(new AutoControl(elevator, 0, 0, 90.1, false, 0)),
+    // new FollowPath(drivetrain, Paths.ScoreToCollectInBetween, false).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    new FollowPath(drivetrain, Paths.ScoreToCollectLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    // new AutoControl(elevator, 0, 0, 186, false, 0),
+    new DriveTime(drivetrain, 0.2, 0, 0, 0.6).raceWith(new AutoControlPower(elevator, 0, 0, 225, false, -0.35)),
+    new AutoControl(elevator, 0, 0,100, false, 0),
+    // new FollowPath(drivetrain, Paths.CollectToScoreInBetween, false).raceWith(new AutoControlPower(elevator, 0, 0, 75, false, 0)),
+    new FollowPath(drivetrain, Paths.CollectToScoreLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    new DriveTime(drivetrain, 0, 0, 0, 0.5).raceWith(new AutoControlPower(elevator, 0, 0, 90, false, 0.4)),
+    new FollowPath(drivetrain, Paths.ScoreToCollect2InbetweenLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    new FollowPath(drivetrain, Paths.ScoreToCollect2Left, true).raceWith(new AutoControlPower(elevator, 0, 0, 210, false)),
+    new DriveTime(drivetrain, 0.2, 0, 0, 0.6).raceWith(new AutoControlPower(elevator, 0, 0, 225, false, -0.35)),
+    new FollowPath(drivetrain, Paths.CollectToScore2InbeweenLeft, true).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    new FollowPath(drivetrain, Paths.CollectToScore2Left, true).raceWith(new AutoControlPower(elevator, 0, 0, 90, false)),
+    new DriveTime(drivetrain, 0, 0, 0, 0.3).raceWith(new AutoControlPower(elevator, 0, 0, 120, false, 0.4))
     );
   }
 }
