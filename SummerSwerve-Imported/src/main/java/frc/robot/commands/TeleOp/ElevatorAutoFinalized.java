@@ -53,7 +53,7 @@ public class ElevatorAutoFinalized extends CommandBase {
     adjustmentExtend = 0;
     adjustmentArm = 0;
     sequenceNum = 0;
-    // elevator.resetElevator();
+    elevator.resetElevator();
     timer.start();
     timer.reset();
   }
